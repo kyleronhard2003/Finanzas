@@ -249,11 +249,12 @@
   /* Nav inferior con separación superior suave */
   nav.bottom{box-shadow:0 -6px 24px rgba(0,0,0,.22);}
 </style>
+<base target="_blank">
 </head>
 <body>
 
 <header>
-  <h1>💰 Mis <span>Finanzas</span></h1>
+  <h1>💰 <span data-i18n="brand">Mis Finanzas</span></h1>
   <div class="fecha-hoy" id="fechaHoy"></div>
   <div class="header-actions">
     <button class="icon-btn" id="btnTema" title="Cambiar tema">🌙</button>
@@ -262,19 +263,19 @@
 </header>
 
 <nav class="top" id="navTop">
-  <button data-view="panel" class="nav-btn active">📊 Panel</button>
-  <button data-view="movimientos" class="nav-btn">💸 Movimientos</button>
-  <button data-view="cobros" class="nav-btn">💳 Cobros y préstamos</button>
-  <button data-view="metas" class="nav-btn">🎯 Metas</button>
-  <button data-view="ajustes" class="nav-btn">⚙️ Ajustes</button>
+  <button data-view="panel" class="nav-btn active" data-i18n="nav_panel">📊 Panel</button>
+  <button data-view="movimientos" class="nav-btn" data-i18n="nav_movs">💸 Movimientos</button>
+  <button data-view="cobros" class="nav-btn" data-i18n="nav_cobros">💳 Cobros y préstamos</button>
+  <button data-view="metas" class="nav-btn" data-i18n="nav_metas">🎯 Metas</button>
+  <button data-view="ajustes" class="nav-btn" data-i18n="nav_ajustes">⚙️ Ajustes</button>
 </nav>
 
 <nav class="bottom">
   <div class="inner">
-    <button data-view="panel" class="nav-btn active"><span class="ico">📊</span>Panel</button>
-    <button data-view="movimientos" class="nav-btn"><span class="ico">💸</span>Movs.</button>
-    <button data-view="cobros" class="nav-btn"><span class="ico">💳</span>Pagos</button>
-    <button data-view="metas" class="nav-btn"><span class="ico">🎯</span>Metas</button>
+    <button data-view="panel" class="nav-btn active"><span class="ico">📊</span><span data-i18n="nav_panel_s">Panel</span></button>
+    <button data-view="movimientos" class="nav-btn"><span class="ico">💸</span><span data-i18n="nav_movs_s">Movs.</span></button>
+    <button data-view="cobros" class="nav-btn"><span class="ico">💳</span><span data-i18n="nav_pagos_s">Pagos</span></button>
+    <button data-view="metas" class="nav-btn"><span class="ico">🎯</span><span data-i18n="nav_metas_s">Metas</span></button>
   </div>
 </nav>
 
@@ -291,67 +292,67 @@
   <!-- ============ PANEL ============ -->
   <section id="view-panel" class="view active">
     <div class="grid grid-4" style="margin-top:8px;">
-      <div class="card"><h3>💼 Balance total</h3><div class="big accent" id="pBalance">—</div><div class="kpi-sub" id="pBalanceSub"></div></div>
-      <div class="card"><h3>📈 Ingresos este mes</h3><div class="big green" id="pIngresos">—</div><div class="kpi-sub" id="pIngresosSub"></div></div>
-      <div class="card"><h3>📉 Gastos este mes</h3><div class="big red" id="pGastos">—</div><div class="kpi-sub" id="pAhorroMes"></div></div>
-      <div class="card"><h3>⏰ Cobros próximos 7 días</h3><div class="big yellow" id="pCobros">—</div><div class="kpi-sub" id="pCobrosSub"></div></div>
+      <div class="card"><h3 data-i18n="kpi_balance">💼 Balance total</h3><div class="big accent" id="pBalance">—</div><div class="kpi-sub" id="pBalanceSub"></div></div>
+      <div class="card"><h3 data-i18n="kpi_income">📈 Ingresos este mes</h3><div class="big green" id="pIngresos">—</div><div class="kpi-sub" id="pIngresosSub"></div></div>
+      <div class="card"><h3 data-i18n="kpi_expense">📉 Gastos este mes</h3><div class="big red" id="pGastos">—</div><div class="kpi-sub" id="pAhorroMes"></div></div>
+      <div class="card"><h3 data-i18n="kpi_due">⏰ Cobros próximos 7 días</h3><div class="big yellow" id="pCobros">—</div><div class="kpi-sub" id="pCobrosSub"></div></div>
     </div>
     <div class="grid grid-2" style="margin-top:16px;">
       <div class="card">
-        <h3>Últimos 6 meses</h3>
-        <canvas id="chartBarras" class="chart-box" height="220"></canvas>
-        <div class="legend"><span><span class="dot" style="background:var(--green)"></span>Ingresos</span><span><span class="dot" style="background:var(--red)"></span>Gastos</span></div>
+        <h3 data-i18n="ch_6m">Últimos 6 meses</h3>
+        <canvas id="chartBarras" class="chart-box" height="165"></canvas>
+        <div class="legend"><span><span class="dot" style="background:var(--green)"></span><span data-i18n="leg_income">Ingresos</span></span><span><span class="dot" style="background:var(--red)"></span><span data-i18n="leg_expense">Gastos</span></span></div>
       </div>
       <div class="card">
-        <h3>Gastos por categoría (este mes)</h3>
-        <canvas id="chartDonut" class="chart-box" height="220"></canvas>
+        <h3 data-i18n="ch_by_cat">Gastos por categoría (este mes)</h3>
+        <canvas id="chartDonut" class="chart-box" height="165"></canvas>
         <div class="legend" id="donutLegend"></div>
       </div>
     </div>
     <div class="grid grid-2" style="margin-top:16px;">
-      <div class="card"><h3>🕐 Últimos movimientos</h3><div id="pUltimos"></div></div>
-      <div class="card"><h3>⏰ Cobros programados</h3><div id="pCobrosLista"></div></div>
+      <div class="card"><h3 data-i18n="p_recent">🕐 Últimos movimientos</h3><div id="pUltimos"></div></div>
+      <div class="card"><h3 data-i18n="p_bills">⏰ Cobros programados</h3><div id="pCobrosLista"></div></div>
     </div>
     <div class="grid grid-2" style="margin-top:16px;">
-      <div class="card"><h3>🎯 Metas</h3><div id="pMetas"></div></div>
-      <div class="card"><h3>🏦 Préstamos</h3><div id="pPrestamos"></div></div>
+      <div class="card"><h3 data-i18n="p_goals">🎯 Metas</h3><div id="pMetas"></div></div>
+      <div class="card"><h3 data-i18n="p_loans">🏦 Préstamos</h3><div id="pPrestamos"></div></div>
     </div>
-    <div class="card" style="margin-top:16px;"><h3>🏆 Top categorías de gasto (este mes)</h3><div id="pTopCats"></div></div>
+    <div class="card" style="margin-top:16px;"><h3 data-i18n="p_topcat">🏆 Top categorías de gasto (este mes)</h3><div id="pTopCats"></div></div>
   </section>
 
   <!-- ============ MOVIMIENTOS ============ -->
   <section id="view-movimientos" class="view">
-    <div class="row-between" style="margin-top:8px;"><h2 class="section-title" style="margin:0;">💸 Ingresos y gastos</h2><button class="btn" onclick="abrirModal('modalMov')">＋ Nuevo movimiento</button></div>
+    <div class="row-between" style="margin-top:8px;"><h2 class="section-title" style="margin:0;" data-i18n="v_movs_title">💸 Ingresos y gastos</h2><button class="btn" onclick="abrirModal('modalMov')" data-i18n="btn_new_tx">＋ Nuevo movimiento</button></div>
     <div class="grid grid-2">
       <div class="modal-backdrop" id="modalMov">
       <div class="card form-card modal-card">
         <button type="button" class="modal-close" onclick="cerrarModal('modalMov')" aria-label="Cerrar">✕</button>
-        <h3 id="tituloFormMov">Nuevo movimiento</h3>
-        <div class="edit-note" id="editNoteMov">✏️ Editando movimiento — <a href="#" onclick="cancelarEdicionMov();return false;" style="color:var(--yellow)">cancelar edición</a></div>
+        <h3 id="tituloFormMov" data-i18n="frm_new_tx">Nuevo movimiento</h3>
+        <div class="edit-note" id="editNoteMov"><span data-i18n="editing_tx">✏️ Editando movimiento</span> — <a href="#" onclick="cancelarEdicionMov();return false;" style="color:var(--yellow)"><span data-i18n="cancel_edit">cancelar edición</span></a></div>
         <form id="formMov">
           <input type="hidden" id="mId">
-          <div><label>Tipo</label>
-            <select id="mTipo"><option value="ingreso">📈 Ingreso</option><option value="gasto">📉 Gasto</option></select>
+          <div><label data-i18n="lbl_type">Tipo</label>
+            <select id="mTipo"><option value="ingreso" data-i18n="opt_inc_s">📈 Ingreso</option><option value="gasto" data-i18n="opt_exp_s">📉 Gasto</option></select>
           </div>
-          <div><label>Monto (€)</label><input type="number" id="mMonto" min="0.01" step="0.01" required placeholder="0.00" inputmode="decimal"></div>
-          <div><label>Categoría</label><input type="text" id="mCategoria" list="catsList" placeholder="ej. Comida, Sueldo, Transporte…">
+          <div><label data-i18n="lbl_amount">Monto (€)</label><input type="number" id="mMonto" min="0.01" step="0.01" required placeholder="0.00" inputmode="decimal"></div>
+          <div><label data-i18n="lbl_category">Categoría</label><input type="text" id="mCategoria" list="catsList" data-i18n-ph="ph_cats" placeholder="ej. Comida, Sueldo, Transporte…">
             <datalist id="catsList"></datalist></div>
-          <div><label>Descripción</label><input type="text" id="mDesc" placeholder="Detalle (opcional)"></div>
-          <div><label>Fecha</label><input type="date" id="mFecha" required></div>
-          <button class="btn btn-block" type="submit" id="btnSubmitMov">Guardar movimiento</button>
+          <div><label data-i18n="lbl_description">Descripción</label><input type="text" id="mDesc" data-i18n-ph="ph_detail" placeholder="Detalle (opcional)"></div>
+          <div><label data-i18n="lbl_date">Fecha</label><input type="date" id="mFecha" required></div>
+          <button class="btn btn-block" type="submit" id="btnSubmitMov" data-i18n="save_tx">Guardar movimiento</button>
         </form>
       </div>
     </div>
       <div class="card">
-        <h3>Historial y filtros</h3>
+        <h3 data-i18n="hist_filters">Historial y filtros</h3>
         <div class="filters">
-          <input type="search" id="fBuscar" placeholder="🔍 Buscar…">
-          <select id="fTipo"><option value="">Todos</option><option value="ingreso">Ingresos</option><option value="gasto">Gastos</option></select>
+          <input type="search" id="fBuscar" data-i18n-ph="ph_search" placeholder="🔍 Buscar…">
+          <select id="fTipo"><option value="" data-i18n="opt_all">Todos</option><option value="ingreso" data-i18n="opt_income">Ingresos</option><option value="gasto" data-i18n="opt_expense">Gastos</option></select>
           <select id="fMes"></select>
         </div>
         <div class="scroll-x">
         <table>
-          <thead><tr><th>Categoría</th><th>Fecha</th><th style="text-align:right">Monto</th></tr></thead>
+          <thead><tr><th data-i18n="th_cat">Categoría</th><th data-i18n="th_date">Fecha</th><th style="text-align:right" data-i18n="th_amount">Monto</th></tr></thead>
           <tbody id="tablaMov"></tbody>
         </table>
         </div>
@@ -365,38 +366,38 @@
 
   <!-- ============ COBROS ============ -->
   <section id="view-cobros" class="view">
-    <div class="row-between" style="margin-top:8px;"><h2 class="section-title" style="margin:0;">💳 Pagos y préstamos</h2><button class="btn" onclick="abrirModal('modalCobro')">＋ Nuevo cobro</button></div>
+    <div class="row-between" style="margin-top:8px;"><h2 class="section-title" style="margin:0;" data-i18n="v_cobros_title">💳 Pagos y préstamos</h2><button class="btn" onclick="abrirModal('modalCobro')" data-i18n="btn_new_bill">＋ Nuevo cobro</button></div>
     <div class="grid grid-2">
       <div class="modal-backdrop" id="modalCobro">
       <div class="card form-card modal-card">
         <button type="button" class="modal-close" onclick="cerrarModal('modalCobro')" aria-label="Cerrar">✕</button>
-        <h3 id="tituloFormCobro">Nuevo cobro programado</h3>
-        <div class="edit-note" id="editNoteCobro">✏️ Editando cobro — <a href="#" onclick="cancelarEdicionCobro();return false;" style="color:var(--yellow)">cancelar</a></div>
+        <h3 id="tituloFormCobro" data-i18n="frm_new_bill">Nuevo cobro programado</h3>
+        <div class="edit-note" id="editNoteCobro"><span data-i18n="editing_bill">✏️ Editando cobro</span> — <a href="#" onclick="cancelarEdicionCobro();return false;" style="color:var(--yellow)"><span data-i18n="cancel">cancelar</span></a></div>
         <form id="formCobro">
           <input type="hidden" id="cId">
-          <div><label>Concepto</label><input type="text" id="cConcepto" required placeholder="ej. Netflix, Alquiler, Luz…"></div>
-          <div><label>Monto (€)</label><input type="number" id="cMonto" min="0.01" step="0.01" required placeholder="0.00" inputmode="decimal"></div>
+          <div><label data-i18n="lbl_concept">Concepto</label><input type="text" id="cConcepto" required data-i18n-ph="ph_bill" placeholder="ej. Netflix, Alquiler, Luz…"></div>
+          <div><label data-i18n="lbl_amount">Monto (€)</label><input type="number" id="cMonto" min="0.01" step="0.01" required placeholder="0.00" inputmode="decimal"></div>
           <div class="row-between" style="gap:12px;">
-            <div style="flex:1;"><label>Fecha de inicio</label><input type="date" id="cFecha" required></div>
-            <div style="flex:1;"><label>Hora</label><input type="time" id="cHora" value="09:00" required></div>
+            <div style="flex:1;"><label data-i18n="lbl_start">Fecha de inicio</label><input type="date" id="cFecha" required></div>
+            <div style="flex:1;"><label data-i18n="lbl_time">Hora</label><input type="time" id="cHora" value="09:00" required></div>
           </div>
-          <div><label>Se repite</label>
+          <div><label data-i18n="lbl_repeats">Se repite</label>
             <select id="cFrec">
-              <option value="unico">Solo una vez</option>
-              <option value="mensual">Cada mes</option>
-              <option value="semanal">Cada semana</option>
-              <option value="anual">Cada año</option>
+              <option value="unico" data-i18n="f_unico">Solo una vez</option>
+              <option value="mensual" data-i18n="f_mensual">Cada mes</option>
+              <option value="semanal" data-i18n="f_semanal">Cada semana</option>
+              <option value="anual" data-i18n="f_anual">Cada año</option>
             </select>
           </div>
-          <button class="btn btn-block" type="submit" id="btnSubmitCobro">Programar cobro</button>
+          <button class="btn btn-block" type="submit" id="btnSubmitCobro" data-i18n="schedule_bill">Programar cobro</button>
         </form>
       </div>
     </div>
       <div class="card">
-        <h3>Cobros programados</h3>
+        <h3 data-i18n="scheduled_bills">Cobros programados</h3>
         <div class="scroll-x">
         <table>
-          <thead><tr><th>Concepto</th><th>Próximo</th><th style="text-align:right">Monto</th></tr></thead>
+          <thead><tr><th data-i18n="th_concept">Concepto</th><th data-i18n="th_next">Próximo</th><th style="text-align:right" data-i18n="th_amount">Monto</th></tr></thead>
           <tbody id="tablaCobros"></tbody>
         </table>
         </div>
@@ -404,35 +405,35 @@
     </div>
   <!-- ============ PRÉSTAMOS ============ -->
   
-    <div class="row-between" style="margin-top:34px;"><h3 class="section-title" style="margin:0;">🏦 Préstamos y cuotas</h3><button class="btn" onclick="abrirModal('modalPrestamo')">＋ Nuevo préstamo</button></div>
+    <div class="row-between" style="margin-top:34px;"><h3 class="section-title" style="margin:0;" data-i18n="loans_title">🏦 Préstamos y cuotas</h3><button class="btn" onclick="abrirModal('modalPrestamo')" data-i18n="btn_new_loan">＋ Nuevo préstamo</button></div>
     <div class="grid grid-2">
       <div class="modal-backdrop" id="modalPrestamo">
       <div class="card form-card modal-card">
         <button type="button" class="modal-close" onclick="cerrarModal('modalPrestamo')" aria-label="Cerrar">✕</button>
-        <h3 id="tituloFormPrestamo">Nuevo préstamo</h3>
-        <div class="edit-note" id="editNotePrestamo">✏️ Editando préstamo — <a href="#" onclick="cancelarEdicionPrestamo();return false;" style="color:var(--yellow)">cancelar</a></div>
+        <h3 id="tituloFormPrestamo" data-i18n="frm_new_loan">Nuevo préstamo</h3>
+        <div class="edit-note" id="editNotePrestamo"><span data-i18n="editing_loan">✏️ Editando préstamo</span> — <a href="#" onclick="cancelarEdicionPrestamo();return false;" style="color:var(--yellow)"><span data-i18n="cancel">cancelar</span></a></div>
         <form id="formPrestamo">
           <input type="hidden" id="pId">
-          <div><label>Nombre / entidad</label><input type="text" id="pNombre" required placeholder="ej. Préstamo coche — BBVA"></div>
+          <div><label data-i18n="lbl_name">Nombre / entidad</label><input type="text" id="pNombre" required data-i18n-ph="ph_loan" placeholder="ej. Préstamo coche — BBVA"></div>
           <div class="row-between" style="gap:12px;">
-            <div style="flex:1;"><label>Monto total (€)</label><input type="number" id="pTotal" min="1" step="0.01" required inputmode="decimal"></div>
-            <div style="flex:1;"><label>Nº de cuotas</label><input type="number" id="pCuotas" min="1" step="1" required inputmode="numeric"></div>
+            <div style="flex:1;"><label data-i18n="lbl_total">Monto total (€)</label><input type="number" id="pTotal" min="1" step="0.01" required inputmode="decimal"></div>
+            <div style="flex:1;"><label data-i18n="lbl_ninst">Nº de cuotas</label><input type="number" id="pCuotas" min="1" step="1" required inputmode="numeric"></div>
           </div>
           <div class="row-between" style="gap:12px;">
-            <div style="flex:1;"><label>Monto por cuota (€)</label><input type="number" id="pMontoCuota" min="0.01" step="0.01" required inputmode="decimal"></div>
-            <div style="flex:1;"><label>Día de pago mensual</label><input type="number" id="pDia" min="1" max="31" step="1" required placeholder="ej. 5" inputmode="numeric"></div>
+            <div style="flex:1;"><label data-i18n="lbl_per_inst">Monto por cuota (€)</label><input type="number" id="pMontoCuota" min="0.01" step="0.01" required inputmode="decimal"></div>
+            <div style="flex:1;"><label data-i18n="lbl_payday">Día de pago mensual</label><input type="number" id="pDia" min="1" max="31" step="1" required data-i18n-ph="ph_day5" placeholder="ej. 5" inputmode="numeric"></div>
           </div>
-          <div><label>Fecha de la primera cuota</label><input type="date" id="pFechaInicio" required></div>
-          <button class="btn btn-block" type="submit" id="btnSubmitPrestamo">Registrar préstamo</button>
+          <div><label data-i18n="lbl_first_date">Fecha de la primera cuota</label><input type="date" id="pFechaInicio" required></div>
+          <button class="btn btn-block" type="submit" id="btnSubmitPrestamo" data-i18n="register_loan">Registrar préstamo</button>
         </form>
       </div>
     </div>
-      <div class="card"><h3>Mis préstamos</h3><div id="listaPrestamos"></div></div>
+      <div class="card"><h3 data-i18n="my_loans">Mis préstamos</h3><div id="listaPrestamos"></div></div>
     </div>
     <div class="card" id="detallePrestamoCard" style="margin-top:16px;display:none;">
       <div class="row-between">
         <h3 style="margin:0;" id="detalleTitulo"></h3>
-        <button class="btn btn-ghost btn-sm" onclick="cerrarDetallePrestamo()">Cerrar ✕</button>
+        <button class="btn btn-ghost btn-sm" onclick="cerrarDetallePrestamo()" data-i18n="close">Cerrar ✕</button>
       </div>
       <div id="detallePrestamo"></div>
     </div>
@@ -440,55 +441,75 @@
 
   <!-- ============ METAS ============ -->
   <section id="view-metas" class="view">
-    <div class="row-between" style="margin-top:8px;"><h2 class="section-title" style="margin:0;">🎯 Metas de ahorro</h2><button class="btn" onclick="abrirModal('modalMeta')">＋ Nueva meta</button></div>
+    <div class="row-between" style="margin-top:8px;"><h2 class="section-title" style="margin:0;" data-i18n="metas_title">🎯 Metas de ahorro</h2><button class="btn" onclick="abrirModal('modalMeta')" data-i18n="btn_new_goal">＋ Nueva meta</button></div>
     <div class="grid grid-2">
       <div class="modal-backdrop" id="modalMeta">
       <div class="card form-card modal-card">
         <button type="button" class="modal-close" onclick="cerrarModal('modalMeta')" aria-label="Cerrar">✕</button>
-        <h3 id="tituloFormMeta">Nueva meta</h3>
-        <div class="edit-note" id="editNoteMeta">✏️ Editando meta — <a href="#" onclick="cancelarEdicionMeta();return false;" style="color:var(--yellow)">cancelar</a></div>
+        <h3 id="tituloFormMeta" data-i18n="frm_new_goal">Nueva meta</h3>
+        <div class="edit-note" id="editNoteMeta"><span data-i18n="editing_goal">✏️ Editando meta</span> — <a href="#" onclick="cancelarEdicionMeta();return false;" style="color:var(--yellow)"><span data-i18n="cancel">cancelar</span></a></div>
         <form id="formMeta">
           <input type="hidden" id="gId">
-          <div><label>Nombre de la meta</label><input type="text" id="gNombre" required placeholder="ej. Viaje a Japón"></div>
-          <div><label>Monto objetivo (€)</label><input type="number" id="gObjetivo" min="1" step="0.01" required placeholder="0.00" inputmode="decimal"></div>
-          <div><label>Fecha objetivo (opcional)</label><input type="date" id="gFecha"></div>
-          <button class="btn btn-block" type="submit" id="btnSubmitMeta">Crear meta</button>
+          <div><label data-i18n="lbl_goal_name">Nombre de la meta</label><input type="text" id="gNombre" required data-i18n-ph="ph_goal" placeholder="ej. Viaje a Japón"></div>
+          <div><label data-i18n="lbl_target">Monto objetivo (€)</label><input type="number" id="gObjetivo" min="1" step="0.01" required placeholder="0.00" inputmode="decimal"></div>
+          <div><label data-i18n="lbl_target_date">Fecha objetivo (opcional)</label><input type="date" id="gFecha"></div>
+          <button class="btn btn-block" type="submit" id="btnSubmitMeta" data-i18n="create_goal">Crear meta</button>
         </form>
       </div>
     </div>
-      <div class="card"><h3>Mis metas</h3><div id="listaMetas"></div></div>
+      <div class="card"><h3 data-i18n="my_goals">Mis metas</h3><div id="listaMetas"></div></div>
     </div>
   </section>
 
   <!-- ============ AJUSTES ============ -->
   <section id="view-ajustes" class="view">
-    <h2 class="section-title">⚙️ Ajustes y datos</h2>
+    <h2 class="section-title" data-i18n="set_title">⚙️ Ajustes y datos</h2>
     <div class="grid grid-2">
       <div class="card">
-        <h3>💾 Copia de seguridad</h3>
-        <p style="color:var(--muted);font-size:.88rem;margin-bottom:14px;">Tus datos viven solo en este navegador. Exporta una copia para no perderlos o para moverlos a otro dispositivo.</p>
+        <h3 data-i18n="set_lang">🌐 Idioma</h3>
+        <p data-i18n="set_lang_desc" style="color:var(--muted);font-size:.88rem;margin-bottom:14px;">Elige el idioma de toda la app.</p>
+        <select id="selLang">
+          <option value="es">🇪🇸 Español</option>
+          <option value="en">🇬🇧 English</option>
+        </select>
+      </div>
+      <div class="card">
+        <h3 data-i18n="set_backup">💾 Copia de seguridad</h3>
+        <p data-i18n="set_backup_desc" style="color:var(--muted);font-size:.88rem;margin-bottom:14px;">Tus datos viven solo en este navegador. Exporta una copia para no perderlos o para moverlos a otro dispositivo.</p>
         <div style="display:flex;flex-direction:column;gap:10px;">
-          <button class="btn btn-green" onclick="exportarDatos()">⬇️ Exportar datos (JSON)</button>
+          <button class="btn btn-green" onclick="exportarDatos()" data-i18n="export_data">⬇️ Exportar datos (JSON)</button>
           <div class="drop-zone" onclick="$('importFile').click()">
-            ⬆️ Toca para importar una copia<br><small>(reemplaza los datos actuales)</small>
+            <span data-i18n="import_tap">⬆️ Toca para importar una copia</span><br><small data-i18n="import_note">(reemplaza los datos actuales)</small>
             <input type="file" id="importFile" accept=".json" style="display:none" onchange="importarDatos(event)">
           </div>
         </div>
       </div>
       <div class="card">
-        <h3>🗑️ Zona de peligro</h3>
-        <p style="color:var(--muted);font-size:.88rem;margin-bottom:14px;">Esta acción no se puede deshacer.</p>
-        <button class="btn btn-danger btn-block" onclick="borrarTodo()">🗑️ Borrar todos los datos</button>
+        <h3 data-i18n="danger">🗑️ Zona de peligro</h3>
+        <p data-i18n="danger_desc" style="color:var(--muted);font-size:.88rem;margin-bottom:14px;">Esta acción no se puede deshacer.</p>
+        <button class="btn btn-danger btn-block" onclick="borrarTodo()" data-i18n="delete_all">🗑️ Borrar todos los datos</button>
         <hr style="border:none;border-top:1px solid var(--border);margin:20px 0;">
-        <h3>ℹ️ Acerca de</h3>
+        <h3 data-i18n="about">ℹ️ Acerca de</h3>
         <p style="color:var(--muted);font-size:.85rem;line-height:1.6;">
-          App 100% local: ningún dato sale de tu dispositivo.<br>
-          Los cobros programados se descuentan automáticamente al abrir la app cuando llega su fecha y hora.<br>
-          Versión 2.2 · Diseño móvil · Septiembre 2026
+          <span data-i18n="about_1">App 100% local: ningún dato sale de tu dispositivo.</span><br>
+          <span data-i18n="about_2">Los cobros programados se descuentan automáticamente al abrir la app cuando llega su fecha y hora.</span><br>
+          <span data-i18n="about_3">Versión 2.2 · Diseño móvil · Septiembre 2026</span>
         </p>
       </div>
     </div>
   </section>
+<!-- ============ VENTANA DE CONFIRMACIÓN ============ -->
+<div class="modal-backdrop" id="modalConfirm">
+  <div class="card form-card modal-card" style="text-align:center;">
+    <button type="button" class="modal-close" onclick="resolverConfirm(false)" aria-label="Cerrar">✕</button>
+    <h3 style="justify-content:center;">⚠️</h3>
+    <p id="confirmMsg" style="margin:6px 0 20px;font-size:.95rem;line-height:1.5;"></p>
+    <div style="display:flex;gap:10px;">
+      <button class="btn btn-ghost" id="confirmCancel" style="flex:1;">✕</button>
+      <button class="btn btn-green" id="confirmOk" style="flex:1;">✔</button>
+    </div>
+  </div>
+</div>
 <!-- ============ VENTANA DE DETALLE GENÉRICA ============ -->
 <div class="modal-backdrop" id="modalDetalle">
   <div class="card form-card modal-card">
@@ -504,9 +525,9 @@
 // ================= UTILIDADES =================
 const $ = id => document.getElementById(id);
 const LS_KEY = 'misFinanzas_v2';
-const fmt = n => new Intl.NumberFormat('es-ES',{style:'currency',currency:'EUR'}).format(n);
+const fmt = n => new Intl.NumberFormat(LOCALE(),{style:'currency',currency:'EUR'}).format(n);
 const fmtFechaCorta = iso => { if(!iso) return '—'; const d=new Date(iso.length===10?iso+'T12:00:00':iso); const p=n=>String(n).padStart(2,'0'); return p(d.getDate())+'/'+p(d.getMonth()+1)+'/'+String(d.getFullYear()).slice(2); };
-const fmtFecha = iso => { if(!iso) return '—'; const d=new Date(iso.length===10?iso+'T12:00:00':iso); return d.toLocaleDateString('es-ES',{day:'2-digit',month:'2-digit',year:'numeric'}); };
+const fmtFecha = iso => { if(!iso) return '—'; const d=new Date(iso.length===10?iso+'T12:00:00':iso); return d.toLocaleDateString(LOCALE(),{day:'2-digit',month:'2-digit',year:'numeric'}); };
 const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2,7);
 const hoyISO = () => { const d=new Date(); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); };
 const esc = s => String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
@@ -514,6 +535,120 @@ const esc = s => String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replac
 let movLimit = 10; // filas visibles en el historial de movimientos
 let db = JSON.parse(localStorage.getItem(LS_KEY) || 'null');
 if(!db) db = { movimientos:[], cobros:[], metas:[], prestamos:[], prestamoPagos:[], theme:'dark' };
+
+// ================= IDIOMAS (ES / EN) =================
+const I18N = {
+es: {
+brand:"Mis Finanzas", nav_panel:"📊 Panel", nav_movs:"💸 Movimientos", nav_cobros:"💳 Cobros y préstamos", nav_metas:"🎯 Metas", nav_ajustes:"⚙️ Ajustes",
+nav_movs_s:"Movs.", nav_pagos_s:"Pagos", nav_metas_s:"Metas",
+kpi_balance:"💼 Balance total", kpi_income:"📈 Ingresos este mes", kpi_expense:"📉 Gastos este mes", kpi_due:"⏰ Cobros próximos 7 días",
+ch_6m:"Últimos 6 meses", ch_by_cat:"Gastos por categoría (este mes)", leg_income:"Ingresos", leg_expense:"Gastos",
+p_recent:"🕐 Últimos movimientos", p_bills:"⏰ Cobros programados", p_goals:"🎯 Metas", p_loans:"🏦 Préstamos", p_topcat:"🏆 Top categorías de gasto (este mes)",
+no_tx_yet:"Sin movimientos todavía", no_bills:"No tienes cobros programados", no_goals:"No tienes metas creadas", no_loans:"No tienes préstamos registrados", no_exp_month:"Sin gastos este mes",
+v_movs_title:"💸 Ingresos y gastos", btn_new_tx:"＋ Nuevo movimiento", hist_filters:"Historial y filtros", ph_search:"🔍 Buscar…", opt_all:"Todos", opt_income:"Ingresos", opt_expense:"Gastos", all_months:"Todos los meses",
+th_cat:"Categoría", th_date:"Fecha", th_amount:"Monto", no_results:"Sin resultados", k_results:"resultado(s)", k_net:"Neto:", show_more:"▼ Mostrar más (", remaining:" restantes)", show_less:"▲ Mostrar menos",
+frm_new_tx:"Nuevo movimiento", frm_edit_tx:"Editar movimiento", editing_tx:"✏️ Editando movimiento", cancel_edit:"cancelar edición",
+lbl_type:"Tipo", lbl_amount:"Monto (€)", lbl_category:"Categoría", lbl_description:"Descripción", lbl_date:"Fecha",
+opt_inc_s:"📈 Ingreso", opt_exp_s:"📉 Gasto", save_tx:"Guardar movimiento", update_tx:"Actualizar movimiento", ph_cats:"ej. Comida, Sueldo, Transporte…", ph_detail:"Detalle (opcional)",
+v_cobros_title:"💳 Pagos y préstamos", btn_new_bill:"＋ Nuevo cobro", scheduled_bills:"Cobros programados", th_concept:"Concepto", th_next:"Próximo",
+frm_new_bill:"Nuevo cobro programado", frm_edit_bill:"Editar cobro", editing_bill:"✏️ Editando cobro", cancel:"cancelar",
+lbl_concept:"Concepto", lbl_start:"Fecha de inicio", lbl_time:"Hora", lbl_repeats:"Se repite", f_unico:"Solo una vez", f_mensual:"Cada mes", f_semanal:"Cada semana", f_anual:"Cada año",
+schedule_bill:"Programar cobro", update_bill:"Actualizar cobro", ph_bill:"ej. Netflix, Alquiler, Luz…",
+loans_title:"🏦 Préstamos y cuotas", btn_new_loan:"＋ Nuevo préstamo", my_loans:"Mis préstamos",
+frm_new_loan:"Nuevo préstamo", frm_edit_loan:"Editar préstamo", editing_loan:"✏️ Editando préstamo",
+lbl_name:"Nombre / entidad", lbl_total:"Monto total (€)", lbl_ninst:"Nº de cuotas", lbl_per_inst:"Monto por cuota (€)", lbl_payday:"Día de pago mensual", lbl_first_date:"Fecha de la primera cuota",
+ph_loan:"ej. Préstamo coche — BBVA", ph_day5:"ej. 5", register_loan:"Registrar préstamo", update_loan:"Actualizar préstamo",
+metas_title:"🎯 Metas de ahorro", btn_new_goal:"＋ Nueva meta", my_goals:"Mis metas",
+frm_new_goal:"Nueva meta", frm_edit_goal:"Editar meta", editing_goal:"✏️ Editando meta",
+lbl_goal_name:"Nombre de la meta", lbl_target:"Monto objetivo (€)", lbl_target_date:"Fecha objetivo (opcional)", ph_goal:"ej. Viaje a Japón", create_goal:"Crear meta", update_goal:"Actualizar meta",
+det_tx:"💸 Detalle del movimiento", det_bill:"💳 Detalle del cobro", det_goal:"🎯 Detalle de la meta",
+d_type:"Tipo", d_repeats:"Se repite", d_next:"Próxima fecha", d_status:"Estado", d_goal:"Meta", d_saved:"Ahorrado", d_target2:"Objetivo", d_progress:"Progreso", d_missing:"Falta", d_target_date:"Fecha objetivo",
+no_description:"Sin descripción", active:"● Activo", paused:"⏸ Pausado", edit:"✏️ Editar", delete:"🗑️ Eliminar", pause:"⏸ Pausar", resume:"▶ Activar", add:"＋ Aportar", withdraw:"− Retirar",
+t_ingreso:"ingreso", t_gasto:"gasto",
+set_title:"⚙️ Ajustes y datos", set_backup:"💾 Copia de seguridad", set_backup_desc:"Tus datos viven solo en este navegador. Exporta una copia para no perderlos o para moverlos a otro dispositivo.",
+export_data:"⬇️ Exportar datos (JSON)", import_tap:"⬆️ Toca para importar una copia", import_note:"(reemplaza los datos actuales)",
+danger:"🗑️ Zona de peligro", danger_desc:"Esta acción no se puede deshacer.", delete_all:"🗑️ Borrar todos los datos",
+about:"ℹ️ Acerca de", about_1:"App 100% local: ningún dato sale de tu dispositivo.", about_2:"Los cobros programados se descuentan automáticamente al abrir la app cuando llega su fecha y hora.", about_3:"Versión 2.3 · Diseño móvil · Septiembre 2026",
+set_lang:"🌐 Idioma", set_lang_desc:"Elige el idioma de toda la app.",
+close:"Cerrar ✕", fab_tx:"💸 Nuevo movimiento", fab_bill:"💳 Nuevo cobro programado", fab_loan:"🏦 Nuevo préstamo", fab_goal:"🎯 Nueva meta",
+to_tx_upd:"✏️ Movimiento actualizado", to_tx_saved:"✅ Movimiento guardado", to_tx_del:"🗑️ Movimiento eliminado",
+to_bill_upd:"✏️ Cobro actualizado", to_bill_sched:"⏰ Cobro programado", to_bill_resumed:"▶ Cobro activado", to_bill_paused:"⏸ Cobro pausado", to_bill_del:"🗑️ Cobro eliminado",
+to_goal_upd:"✏️ Meta actualizada", to_goal_created:"🎯 Meta creada", to_goal_completed:"🏆 ¡Meta completada!", to_add_saved:"💰 Aporte registrado", to_wd_saved:"💸 Retiro registrado", to_goal_del:"🗑️ Meta eliminada",
+to_loan_upd:"✏️ Préstamo actualizado", to_loan_reg:"🏦 Préstamo registrado", to_loan_del:"🗑️ Préstamo eliminado", to_loan_paid_full:"🎉 ¡Préstamo ya pagado por completo!", to_inst_paid:"✔ Cuota pagada",
+to_exported:"⬇️ Copia exportada", to_imported:"✅ Datos importados", to_lang:"✅ Idioma actualizado",
+conf_del_tx:"¿Eliminar este movimiento?", conf_del_bill:"¿Eliminar este cobro programado?", conf_del_goal:"¿Eliminar esta meta?", conf_del_loan:"¿Eliminar este préstamo y su historial de cuotas?",
+conf_import:"Esto REEMPLAZARÁ todos los datos actuales. ¿Continuar?", invalid_file:"⚠️ Archivo no válido", conf_del_all_1:"¿Seguro? Se borrarán TODOS los datos.", conf_del_all_2:"Última confirmación: esta acción no se puede deshacer.",
+prompt_add:'Aportar a "{name}". ¿Cuánto añades? (€)', prompt_withdraw:'Retirar de "{name}". ¿Cuánto quitas? (€)',
+aviso1:"✅ Se descontaron ", aviso2:" cobro(s) por ", cat_bill:"Cobro programado", recurring:" (recurrente)", cat_loan:"Préstamo",
+inst_label:"Cuota {n}/{t} — {name}", confirm_pay:"¿Confirmar pago de la cuota {n}/{t} de {a}?",
+you_have_left:"Te quedan ", k_insts:"cuotas", k_inst:"cuota", k_day:"día ", k_month:"mes", k_completed:"completado", k_target:"objetivo",
+paid:"✔ Pagada", overdue:"⚠ Pendiente", pending:"Pendiente", inst_no:"Cuota", due_date:"Fecha prevista", d_status2:"Estado",
+total_borrowed:"Total prestado", paid_so_far:"Ya pagado", movs_registered:"movimientos registrados", bills_pending:"cobro(s) pendiente(s)",
+net_saving:"Ahorro neto:", deficit:"Déficit:", pay_inst:"✔ Pagar cuota", installments_btn:"📋 Cuotas", paid_off:"✅ Liquidado",
+no_goals_first:"Crea tu primera meta de ahorro 💪", no_loans_empty:"Registra tus préstamos para seguir sus cuotas",
+completed:"🏆 ¡Completada!", by_prefix:" · antes del ", tap_options:" · toca para ver opciones", k_left:"restantes",
+d_no:"No.", d_due:"Due date", d_amount:"Amount", d_status_en:"Status"
+},
+en: {
+brand:"My Finances", nav_panel:"📊 Dashboard", nav_movs:"💸 Transactions", nav_cobros:"💳 Bills & loans", nav_metas:"🎯 Goals", nav_ajustes:"⚙️ Settings",
+nav_movs_s:"Txns", nav_pagos_s:"Bills", nav_metas_s:"Goals",
+kpi_balance:"💼 Total balance", kpi_income:"📈 Income this month", kpi_expense:"📉 Expenses this month", kpi_due:"⏰ Due in next 7 days",
+ch_6m:"Last 6 months", ch_by_cat:"Spending by category (this month)", leg_income:"Income", leg_expense:"Expenses",
+p_recent:"🕐 Recent transactions", p_bills:"⏰ Scheduled bills", p_goals:"🎯 Goals", p_loans:"🏦 Loans", p_topcat:"🏆 Top spending categories (this month)",
+no_tx_yet:"No transactions yet", no_bills:"No scheduled bills", no_goals:"No goals yet", no_loans:"No loans yet", no_exp_month:"No expenses this month",
+v_movs_title:"💸 Income & expenses", btn_new_tx:"＋ New transaction", hist_filters:"History & filters", ph_search:"🔍 Search…", opt_all:"All", opt_income:"Income", opt_expense:"Expenses", all_months:"All months",
+th_cat:"Category", th_date:"Date", th_amount:"Amount", no_results:"No results", k_results:"result(s)", k_net:"Net:", show_more:"▼ Show more (", remaining:" remaining)", show_less:"▲ Show less",
+frm_new_tx:"New transaction", frm_edit_tx:"Edit transaction", editing_tx:"✏️ Editing transaction", cancel_edit:"cancel editing",
+lbl_type:"Type", lbl_amount:"Amount (€)", lbl_category:"Category", lbl_description:"Description", lbl_date:"Date",
+opt_inc_s:"📈 Income", opt_exp_s:"📉 Expense", save_tx:"Save transaction", update_tx:"Update transaction", ph_cats:"e.g. Food, Salary, Transport…", ph_detail:"Details (optional)",
+v_cobros_title:"💳 Bills & loans", btn_new_bill:"＋ New bill", scheduled_bills:"Scheduled bills", th_concept:"Bill", th_next:"Next",
+frm_new_bill:"New scheduled bill", frm_edit_bill:"Edit bill", editing_bill:"✏️ Editing bill", cancel:"cancel",
+lbl_concept:"Bill", lbl_start:"Start date", lbl_time:"Time", lbl_repeats:"Repeats", f_unico:"One-time", f_mensual:"Monthly", f_semanal:"Weekly", f_anual:"Yearly",
+schedule_bill:"Schedule bill", update_bill:"Update bill", ph_bill:"e.g. Netflix, Rent, Electricity…",
+loans_title:"🏦 Loans & installments", btn_new_loan:"＋ New loan", my_loans:"My loans",
+frm_new_loan:"New loan", frm_edit_loan:"Edit loan", editing_loan:"✏️ Editing loan",
+lbl_name:"Name / lender", lbl_total:"Total amount (€)", lbl_ninst:"No. of installments", lbl_per_inst:"Amount per installment (€)", lbl_payday:"Monthly payment day", lbl_first_date:"First installment date",
+ph_loan:"e.g. Car loan — BBVA", ph_day5:"e.g. 5", register_loan:"Register loan", update_loan:"Update loan",
+metas_title:"🎯 Savings goals", btn_new_goal:"＋ New goal", my_goals:"My goals",
+frm_new_goal:"New goal", frm_edit_goal:"Edit goal", editing_goal:"✏️ Editing goal",
+lbl_goal_name:"Goal name", lbl_target:"Target amount (€)", lbl_target_date:"Target date (optional)", ph_goal:"e.g. Trip to Japan", create_goal:"Create goal", update_goal:"Update goal",
+det_tx:"💸 Transaction details", det_bill:"💳 Bill details", det_goal:"🎯 Goal details",
+d_type:"Type", d_repeats:"Repeats", d_next:"Next date", d_status:"Status", d_goal:"Goal", d_saved:"Saved", d_target2:"Target", d_progress:"Progress", d_missing:"Remaining", d_target_date:"Target date",
+no_description:"No description", active:"● Active", paused:"⏸ Paused", edit:"✏️ Edit", delete:"🗑️ Delete", pause:"⏸ Pause", resume:"▶ Resume", add:"＋ Add", withdraw:"− Withdraw",
+t_ingreso:"income", t_gasto:"expense",
+set_title:"⚙️ Settings & data", set_backup:"💾 Backup", set_backup_desc:"Your data lives only in this browser. Export a copy to avoid losing it or to move it to another device.",
+export_data:"⬇️ Export data (JSON)", import_tap:"⬆️ Tap to import a backup", import_note:"(replaces current data)",
+danger:"🗑️ Danger zone", danger_desc:"This action cannot be undone.", delete_all:"🗑️ Delete all data",
+about:"ℹ️ About", about_1:"100% local app: no data leaves your device.", about_2:"Scheduled bills are deducted automatically when you open the app at their date and time.", about_3:"Version 2.3 · Mobile design · September 2026",
+set_lang:"🌐 Language", set_lang_desc:"Choose the app language.",
+close:"Close ✕", fab_tx:"💸 New transaction", fab_bill:"💳 New scheduled bill", fab_loan:"🏦 New loan", fab_goal:"🎯 New goal",
+to_tx_upd:"✏️ Transaction updated", to_tx_saved:"✅ Transaction saved", to_tx_del:"🗑️ Transaction deleted",
+to_bill_upd:"✏️ Bill updated", to_bill_sched:"⏰ Bill scheduled", to_bill_resumed:"▶ Bill resumed", to_bill_paused:"⏸ Bill paused", to_bill_del:"🗑️ Bill deleted",
+to_goal_upd:"✏️ Goal updated", to_goal_created:"🎯 Goal created", to_goal_completed:"🏆 Goal completed!", to_add_saved:"💰 Contribution saved", to_wd_saved:"💸 Withdrawal saved", to_goal_del:"🗑️ Goal deleted",
+to_loan_upd:"✏️ Loan updated", to_loan_reg:"🏦 Loan registered", to_loan_del:"🗑️ Loan deleted", to_loan_paid_full:"🎉 Loan already fully paid!", to_inst_paid:"✔ Installment paid",
+to_exported:"⬇️ Backup exported", to_imported:"✅ Data imported", to_lang:"✅ Language updated",
+conf_del_tx:"Delete this transaction?", conf_del_bill:"Delete this scheduled bill?", conf_del_goal:"Delete this goal?", conf_del_loan:"Delete this loan and its installment history?",
+conf_import:"This will REPLACE all current data. Continue?", invalid_file:"⚠️ Invalid file", conf_del_all_1:"Are you sure? ALL data will be deleted.", conf_del_all_2:"Final confirmation: this cannot be undone.",
+prompt_add:'Add to "{name}". How much are you adding? (€)', prompt_withdraw:'Withdraw from "{name}". How much? (€)',
+aviso1:"✅ Deducted ", aviso2:" bill(s) totaling ", cat_bill:"Scheduled bill", recurring:" (recurring)", cat_loan:"Loan",
+inst_label:"Installment {n}/{t} — {name}", confirm_pay:"Confirm payment of installment {n}/{t} of {a}?",
+you_have_left:"Remaining ", k_insts:"installments", k_inst:"inst", k_day:"day ", k_month:"month", k_completed:"completed", k_target:"target",
+paid:"✔ Paid", overdue:"⚠ Overdue", pending:"Pending", inst_no:"No.", due_date:"Due date", d_status2:"Status",
+total_borrowed:"Total borrowed", paid_so_far:"Paid so far", movs_registered:"transactions recorded", bills_pending:"pending bill(s)",
+net_saving:"Net saving:", deficit:"Deficit:", pay_inst:"✔ Pay installment", installments_btn:"📋 Installments", paid_off:"✅ Paid off",
+no_goals_first:"Create your first savings goal 💪", no_loans_empty:"Add your loans to track installments",
+completed:"🏆 Completed!", by_prefix:" · by ", tap_options:" · tap to see options", k_left:"remaining",
+d_no:"No.", d_due:"Due date", d_amount:"Amount", d_status_en:"Status"
+}
+};
+let LANG = db.lang || 'es';
+function t(k){ const v = I18N[LANG]; return (v && v[k] !== undefined) ? v[k] : (I18N.es[k] !== undefined ? I18N.es[k] : k); }
+const LOCALE = () => LANG==='en' ? 'en-US' : 'es-ES';
+function aplicarIdioma(){
+  document.documentElement.lang = LANG;
+  document.querySelectorAll('[data-i18n]').forEach(el => { el.textContent = t(el.dataset.i18n); });
+  document.querySelectorAll('[data-i18n-ph]').forEach(el => { el.placeholder = t(el.dataset.i18nPh); });
+}
 function guardar(){ localStorage.setItem(LS_KEY, JSON.stringify(db)); }
 
 function abrirModal(id){ $(id).classList.add('open'); document.body.style.overflow='hidden'; }
@@ -527,63 +662,85 @@ function abrirDetalle(titulo, cuerpo, acciones){
 }
 function verDetalleMov(id){
   const m = db.movimientos.find(x=>x.id===id); if(!m) return;
-  abrirDetalle('💸 Detalle del movimiento',
-    `<div class="stat-line"><span>Tipo</span><b><span class="tag tag-${m.tipo}">${m.tipo}</span>${m.auto?' <span class="tag tag-auto">auto</span>':''}</b></div>
-     <div class="stat-line"><span>Categoría</span><b>${esc(m.categoria)}</b></div>
-     <div class="stat-line"><span>Monto</span><b class="${m.tipo==='ingreso'?'green':'red'}">${m.tipo==='ingreso'?'+':'−'}${fmt(m.monto)}</b></div>
-     <div class="stat-line"><span>Fecha</span><b>${fmtFecha(m.fecha)}</b></div>
-     <div class="stat-line"><span>Descripción</span><b>${m.descripcion?esc(m.descripcion):'<i style="color:var(--muted)">Sin descripción</i>'}</b></div>`,
-    `<button class="btn btn-green btn-sm" onclick="cerrarModal('modalDetalle');editarMov('${m.id}')">✏️ Editar</button>
-     <button class="btn btn-danger btn-sm" onclick="cerrarModal('modalDetalle');borrarMov('${m.id}')">🗑️ Eliminar</button>`);
+  abrirDetalle(t('det_tx'),
+    `<div class="stat-line"><span>${t('d_type')}</span><b><span class="tag tag-${m.tipo}">${t('t_'+m.tipo)}</span>${m.auto?' <span class="tag tag-auto">auto</span>':''}</b></div>
+     <div class="stat-line"><span>${t('th_cat')}</span><b>${esc(m.categoria)}</b></div>
+     <div class="stat-line"><span>${t('th_amount')}</span><b class="${m.tipo==='ingreso'?'green':'red'}">${m.tipo==='ingreso'?'+':'−'}${fmt(m.monto)}</b></div>
+     <div class="stat-line"><span>${t('th_date')}</span><b>${fmtFecha(m.fecha)}</b></div>
+     <div class="stat-line"><span>${t('d_description')}</span><b>${m.descripcion?esc(m.descripcion):'<i style="color:var(--muted)">'+t('no_description')+'</i>'}</b></div>`,
+    `<button class="btn btn-green btn-sm" onclick="cerrarModal('modalDetalle');editarMov('${m.id}')">${t('edit')}</button>
+     <button class="btn btn-danger btn-sm" onclick="cerrarModal('modalDetalle');borrarMov('${m.id}')">${t('delete')}</button>`);
 }
 function verDetalleCobro(id){
   const c = db.cobros.find(x=>x.id===id); if(!c) return;
-  const freqTxt = {unico:'Solo una vez', mensual:'Cada mes', semanal:'Cada semana', anual:'Cada año'};
-  abrirDetalle('💳 Detalle del cobro',
-    `<div class="stat-line"><span>Concepto</span><b>${esc(c.concepto)}</b></div>
-     <div class="stat-line"><span>Monto</span><b class="red">−${fmt(c.monto)}</b></div>
-     <div class="stat-line"><span>Se repite</span><b>${freqTxt[c.frecuencia]}</b></div>
-     <div class="stat-line"><span>Próxima fecha</span><b>${fmtFecha(c.proxima)} · ${c.hora}</b></div>
-     <div class="stat-line"><span>Estado</span><b>${c.activo?'<span class="green">● Activo</span>':'<span style="color:var(--muted)">⏸ Pausado</span>'}</b></div>`,
-    `<button class="btn btn-green btn-sm" onclick="cerrarModal('modalDetalle');editarCobro('${c.id}')">✏️ Editar</button>
-     <button class="btn btn-ghost btn-sm" onclick="cerrarModal('modalDetalle');toggleCobro('${c.id}')">${c.activo?'⏸ Pausar':'▶ Activar'}</button>
-     <button class="btn btn-danger btn-sm" onclick="cerrarModal('modalDetalle');borrarCobro('${c.id}')">🗑️ Eliminar</button>`);
+  const freqTxt = {unico:t('f_unico'), mensual:t('f_mensual'), semanal:t('f_semanal'), anual:t('f_anual')};
+  abrirDetalle(t('det_bill'),
+    `<div class="stat-line"><span>${t('lbl_concept')}</span><b>${esc(c.concepto)}</b></div>
+     <div class="stat-line"><span>${t('th_amount')}</span><b class="red">−${fmt(c.monto)}</b></div>
+     <div class="stat-line"><span>${t('d_repeats')}</span><b>${freqTxt[c.frecuencia]}</b></div>
+     <div class="stat-line"><span>${t('d_next')}</span><b>${fmtFecha(c.proxima)} · ${c.hora}</b></div>
+     <div class="stat-line"><span>${t('d_status')}</span><b>${c.activo?t('active'):t('paused')}</b></div>`,
+    `<button class="btn btn-green btn-sm" onclick="cerrarModal('modalDetalle');editarCobro('${c.id}')">${t('edit')}</button>
+     <button class="btn btn-ghost btn-sm" onclick="cerrarModal('modalDetalle');toggleCobro('${c.id}')">${c.activo?t('pause'):t('resume')}</button>
+     <button class="btn btn-danger btn-sm" onclick="cerrarModal('modalDetalle');borrarCobro('${c.id}')">${t('delete')}</button>`);
 }
 function verDetalleMeta(id){
   const g = db.metas.find(x=>x.id===id); if(!g) return;
   const pct = Math.min(100, Math.round(g.ahorrado/g.objetivo*100));
-  abrirDetalle('🎯 Detalle de la meta',
-    `<div class="stat-line"><span>Meta</span><b>${esc(g.nombre)}</b></div>
-     <div class="stat-line"><span>Ahorrado</span><b class="green">${fmt(g.ahorrado)}</b></div>
-     <div class="stat-line"><span>Objetivo</span><b>${fmt(g.objetivo)}</b></div>
-     <div class="stat-line"><span>Progreso</span><b>${pct}%</b></div>
-     <div class="stat-line"><span>Falta</span><b class="yellow">${fmt(Math.max(0, g.objetivo-g.ahorrado))}</b></div>
-     ${g.fechaObjetivo?`<div class="stat-line"><span>Fecha objetivo</span><b>${fmtFecha(g.fechaObjetivo)}</b></div>`:''}
+  abrirDetalle(t('det_goal'),
+    `<div class="stat-line"><span>${t('d_goal')}</span><b>${esc(g.nombre)}</b></div>
+     <div class="stat-line"><span>${t('d_saved')}</span><b class="green">${fmt(g.ahorrado)}</b></div>
+     <div class="stat-line"><span>${t('d_target2')}</span><b>${fmt(g.objetivo)}</b></div>
+     <div class="stat-line"><span>${t('d_progress')}</span><b>${pct}%</b></div>
+     <div class="stat-line"><span>${t('d_missing')}</span><b class="yellow">${fmt(Math.max(0, g.objetivo-g.ahorrado))}</b></div>
+     ${g.fechaObjetivo?`<div class="stat-line"><span>${t('d_target_date')}</span><b>${fmtFecha(g.fechaObjetivo)}</b></div>`:''}
      <div class="progress" style="margin-top:12px;"><div style="width:${pct}%;background:${pct>=100?'var(--green)':'var(--accent)'};"></div></div>`,
-    `<button class="btn btn-green btn-sm" onclick="cerrarModal('modalDetalle');aportarMeta('${g.id}')">＋ Aportar</button>
-     <button class="btn btn-ghost btn-sm" onclick="cerrarModal('modalDetalle');retirarMeta('${g.id}')">− Retirar</button>
-     <button class="btn btn-ghost btn-sm" onclick="cerrarModal('modalDetalle');editarMeta('${g.id}')">✏️ Editar</button>
-     <button class="btn btn-danger btn-sm" onclick="cerrarModal('modalDetalle');borrarMeta('${g.id}')">🗑️ Eliminar</button>`);
+    `<button class="btn btn-green btn-sm" onclick="cerrarModal('modalDetalle');aportarMeta('${g.id}')">${t('add')}</button>
+     <button class="btn btn-ghost btn-sm" onclick="cerrarModal('modalDetalle');retirarMeta('${g.id}')">${t('withdraw')}</button>
+     <button class="btn btn-ghost btn-sm" onclick="cerrarModal('modalDetalle');editarMeta('${g.id}')">${t('edit')}</button>
+     <button class="btn btn-danger btn-sm" onclick="cerrarModal('modalDetalle');borrarMeta('${g.id}')">${t('delete')}</button>`);
 }
+// Confirmación propia (web), no la del navegador
+let _confirmResolver = null;
+function confirmarWeb(msg, opts={}){
+  return new Promise(res=>{
+    _confirmResolver = res;
+    $('confirmMsg').textContent = msg;
+    $('confirmOk').textContent = opts.ok || '✔';
+    $('confirmOk').className = 'btn ' + (opts.danger ? 'btn-danger' : 'btn-green');
+    abrirModal('modalConfirm');
+  });
+}
+function resolverConfirm(v){ if(_confirmResolver){ const r=_confirmResolver; _confirmResolver=null; cerrarModal('modalConfirm'); r(v); } }
 document.addEventListener('click', e => {
-  if(e.target.classList && e.target.classList.contains('modal-backdrop')) cerrarModal(e.target.id);
+  if(e.target.classList && e.target.classList.contains('modal-backdrop')){
+    if(e.target.id === 'modalConfirm') resolverConfirm(false);
+    else cerrarModal(e.target.id);
+  }
 });
 
+$('confirmOk') && 0;document.getElementById('confirmOk').addEventListener('click', ()=>resolverConfirm(true));
+document.getElementById('confirmCancel').addEventListener('click', ()=>resolverConfirm(false));
 let toastTimer;
 function toast(msg){ const t=$('toast'); t.textContent=msg; t.classList.add('show'); clearTimeout(toastTimer); toastTimer=setTimeout(()=>t.classList.remove('show'),2600); }
 
 // ================= TEMA =================
 function aplicarTema(){ document.documentElement.dataset.theme = db.theme||'dark'; $('btnTema').textContent = (db.theme==='dark')?'🌙':'☀️'; }
 $('btnTema').addEventListener('click', ()=>{ db.theme = (db.theme==='dark')?'light':'dark'; guardar(); aplicarTema(); renderCharts(); });
+$('selLang').addEventListener('change', e => {
+  db.lang = e.target.value; LANG = db.lang; guardar();
+  aplicarIdioma(); renderFab(vistaActiva()); renderTodo();
+  toast(t('to_lang'));
+});
 
 
 // ================= FAB: NUEVOS REGISTROS =================
 const FAB_ITEMS = {
-  panel:[{label:'💸 Nuevo movimiento', fn:()=>abrirModal('modalMov')}],
-  movimientos:[{label:'💸 Nuevo movimiento', fn:()=>abrirModal('modalMov')}],
-  cobros:[{label:'💳 Nuevo cobro programado', fn:()=>abrirModal('modalCobro')},
-          {label:'🏦 Nuevo préstamo', fn:()=>abrirModal('modalPrestamo')}],
-  metas:[{label:'🎯 Nueva meta', fn:()=>abrirModal('modalMeta')}],
+  panel:[{k:'fab_tx', fn:()=>abrirModal('modalMov')}],
+  movimientos:[{k:'fab_tx', fn:()=>abrirModal('modalMov')}],
+  cobros:[{k:'fab_bill', fn:()=>abrirModal('modalCobro')},
+          {k:'fab_loan', fn:()=>abrirModal('modalPrestamo')}],
+  metas:[{k:'fab_goal', fn:()=>abrirModal('modalMeta')}],
   ajustes:[]
 };
 function vistaActiva(){ const v = document.querySelector('.view.active'); return v ? v.id.replace('view-','') : 'panel'; }
@@ -591,7 +748,7 @@ function renderFab(view){
   view = view || vistaActiva();
   const items = FAB_ITEMS[view] || [];
   $('fabWrap').style.display = items.length ? 'flex' : 'none';
-  $('fabMenu').innerHTML = items.map((it,i)=>`<button type="button" class="fab-item" data-i="${i}">${it.label}</button>`).join('');
+  $('fabMenu').innerHTML = items.map((it,i)=>`<button type="button" class="fab-item" data-i="${i}">${t(it.k)}</button>`).join('');
   $('fabMenu').classList.remove('show');
   $('fabBtn').classList.remove('open');
 }
@@ -636,7 +793,7 @@ function aplicarCobrosVencidos(){
     if(!c.activo) return;
     let fh = new Date(c.proxima + 'T' + (c.hora||'09:00'));
     while(fh <= ahora){
-      db.movimientos.push({ id:uid(), tipo:'gasto', monto:c.monto, categoria:'Cobro programado', descripcion:c.concepto + (c.frecuencia!=='unico' ? ' (recurrente)' : ''), fecha: c.proxima, auto:true });
+      db.movimientos.push({ id:uid(), tipo:'gasto', monto:c.monto, categoria:t('cat_bill'), descripcion:c.concepto + (c.frecuencia!=='unico' ? t('recurring') : ''), fecha: c.proxima, auto:true });
       aplicados.push(c);
       if(c.frecuencia === 'unico'){ c.activo = false; break; }
       const d = new Date(c.proxima + 'T' + (c.hora||'09:00'));
@@ -650,7 +807,7 @@ function aplicarCobrosVencidos(){
   if(aplicados.length){
     guardar();
     const total = aplicados.reduce((s,c)=>s+c.monto,0);
-    $('avisos').innerHTML = `<div class="aviso">✅ Se descontaron <b>${aplicados.length}</b> cobro(s) por <b>${fmt(total)}</b>: ${aplicados.map(c=>esc(c.concepto)).join(', ')}.</div>`;
+    $('avisos').innerHTML = `<div class="aviso">${t('aviso1')}<b>${aplicados.length}</b>${t('aviso2')}<b>${fmt(total)}</b>: ${aplicados.map(c=>esc(c.concepto)).join(', ')}.</div>`;
     setTimeout(()=>{ $('avisos').innerHTML=''; }, 12000);
   }
 }
@@ -661,24 +818,26 @@ $('formMov').addEventListener('submit', e => {
   const id = $('mId').value;
   const data = { tipo:$('mTipo').value, monto:parseFloat($('mMonto').value), categoria:$('mCategoria').value.trim()||'General', descripcion:$('mDesc').value.trim(), fecha:$('mFecha').value };
   if(id){
-    const m = db.movimientos.find(x=>x.id===id); Object.assign(m, data); toast('✏️ Movimiento actualizado');
+    const m = db.movimientos.find(x=>x.id===id); Object.assign(m, data); toast(t('to_tx_upd'));
   } else {
-    db.movimientos.push({ id:uid(), ...data }); toast('✅ Movimiento guardado');
+    db.movimientos.push({ id:uid(), ...data }); toast(t('to_tx_saved'));
   }
   guardar(); cancelarEdicionMov(); cerrarModal('modalMov'); $('mFecha').value = hoyISO(); $('mMonto').value=''; $('mDesc').value=''; renderTodo();
 });
 function editarMov(id){
   const m = db.movimientos.find(x=>x.id===id); if(!m) return;
   $('mId').value=m.id; $('mTipo').value=m.tipo; $('mMonto').value=m.monto; $('mCategoria').value=m.categoria; $('mDesc').value=m.descripcion||''; $('mFecha').value=m.fecha;
-  $('tituloFormMov').textContent='Editar movimiento'; $('btnSubmitMov').textContent='Actualizar movimiento';
+  $('tituloFormMov').textContent=t('frm_edit_tx'); $('btnSubmitMov').textContent=t('update_tx');
   $('editNoteMov').style.display='block'; abrirModal('modalMov');
 }
 function cancelarEdicionMov(){
-  $('mId').value=''; $('tituloFormMov').textContent='Nuevo movimiento'; $('btnSubmitMov').textContent='Guardar movimiento'; $('editNoteMov').style.display='none'; cerrarModal('modalMov');
+  $('mId').value=''; $('tituloFormMov').textContent=t('frm_new_tx'); $('btnSubmitMov').textContent=t('save_tx'); $('editNoteMov').style.display='none'; cerrarModal('modalMov');
 }
 function borrarMov(id){
-  if(!confirm('¿Eliminar este movimiento?')) return;
-  db.movimientos = db.movimientos.filter(m=>m.id!==id); guardar(); renderTodo(); toast('🗑️ Movimiento eliminado');
+  confirmarWeb(t('conf_del_tx'),{danger:true}).then(ok=>{
+    if(!ok) return;
+    db.movimientos = db.movimientos.filter(m=>m.id!==id); guardar(); renderTodo(); toast(t('to_tx_del'));
+  });
 }
 ['fBuscar','fTipo','fMes'].forEach(id => $(id).addEventListener('input', ()=>{ movLimit = 10; renderMovimientos(); }));
 
@@ -688,20 +847,25 @@ $('formCobro').addEventListener('submit', e => {
   const id = $('cId').value;
   const data = { concepto:$('cConcepto').value.trim(), monto:parseFloat($('cMonto').value), proxima:$('cFecha').value, hora:$('cHora').value, frecuencia:$('cFrec').value };
   if(id){
-    const c = db.cobros.find(x=>x.id===id); Object.assign(c, data); toast('✏️ Cobro actualizado');
+    const c = db.cobros.find(x=>x.id===id); Object.assign(c, data); toast(t('to_bill_upd'));
   } else {
-    db.cobros.push({ id:uid(), ...data, activo:true }); toast('⏰ Cobro programado');
+    db.cobros.push({ id:uid(), ...data, activo:true }); toast(t('to_bill_sched'));
   }
   guardar(); cancelarEdicionCobro(); cerrarModal('modalCobro'); $('cMonto').value=''; renderTodo();
 });
 function editarCobro(id){
   const c = db.cobros.find(x=>x.id===id); if(!c) return;
   $('cId').value=c.id; $('cConcepto').value=c.concepto; $('cMonto').value=c.monto; $('cFecha').value=c.proxima; $('cHora').value=c.hora; $('cFrec').value=c.frecuencia;
-  $('tituloFormCobro').textContent='Editar cobro'; $('btnSubmitCobro').textContent='Actualizar cobro'; $('editNoteCobro').style.display='block'; abrirModal('modalCobro');
+  $('tituloFormCobro').textContent=t('frm_edit_bill'); $('btnSubmitCobro').textContent=t('update_bill'); $('editNoteCobro').style.display='block'; abrirModal('modalCobro');
 }
-function cancelarEdicionCobro(){ $('cId').value=''; $('tituloFormCobro').textContent='Nuevo cobro programado'; $('btnSubmitCobro').textContent='Programar cobro'; $('editNoteCobro').style.display='none'; cerrarModal('modalCobro'); }
-function toggleCobro(id){ const c = db.cobros.find(x=>x.id===id); c.activo=!c.activo; guardar(); renderTodo(); toast(c.activo?'▶ Cobro activado':'⏸ Cobro pausado'); }
-function borrarCobro(id){ if(!confirm('¿Eliminar este cobro programado?')) return; db.cobros = db.cobros.filter(c=>c.id!==id); guardar(); renderTodo(); toast('🗑️ Cobro eliminado'); }
+function cancelarEdicionCobro(){ $('cId').value=''; $('tituloFormCobro').textContent=t('frm_new_bill'); $('btnSubmitCobro').textContent=t('schedule_bill'); $('editNoteCobro').style.display='none'; cerrarModal('modalCobro'); }
+function toggleCobro(id){ const c = db.cobros.find(x=>x.id===id); c.activo=!c.activo; guardar(); renderTodo(); toast(c.activo?t('to_bill_resumed'):t('to_bill_paused')); }
+function borrarCobro(id){
+  confirmarWeb(t('conf_del_bill'),{danger:true}).then(ok=>{
+    if(!ok) return;
+    db.cobros = db.cobros.filter(c=>c.id!==id); guardar(); renderTodo(); toast(t('to_bill_del'));
+  });
+}
 
 // ================= METAS =================
 $('formMeta').addEventListener('submit', e => {
@@ -709,32 +873,37 @@ $('formMeta').addEventListener('submit', e => {
   const id = $('gId').value;
   const data = { nombre:$('gNombre').value.trim(), objetivo:parseFloat($('gObjetivo').value), fechaObjetivo:$('gFecha').value||null };
   if(id){
-    const g = db.metas.find(x=>x.id===id); Object.assign(g, data); toast('✏️ Meta actualizada');
+    const g = db.metas.find(x=>x.id===id); Object.assign(g, data); toast(t('to_goal_upd'));
   } else {
-    db.metas.push({ id:uid(), ...data, ahorrado:0 }); toast('🎯 Meta creada');
+    db.metas.push({ id:uid(), ...data, ahorrado:0 }); toast(t('to_goal_created'));
   }
   guardar(); cancelarEdicionMeta(); cerrarModal('modalMeta'); renderTodo();
 });
 function editarMeta(id){
   const g = db.metas.find(x=>x.id===id); if(!g) return;
   $('gId').value=g.id; $('gNombre').value=g.nombre; $('gObjetivo').value=g.objetivo; $('gFecha').value=g.fechaObjetivo||'';
-  $('tituloFormMeta').textContent='Editar meta'; $('btnSubmitMeta').textContent='Actualizar meta'; $('editNoteMeta').style.display='block'; abrirModal('modalMeta');
+  $('tituloFormMeta').textContent=t('frm_edit_goal'); $('btnSubmitMeta').textContent=t('update_goal'); $('editNoteMeta').style.display='block'; abrirModal('modalMeta');
 }
-function cancelarEdicionMeta(){ $('gId').value=''; $('tituloFormMeta').textContent='Nueva meta'; $('btnSubmitMeta').textContent='Crear meta'; $('editNoteMeta').style.display='none'; cerrarModal('modalMeta'); }
+function cancelarEdicionMeta(){ $('gId').value=''; $('tituloFormMeta').textContent=t('frm_new_goal'); $('btnSubmitMeta').textContent=t('create_goal'); $('editNoteMeta').style.display='none'; cerrarModal('modalMeta'); }
 function aportarMeta(id){
   const meta = db.metas.find(m=>m.id===id);
-  const val = parseFloat(prompt(`Aportar a "${meta.nombre}". ¿Cuánto añades? (€)`));
+  const val = parseFloat(prompt(t('prompt_add').replace('{name}', meta.nombre)));
   if(!val || val<=0) return;
   meta.ahorrado = Math.min(meta.objetivo, meta.ahorrado + val); guardar(); renderTodo();
-  toast(meta.ahorrado>=meta.objetivo?'🏆 ¡Meta completada!':'💰 Aporte registrado');
+  toast(meta.ahorrado>=meta.objetivo?t('to_goal_completed'):t('to_add_saved'));
 }
 function retirarMeta(id){
   const meta = db.metas.find(m=>m.id===id);
-  const val = parseFloat(prompt(`Retirar de "${meta.nombre}". ¿Cuánto quitas? (€)`));
+  const val = parseFloat(prompt(t('prompt_withdraw').replace('{name}', meta.nombre)));
   if(!val || val<=0) return;
-  meta.ahorrado = Math.max(0, meta.ahorrado - val); guardar(); renderTodo(); toast('💸 Retiro registrado');
+  meta.ahorrado = Math.max(0, meta.ahorrado - val); guardar(); renderTodo(); toast(t('to_wd_saved'));
 }
-function borrarMeta(id){ if(!confirm('¿Eliminar esta meta?')) return; db.metas = db.metas.filter(m=>m.id!==id); guardar(); renderTodo(); toast('🗑️ Meta eliminada'); }
+function borrarMeta(id){
+  confirmarWeb(t('conf_del_goal'),{danger:true}).then(ok=>{
+    if(!ok) return;
+    db.metas = db.metas.filter(m=>m.id!==id); guardar(); renderTodo(); toast(t('to_goal_del'));
+  });
+}
 
 // ================= PRÉSTAMOS =================
 $('formPrestamo').addEventListener('submit', e => {
@@ -743,9 +912,9 @@ $('formPrestamo').addEventListener('submit', e => {
   const data = { nombre:$('pNombre').value.trim(), montoTotal:parseFloat($('pTotal').value), cuotasTotal:parseInt($('pCuotas').value),
     montoCuota:parseFloat($('pMontoCuota').value), diaPago:parseInt($('pDia').value), fechaInicio:$('pFechaInicio').value };
   if(id){
-    const p = db.prestamos.find(x=>x.id===id); Object.assign(p, data); toast('✏️ Préstamo actualizado');
+    const p = db.prestamos.find(x=>x.id===id); Object.assign(p, data); toast(t('to_loan_upd'));
   } else {
-    db.prestamos.push({ id:uid(), ...data, pagadas:0 }); toast('🏦 Préstamo registrado');
+    db.prestamos.push({ id:uid(), ...data, pagadas:0 }); toast(t('to_loan_reg'));
   }
   guardar(); cancelarEdicionPrestamo(); cerrarModal('modalPrestamo'); renderTodo();
 });
@@ -753,22 +922,26 @@ function editarPrestamo(id){
   const p = db.prestamos.find(x=>x.id===id); if(!p) return;
   $('pId').value=p.id; $('pNombre').value=p.nombre; $('pTotal').value=p.montoTotal; $('pCuotas').value=p.cuotasTotal;
   $('pMontoCuota').value=p.montoCuota; $('pDia').value=p.diaPago; $('pFechaInicio').value=p.fechaInicio;
-  $('tituloFormPrestamo').textContent='Editar préstamo'; $('btnSubmitPrestamo').textContent='Actualizar préstamo'; $('editNotePrestamo').style.display='block'; abrirModal('modalPrestamo');
+  $('tituloFormPrestamo').textContent=t('frm_edit_loan'); $('btnSubmitPrestamo').textContent=t('update_loan'); $('editNotePrestamo').style.display='block'; abrirModal('modalPrestamo');
 }
-function cancelarEdicionPrestamo(){ $('pId').value=''; $('tituloFormPrestamo').textContent='Nuevo préstamo'; $('btnSubmitPrestamo').textContent='Registrar préstamo'; $('editNotePrestamo').style.display='none'; cerrarModal('modalPrestamo'); }
+function cancelarEdicionPrestamo(){ $('pId').value=''; $('tituloFormPrestamo').textContent=t('frm_new_loan'); $('btnSubmitPrestamo').textContent=t('register_loan'); $('editNotePrestamo').style.display='none'; cerrarModal('modalPrestamo'); }
 function pagarCuota(id){
   const p = db.prestamos.find(x=>x.id===id);
-  if(p.pagadas >= p.cuotasTotal){ toast('🎉 ¡Préstamo ya pagado por completo!'); return; }
-  if(!confirm(`¿Confirmar pago de cuota ${p.pagadas+1}/${p.cuotasTotal} de ${fmt(p.montoCuota)}?`)) return;
-  p.pagadas++;
-  db.prestamoPagos.push({ id:uid(), prestamoId:id, nCuota:p.pagadas, monto:p.montoCuota, fecha:hoyISO() });
-  db.movimientos.push({ id:uid(), tipo:'gasto', monto:p.montoCuota, categoria:'Préstamo', descripcion:`Cuota ${p.pagadas}/${p.cuotasTotal} — ${p.nombre}`, fecha:hoyISO(), auto:true });
-  guardar(); renderTodo(); verDetallePrestamo(id); toast('✔ Cuota pagada');
+  if(p.pagadas >= p.cuotasTotal){ toast(t('to_loan_paid_full')); return; }
+  confirmarWeb(t('confirm_pay').replace('{n}',p.pagadas+1).replace('{t}',p.cuotasTotal).replace('{a}',fmt(p.montoCuota))).then(ok=>{
+    if(!ok) return;
+    p.pagadas++;
+    db.prestamoPagos.push({ id:uid(), prestamoId:id, nCuota:p.pagadas, monto:p.montoCuota, fecha:hoyISO() });
+    db.movimientos.push({ id:uid(), tipo:'gasto', monto:p.montoCuota, categoria:t('cat_loan'), descripcion:t('inst_label').replace('{n}',p.pagadas).replace('{t}',p.cuotasTotal).replace('{name}',p.nombre), fecha:hoyISO(), auto:true });
+    guardar(); renderTodo(); verDetallePrestamo(id); toast(t('to_inst_paid'));
+  });
 }
 function borrarPrestamo(id){
-  if(!confirm('¿Eliminar este préstamo y su historial de cuotas?')) return;
-  db.prestamos = db.prestamos.filter(p=>p.id!==id); db.prestamoPagos = db.prestamoPagos.filter(x=>x.prestamoId!==id);
-  guardar(); renderTodo(); cerrarDetallePrestamo(); toast('🗑️ Préstamo eliminado');
+  confirmarWeb(t('conf_del_loan'),{danger:true}).then(ok=>{
+    if(!ok) return;
+    db.prestamos = db.prestamos.filter(p=>p.id!==id); db.prestamoPagos = db.prestamoPagos.filter(x=>x.prestamoId!==id);
+    guardar(); renderTodo(); cerrarDetallePrestamo(); toast(t('to_loan_del'));
+  });
 }
 function cerrarDetallePrestamo(){ $('detallePrestamoCard').style.display='none'; }
 function fechasCuotas(p){
@@ -787,16 +960,16 @@ function verDetallePrestamo(id){
   fechas.forEach((f,i)=>{
     const n=i+1;
     const pagada = db.prestamoPagos.some(x=>x.prestamoId===id && x.nCuota===n);
-    const estado = pagada ? '<span class="cuota-pagada">✔ Pagada</span>' : (f < hoy ? '<span class="cuota-vencida">⚠ Pendiente</span>' : 'Pendiente');
+    const estado = pagada ? `<span class="cuota-pagada">${t('paid')}</span>` : (f < hoy ? `<span class="cuota-vencida">${t('overdue')}</span>` : t('pending'));
     rows += `<tr><td>${n}/${p.cuotasTotal}</td><td>${fmtFecha(f)}</td><td>${fmt(p.montoCuota)}</td><td>${estado}</td></tr>`;
   });
   const pagos = db.prestamoPagos.filter(x=>x.prestamoId===id);
   const pagadoTotal = pagos.reduce((s,x)=>s+x.monto,0);
   $('detalleTitulo').textContent = '📋 ' + p.nombre;
   $('detallePrestamo').innerHTML = `
-    <p style="margin:12px 0;color:var(--muted);">Total prestado: <b style="color:var(--text)">${fmt(p.montoTotal)}</b> · Ya pagado: <b class="green">${fmt(pagadoTotal)}</b> · <b class="yellow">Te quedan ${fmt(Math.max(0,(p.cuotasTotal-p.pagadas)*p.montoCuota))}</b></p>
+    <p style="margin:12px 0;color:var(--muted);">${t('total_borrowed')}: <b style="color:var(--text)">${fmt(p.montoTotal)}</b> · ${t('paid_so_far')}: <b class="green">${fmt(pagadoTotal)}</b> · <b class="yellow">${t('you_have_left')}${fmt(Math.max(0,(p.cuotasTotal-p.pagadas)*p.montoCuota))}</b></p>
     <div style="max-height:360px;overflow-y:auto;">
-    <table><thead><tr><th>Cuota</th><th>Fecha prevista</th><th>Monto</th><th>Estado</th></tr></thead><tbody>${rows}</tbody></table></div>`;
+    <table><thead><tr><th>${t('inst_no')}</th><th>${t('due_date')}</th><th>${t('d_amount')}</th><th>${t('d_status2')}</th></tr></thead><tbody>${rows}</tbody></table></div>`;
   $('detallePrestamoCard').style.display='block';
   if(window.innerWidth < 769) $('detallePrestamoCard').scrollIntoView({behavior:'smooth'});
 }
@@ -807,7 +980,7 @@ function exportarDatos(){
   const a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
   a.download = 'mis-finanzas-' + hoyISO() + '.json';
-  a.click(); URL.revokeObjectURL(a.href); toast('⬇️ Copia exportada');
+  a.click(); URL.revokeObjectURL(a.href); toast(t('to_exported'));
 }
 function importarDatos(ev){
   const f = ev.target.files[0]; if(!f) return;
@@ -816,26 +989,34 @@ function importarDatos(ev){
     try{
       const data = JSON.parse(r.result);
       if(!Array.isArray(data.movimientos)) throw 0;
-      if(!confirm('Esto REEMPLAZARÁ todos los datos actuales. ¿Continuar?')) return;
-      db = data; guardar(); aplicarTema(); renderTodo(); toast('✅ Datos importados');
-    }catch(e){ alert('⚠️ Archivo no válido'); }
+      confirmarWeb(t('conf_import'),{danger:true}).then(ok=>{
+        if(!ok) return;
+        db = data; guardar(); aplicarTema(); renderTodo(); toast(t('to_imported'));
+      });
+    }catch(e){ toast(t('invalid_file')); }
   };
   r.readAsText(f); ev.target.value='';
 }
 function borrarTodo(){
-  if(!confirm('¿Seguro? Se borrarán TODOS los datos.')) return;
-  if(!confirm('Última confirmación: esta acción no se puede deshacer.')) return;
-  localStorage.removeItem(LS_KEY); location.reload();
+  confirmarWeb(t('conf_del_all_1'),{danger:true}).then(ok=>{
+    if(!ok) return;
+    confirmarWeb(t('conf_del_all_2'),{danger:true}).then(ok2=>{
+      if(!ok2) return;
+      localStorage.removeItem(LS_KEY); location.reload();
+    });
+  });
 }
 
 // ================= GRÁFICAS =================
 const cssVar = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
 function setupCanvas(cv){
-  const dpr = window.devicePixelRatio||1;
-  const w = cv.clientWidth || cv.parentElement.clientWidth - 40;
+  const dpr = Math.min(window.devicePixelRatio||1, 2); // límite para no generar canvas gigantes
+  const w = Math.max(50, cv.clientWidth || (cv.parentElement ? cv.parentElement.clientWidth - 40 : 300));
   const h = parseInt(cv.getAttribute('height'))||220;
-  cv.width = w*dpr; cv.height = h*dpr; cv.style.height = h+'px';
-  const ctx = cv.getContext('2d'); ctx.scale(dpr,dpr);
+  cv.width = Math.round(w*dpr); cv.height = Math.round(h*dpr);
+  cv.style.width = '100%'; cv.style.height = h+'px';
+  const ctx = cv.getContext('2d');
+  ctx.setTransform(dpr,0,0,dpr,0,0); // transform absoluta: nunca se acumula con repintados
   return {ctx, w, h};
 }
 function renderCharts(){
@@ -848,7 +1029,7 @@ function renderCharts(){
   const gas = meses.map(m=>db.movimientos.filter(x=>x.tipo==='gasto'&&x.fecha.startsWith(m)).reduce((s,x)=>s+x.monto,0));
   const max = Math.max(1,...ing,...gas);
   const padL=8, padB=26, padT=10, cw=(w-padL*2)/6;
-  const nombreMes = m => new Date(m+'-15T12:00').toLocaleDateString('es-ES',{month:'short'});
+  const nombreMes = m => new Date(m+'-15T12:00').toLocaleDateString(LOCALE(),{month:'short'});
   meses.forEach((m,i)=>{
     const x = padL + i*cw; const bw = Math.min(22, cw/3);
     const hI = (ing[i]/max)*(h-padB-padT); const hG = (gas[i]/max)*(h-padB-padT);
@@ -869,7 +1050,7 @@ function renderCharts(){
   const colores = ['#e5534b','#f2c14e','#4f8cff','#a06bff','#34c98e','#ff9a5c','#4dd0e1','#ef6aa0'];
   if(!entries.length){
     ctx2.fillStyle=cssVar('--muted'); ctx2.font='13px system-ui'; ctx2.textAlign='center';
-    ctx2.fillText('Sin gastos este mes', cx2, cy2);
+    ctx2.fillText(t('no_exp_month'), cx2, cy2);
     $('donutLegend').innerHTML='';
   } else {
     const total = entries.reduce((s,e)=>s+e[1],0);
@@ -894,7 +1075,16 @@ function roundRect(ctx,x,y,w,h,r){
   ctx.moveTo(x+r,y); ctx.arcTo(x+w,y,x+w,y+h,r); ctx.arcTo(x+w,y+h,x,y+h,r);
   ctx.arcTo(x,y+h,x,y,r); ctx.arcTo(x,y,x+w,y,r); ctx.closePath();
 }
-window.addEventListener('resize', ()=>{ clearTimeout(window.__rz); window.__rz=setTimeout(renderCharts,200); });
+let lastWinW = window.innerWidth;
+window.addEventListener('resize', ()=>{
+  clearTimeout(window.__rz);
+  window.__rz = setTimeout(()=>{
+    if(!$('view-panel').classList.contains('active')) return;
+    if(Math.abs(window.innerWidth - lastWinW) < 1) return; // scroll en móvil: no repintar
+    lastWinW = window.innerWidth;
+    renderCharts();
+  }, 200);
+});
 
 // ================= RENDER =================
 function renderTodo(){
@@ -905,52 +1095,52 @@ function renderTodo(){
 
   $('pBalance').textContent = fmt(balance);
   $('pBalance').className = 'big ' + (balance>=0?'green':'red');
-  $('pBalanceSub').textContent = db.movimientos.length + ' movimientos registrados';
+  $('pBalanceSub').textContent = db.movimientos.length + ' ' + t('movs_registered');
   $('pIngresos').textContent = fmt(ingresos);
   $('pGastos').textContent = fmt(gastos);
   const ahorro = ingresos - gastos;
-  $('pAhorroMes').innerHTML = ahorro>=0 ? `Ahorro neto: <b class="green">${fmt(ahorro)}</b>` : `Déficit: <b class="red">${fmt(-ahorro)}</b>`;
+  $('pAhorroMes').innerHTML = ahorro>=0 ? `${t('net_saving')} <b class="green">${fmt(ahorro)}</b>` : `${t('deficit')} <b class="red">${fmt(-ahorro)}</b>`;
 
   const limite = new Date(); limite.setDate(limite.getDate()+7);
   const cobrosProx = db.cobros.filter(c=>c.activo && new Date(c.proxima)<=limite);
   $('pCobros').textContent = fmt(cobrosProx.reduce((s,c)=>s+c.monto,0));
-  $('pCobrosSub').textContent = cobrosProx.length + ' cobro(s) pendiente(s)';
+  $('pCobrosSub').textContent = cobrosProx.length + ' ' + t('bills_pending');
 
   const ultimos = [...db.movimientos].sort((a,b)=>b.fecha.localeCompare(a.fecha)).slice(0,8);
   $('pUltimos').innerHTML = ultimos.length ? `<div class="scroll-x"><table><tbody>${ultimos.map(m=>`
-    <tr><td>${fmtFecha(m.fecha)}</td><td><span class="tag tag-${m.tipo}">${m.tipo}</span></td>
+    <tr><td>${fmtFecha(m.fecha)}</td><td><span class="tag tag-${m.tipo}">${t('t_'+m.tipo)}</span></td>
     <td>${esc(m.categoria)}</td>
     <td style="text-align:right" class="${m.tipo==='ingreso'?'green':'red'}">${m.tipo==='ingreso'?'+':'−'}${fmt(m.monto)}</td></tr>`).join('')}</tbody></table></div>`
-    : '<div class="empty">Sin movimientos todavía</div>';
+    : `<div class="empty">${t('no_tx_yet')}</div>`;
 
   const cobrosActivos = db.cobros.filter(c=>c.activo).sort((a,b)=>a.proxima.localeCompare(b.proxima));
   $('pCobrosLista').innerHTML = cobrosActivos.length ? `<table><tbody>${cobrosActivos.slice(0,8).map(c=>`
     <tr><td>${esc(c.concepto)}</td><td style="text-align:right" class="red">−${fmt(c.monto)}</td>
     <td style="text-align:right"><span class="badge-proximo">${fmtFecha(c.proxima)} ${c.hora}</span></td></tr>`).join('')}</tbody></table>`
-    : '<div class="empty">No tienes cobros programados</div>';
+    : `<div class="empty">${t('no_bills')}</div>`;
 
   $('pMetas').innerHTML = db.metas.length ? db.metas.map(g=>{
     const pct = Math.min(100, Math.round(g.ahorrado/g.objetivo*100));
     return `<div style="margin-bottom:16px;">
       <div class="row-between"><b>${esc(g.nombre)}</b><span>${fmt(g.ahorrado)} / ${fmt(g.objetivo)}</span></div>
       <div class="progress"><div style="width:${pct}%;background:${pct>=100?'var(--green)':'var(--accent)'};"></div></div>
-      <small style="color:var(--muted)">${pct}% completado${g.fechaObjetivo?' · objetivo: '+fmtFecha(g.fechaObjetivo):''}</small></div>`;
-  }).join('') : '<div class="empty">No tienes metas creadas</div>';
+      <small style="color:var(--muted)">${pct}% ${t('k_completed')}${g.fechaObjetivo?' · '+t('k_target')+': '+fmtFecha(g.fechaObjetivo):''}</small></div>`;
+  }).join('') : `<div class="empty">${t('no_goals')}</div>`;
 
   $('pPrestamos').innerHTML = db.prestamos.length ? db.prestamos.map(p=>{
     const restante = (p.cuotasTotal-p.pagadas)*p.montoCuota;
     const pct = Math.round(p.pagadas/p.cuotasTotal*100);
     return `<div style="margin-bottom:16px;">
-      <div class="row-between"><b>${esc(p.nombre)}</b><span class="yellow">${fmt(restante)} restantes</span></div>
+      <div class="row-between"><b>${esc(p.nombre)}</b><span class="yellow">${fmt(restante)} ${t('k_left')}</span></div>
       <div class="progress"><div style="width:${pct}%;background:var(--purple);"></div></div>
-      <small style="color:var(--muted)">${p.pagadas}/${p.cuotasTotal} cuotas (${pct}%) · ${fmt(p.montoCuota)}/mes · día ${p.diaPago}</small></div>`;
-  }).join('') : '<div class="empty">No tienes préstamos registrados</div>';
+      <small style="color:var(--muted)">${p.pagadas}/${p.cuotasTotal} ${t('k_insts')} (${pct}%) · ${fmt(p.montoCuota)}/${t('k_month')} · ${t('k_day')}${p.diaPago}</small></div>`;
+  }).join('') : `<div class="empty">${t('no_loans')}</div>`;
 
   // Top categorías
   const porCat = {};
   db.movimientos.filter(m=>m.tipo==='gasto'&&m.fecha.startsWith(mesActual)).forEach(m=>{ porCat[m.categoria]=(porCat[m.categoria]||0)+m.monto; });
   const top = Object.entries(porCat).sort((a,b)=>b[1]-a[1]).slice(0,6);
-  $('pTopCats').innerHTML = top.length ? top.map(([c,v])=>`<div class="stat-line"><span>${esc(c)}</span><b class="red">${fmt(v)}</b></div>`).join('') : '<div class="empty">Sin gastos este mes</div>';
+  $('pTopCats').innerHTML = top.length ? top.map(([c,v])=>`<div class="stat-line"><span>${esc(c)}</span><b class="red">${fmt(v)}</b></div>`).join('') : `<div class="empty">${t('no_exp_month')}</div>`;
 
   // Datalist categorías
   const cats = [...new Set(db.movimientos.map(m=>m.categoria))];
@@ -959,8 +1149,8 @@ function renderTodo(){
   // Filtro de meses
   const mesesDisponibles = [...new Set(db.movimientos.map(m=>m.fecha.slice(0,7)))].sort().reverse();
   const selMes = $('fMes').value;
-  $('fMes').innerHTML = '<option value="">Todos los meses</option>' + mesesDisponibles.map(m=>{
-    const lbl = new Date(m+'-15T12:00').toLocaleDateString('es-ES',{month:'long',year:'numeric'});
+  $('fMes').innerHTML = '<option value="">'+t('all_months')+'</option>' + mesesDisponibles.map(m=>{
+    const lbl = new Date(m+'-15T12:00').toLocaleDateString(LOCALE(),{month:'long',year:'numeric'});
     return `<option value="${m}" ${m===selMes?'selected':''}>${lbl}</option>`;
   }).join('');
 
@@ -979,31 +1169,31 @@ function renderMovimientos(){
   if(mes) movs = movs.filter(m=>m.fecha.startsWith(mes));
   if(q) movs = movs.filter(m=>(m.categoria+' '+ (m.descripcion||'')).toLowerCase().includes(q));
   const total = movs.reduce((s,m)=>s + (m.tipo==='ingreso'?m.monto:-m.monto),0);
-  $('movCount').textContent = movs.length + ' resultado(s)';
-  $('movTotal').textContent = 'Neto: ' + fmt(total);
+  $('movCount').textContent = movs.length + ' ' + t('k_results');
+  $('movTotal').textContent = t('k_net') + ' ' + fmt(total);
   const visibles = movs.slice(0, movLimit);
   let footer = '';
   if(movs.length > movLimit){
-    footer = `<tr><td colspan="3" style="padding:12px 6px 4px;"><button class="btn btn-ghost btn-block btn-sm" onclick="verMasMovs()">▼ Mostrar más (${movs.length - visibles.length} restantes)</button></td></tr>`;
+    footer = `<tr><td colspan="3" style="padding:12px 6px 4px;"><button class="btn btn-ghost btn-block btn-sm" onclick="verMasMovs()">${t('show_more')}${movs.length - visibles.length}${t('remaining')}</button></td></tr>`;
   } else if(movLimit > 10){
-    footer = `<tr><td colspan="3" style="padding:12px 6px 4px;"><button class="btn btn-ghost btn-block btn-sm" onclick="verMenosMovs()">▲ Mostrar menos</button></td></tr>`;
+    footer = `<tr><td colspan="3" style="padding:12px 6px 4px;"><button class="btn btn-ghost btn-block btn-sm" onclick="verMenosMovs()">${t('show_less')}</button></td></tr>`;
   }
   $('tablaMov').innerHTML = movs.length ? visibles.map(m=>`
     <tr class="mov-row" onclick="verDetalleMov('${m.id}')">
     <td><span class="tag tag-${m.tipo}" style="font-size:.6rem;padding:2px 6px;">${m.tipo==='ingreso'?'▲':'▼'}</span>${m.auto?' <span class="tag-auto">auto</span>':''} ${esc(m.categoria)}</td>
     <td class="cell-dim">${fmtFechaCorta(m.fecha)}</td>
-    <td style="text-align:right" class="${m.tipo==='ingreso'?'green':'red'}">${m.tipo==='ingreso'?'+':'−'}${fmt(m.monto)}</td></tr>`).join('') + footer : '<tr><td colspan="3"><div class="empty">Sin resultados</div></td></tr>';
+    <td style="text-align:right" class="${m.tipo==='ingreso'?'green':'red'}">${m.tipo==='ingreso'?'+':'−'}${fmt(m.monto)}</td></tr>`).join('') + footer : '<tr><td colspan="3"><div class="empty">'+t('no_results')+'</div></td></tr>';
 }
 function verMasMovs(){ movLimit += 10; renderMovimientos(); }
 function verMenosMovs(){ movLimit = 10; renderMovimientos(); }
 function renderCobros(){
   const cobros = [...db.cobros].sort((a,b)=>(a.activo===b.activo? a.proxima.localeCompare(b.proxima) : (a.activo?-1:1)));
-  const freqTxt = {unico:'Una vez', mensual:'Mensual', semanal:'Semanal', anual:'Anual'};
+  const freqTxt = {unico:t('f_unico'), mensual:t('f_mensual'), semanal:t('f_semanal'), anual:t('f_anual')};
   $('tablaCobros').innerHTML = cobros.length ? cobros.map(c=>`
     <tr class="mov-row" style="${c.activo?'':'opacity:.45'}" onclick="verDetalleCobro('${c.id}')"><td><span class="dot" style="background:${c.activo?'var(--green)':'var(--muted)'};width:8px;height:8px;margin-right:4px;"></span><b>${esc(c.concepto)}</b> <small style="color:var(--muted)">${freqTxt[c.frecuencia]}</small></td>
     <td class="cell-dim">${fmtFechaCorta(c.proxima)} <small style="color:var(--muted)">${c.hora}</small></td>
     <td class="red" style="text-align:right">−${fmt(c.monto)}</td></tr>`).join('')
-    : '<tr><td colspan="3"><div class="empty">Sin cobros programados</div></td></tr>';
+    : '<tr><td colspan="3"><div class="empty">'+t('no_bills')+'</div></td></tr>';
 }
 function renderMetas(){
   $('listaMetas').innerHTML = db.metas.length ? db.metas.map(g=>{
@@ -1011,36 +1201,38 @@ function renderMetas(){
     return `<div class="mov-row" style="margin-bottom:20px;padding-bottom:16px;border-bottom:1px solid var(--border);" onclick="verDetalleMeta('${g.id}')">
       <div class="row-between">
         <b>${esc(g.nombre)}</b>
-        <span class="${pct>=100?'green':'accent'}" style="font-weight:700;">${pct>=100?'🏆 ¡Completada!':fmt(g.ahorrado)+' / '+fmt(g.objetivo)}</span>
+        <span class="${pct>=100?'green':'accent'}" style="font-weight:700;">${pct>=100?t('completed'):fmt(g.ahorrado)+' / '+fmt(g.objetivo)}</span>
       </div>
       <div class="progress"><div style="width:${pct}%;background:${pct>=100?'var(--green)':'var(--accent)'};"></div></div>
-      <small style="color:var(--muted);display:block;margin-top:8px;">${pct}% completado${g.fechaObjetivo?' · antes del '+fmtFecha(g.fechaObjetivo):''} · toca para ver opciones</small>
+      <small style="color:var(--muted);display:block;margin-top:8px;">${pct}% ${t('k_completed')}${g.fechaObjetivo?t('by_prefix')+fmtFecha(g.fechaObjetivo):''}${t('tap_options')}</small>
     </div>`;
-  }).join('') : '<div class="empty">Crea tu primera meta de ahorro 💪</div>';
+  }).join('') : t('no_goals_first');
 }
 function renderPrestamos(){
   $('listaPrestamos').innerHTML = db.prestamos.length ? db.prestamos.map(p=>{
     const restante = (p.cuotasTotal-p.pagadas)*p.montoCuota;
     const pct = Math.round(p.pagadas/p.cuotasTotal*100);
     return `<div style="margin-bottom:20px;padding-bottom:16px;border-bottom:1px solid var(--border);">
-      <div class="row-between"><b>${esc(p.nombre)}</b><span class="yellow" style="font-weight:700;">Te quedan ${fmt(restante)}</span></div>
+      <div class="row-between"><b>${esc(p.nombre)}</b><span class="yellow" style="font-weight:700;">${t('you_have_left')}${fmt(restante)}</span></div>
       <div class="progress"><div style="width:${pct}%;background:var(--purple);"></div></div>
       <div class="row-between" style="margin-top:10px;">
-        <small style="color:var(--muted)">${p.pagadas}/${p.cuotasTotal} cuotas · ${fmt(p.montoCuota)}/cuota · día ${p.diaPago}</small>
+        <small style="color:var(--muted)">${p.pagadas}/${p.cuotasTotal} ${t('k_insts')} · ${fmt(p.montoCuota)}/${t('k_inst')} · ${t('k_day')}${p.diaPago}</small>
         <span>
-          ${p.pagadas<p.cuotasTotal?`<button class="btn btn-green btn-sm" onclick="pagarCuota('${p.id}')">✔ Pagar cuota</button>`:'<span class="green" style="font-weight:700;">✅ Liquidado</span>'}
-          <button class="btn btn-ghost btn-sm" onclick="verDetallePrestamo('${p.id}')">📋 Cuotas</button>
+          ${p.pagadas<p.cuotasTotal?`<button class="btn btn-green btn-sm" onclick="pagarCuota('${p.id}')">${t('pay_inst')}</button>`:`<span class="green" style="font-weight:700;">${t('paid_off')}</span>`}
+          <button class="btn btn-ghost btn-sm" onclick="verDetallePrestamo('${p.id}')">${t('installments_btn')}</button>
           <button class="btn btn-ghost btn-sm" onclick="editarPrestamo('${p.id}')">✏️</button>
           <button class="btn btn-danger btn-sm" onclick="borrarPrestamo('${p.id}')">✕</button>
         </span>
       </div></div>`;
-  }).join('') : '<div class="empty">Registra tus préstamos para seguir sus cuotas</div>';
+  }).join('') : t('no_loans_empty');
 }
 
 // ================= INICIO =================
-$('fechaHoy').textContent = new Date().toLocaleDateString('es-ES',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+$('fechaHoy').textContent = new Date().toLocaleDateString(LOCALE(),{weekday:'long',day:'numeric',month:'long',year:'numeric'});
 $('mFecha').value = hoyISO(); $('cFecha').value = hoyISO();
 aplicarTema();
+$('selLang').value = LANG;
+aplicarIdioma();
 aplicarCobrosVencidos();
 renderTodo();
 const hashView = location.hash.replace('#','');
