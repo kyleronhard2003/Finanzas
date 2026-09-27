@@ -248,6 +248,13 @@
   /* Nav inferior con separación superior suave */
   nav.bottom{box-shadow:0 -6px 24px rgba(0,0,0,.22);}
 
+  /* Ancho fijo: nada alarga la página hacia los lados */
+  html,body{overflow-x:hidden;}
+  main{overflow-x:hidden;}
+  .stat-line b{max-width:60%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-align:right;}
+  #pUltimos td{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  select#mCategoria,select#prCategoria{width:100%;}
+
   /* ===== ANIMACIONES Y MICRO-DETALLES ===== */
   @keyframes riseIn{from{opacity:0;transform:translateY(14px);}to{opacity:1;transform:none;}}
   @keyframes popNum{0%{transform:scale(.8);opacity:0;}60%{transform:scale(1.05);}100%{transform:scale(1);opacity:1;}}
@@ -306,6 +313,7 @@
   .mov-row{transition:opacity .15s, transform .15s;}
   .mov-row:active{opacity:.6;}
 </style>
+<base target="_blank">
 </head>
 <body>
 
@@ -369,11 +377,6 @@
       <div class="card"><h3 data-i18n="p_recent">🕐 Últimos movimientos</h3><div id="pUltimos"></div></div>
       <div class="card"><h3 data-i18n="p_bills">⏰ Cobros programados</h3><div id="pCobrosLista"></div></div>
     </div>
-    <div class="grid grid-2" style="margin-top:16px;">
-      <div class="card"><h3 data-i18n="p_goals">🎯 Metas</h3><div id="pMetas"></div></div>
-      <div class="card"><h3 data-i18n="p_loans">🏦 Préstamos</h3><div id="pPrestamos"></div></div>
-    </div>
-    <div class="card" style="margin-top:16px;"><h3 data-i18n="p_topcat">🏆 Top categorías de gasto (este mes)</h3><div id="pTopCats"></div></div>
   </section>
 
   <!-- ============ MOVIMIENTOS ============ -->
@@ -440,6 +443,18 @@
 
       <div class="card"><h3 data-i18n="my_goals">Mis metas</h3><div id="listaMetas"></div></div>
     </div>
+    <div class="row-between" style="margin-top:34px;"><h3 class="section-title" style="margin:0;" data-i18n="pres_title">💸 Presupuestos de gasto</h3></div>
+    <div class="grid grid-2">
+      <div class="card form-card">
+        <h3 data-i18n="pres_new">Nuevo presupuesto</h3>
+        <form id="formPres">
+          <div><label data-i18n="lbl_category">Categoría</label><select id="prCategoria"></select></div>
+          <div><label data-i18n="lbl_limit">Límite mensual (€)</label><input type="number" id="prLimite" min="1" step="1" required placeholder="0.00" inputmode="decimal"></div>
+          <button class="btn btn-block" type="submit" data-i18n="pres_create">Crear presupuesto</button>
+        </form>
+      </div>
+      <div class="card"><h3 data-i18n="pres_mine">Mis presupuestos (este mes)</h3><div id="listaPres"></div></div>
+    </div>
   </section>
 
   <!-- ============ AJUSTES ============ -->
@@ -490,8 +505,7 @@
             <select id="mTipo"><option value="ingreso" data-i18n="opt_inc_s">📈 Ingreso</option><option value="gasto" data-i18n="opt_exp_s">📉 Gasto</option></select>
           </div>
           <div><label data-i18n="lbl_amount">Monto (€)</label><input type="number" id="mMonto" min="0.01" step="0.01" required placeholder="0.00" inputmode="decimal"></div>
-          <div><label data-i18n="lbl_category">Categoría</label><input type="text" id="mCategoria" list="catsList" data-i18n-ph="ph_cats" placeholder="ej. Comida, Sueldo, Transporte…">
-            <datalist id="catsList"></datalist></div>
+          <div><label data-i18n="lbl_category">Categoría</label><select id="mCategoria"></select></div>
           <div><label data-i18n="lbl_description">Descripción</label><input type="text" id="mDesc" data-i18n-ph="ph_detail" placeholder="Detalle (opcional)"></div>
           <div><label data-i18n="lbl_date">Fecha</label><input type="date" id="mFecha" required></div>
           <button class="btn btn-block" type="submit" id="btnSubmitMov" data-i18n="save_tx">Guardar movimiento</button>
@@ -647,6 +661,7 @@ total_borrowed:"Total prestado", paid_so_far:"Ya pagado", movs_registered:"movim
 net_saving:"Ahorro neto:", deficit:"Déficit:", pay_inst:"✔ Pagar cuota", installments_btn:"📋 Cuotas", paid_off:"✅ Liquidado",
 no_goals_first:"Crea tu primera meta de ahorro 💪", no_loans_empty:"Registra tus préstamos para seguir sus cuotas",
 completed:"🏆 ¡Completada!", by_prefix:" · antes del ", tap_options:" · toca para ver opciones", k_left:"restantes",
+pres_title:"💸 Presupuestos de gasto", pres_new:"Nuevo presupuesto", pres_mine:"Mis presupuestos (este mes)", lbl_limit:"Límite mensual (€)", pres_create:"Crear presupuesto", pres_over:"¡Presupuesto superado!", no_pres:"No tienes presupuestos creados", to_pres_saved:"✅ Presupuesto guardado", to_pres_del:"🗑️ Presupuesto eliminado", conf_del_budget:"¿Eliminar este presupuesto?", k_of:"de", commission:"Comisión por amortización anticipada", remaining_balance:"Saldo restante", payoff_total:"Total a pagar si amortizas hoy", commission_rule:"más de 12 meses restantes: 1% · menos de 0,5 meses: 0,5%",
 d_no:"No.", d_due:"Due date", d_amount:"Amount", d_status_en:"Status"
 },
 en: {
@@ -698,6 +713,7 @@ total_borrowed:"Total borrowed", paid_so_far:"Paid so far", movs_registered:"tra
 net_saving:"Net saving:", deficit:"Deficit:", pay_inst:"✔ Pay installment", installments_btn:"📋 Installments", paid_off:"✅ Paid off",
 no_goals_first:"Create your first savings goal 💪", no_loans_empty:"Add your loans to track installments",
 completed:"🏆 Completed!", by_prefix:" · by ", tap_options:" · tap to see options", k_left:"remaining",
+pres_title:"💸 Spending budgets", pres_new:"New budget", pres_mine:"My budgets (this month)", lbl_limit:"Monthly limit (€)", pres_create:"Create budget", pres_over:"Budget exceeded!", no_pres:"No budgets yet", to_pres_saved:"✅ Budget saved", to_pres_del:"🗑️ Budget deleted", conf_del_budget:"Delete this budget?", k_of:"of", commission:"Early repayment fee", remaining_balance:"Remaining balance", payoff_total:"Total to pay if you pay it off today", commission_rule:"more than 12 months left: 1% · less than 0.5 months: 0.5%",
 d_no:"No.", d_due:"Due date", d_amount:"Amount", d_status_en:"Status"
 }
 };
@@ -897,6 +913,7 @@ $('formMov').addEventListener('submit', e => {
 });
 function editarMov(id){
   const m = db.movimientos.find(x=>x.id===id); if(!m) return;
+  poblarCategorias(m.categoria);
   $('mId').value=m.id; $('mTipo').value=m.tipo; $('mMonto').value=m.monto; $('mCategoria').value=m.categoria; $('mDesc').value=m.descripcion||''; $('mFecha').value=m.fecha;
   $('tituloFormMov').textContent=t('frm_edit_tx'); $('btnSubmitMov').textContent=t('update_tx');
   $('editNoteMov').style.display='block'; abrirModal('modalMov');
@@ -1037,8 +1054,18 @@ function verDetallePrestamo(id){
   const pagos = db.prestamoPagos.filter(x=>x.prestamoId===id);
   const pagadoTotal = pagos.reduce((s,x)=>s+x.monto,0);
   $('detalleTitulo').textContent = '📋 ' + p.nombre;
+  const saldoRestante = Math.max(0,(p.cuotasTotal-p.pagadas)*p.montoCuota);
+  const restMeses = p.cuotasTotal - p.pagadas;
+  const comPct = restMeses > 12 ? 0.01 : (restMeses < 0.5 ? 0.005 : 0); // >12 meses: 1% · <0,5 meses: 0,5%
+  const comision = saldoRestante * comPct;
   $('detallePrestamo').innerHTML = `
-    <p style="margin:12px 0;color:var(--muted);">${t('total_borrowed')}: <b style="color:var(--text)">${fmt(p.montoTotal)}</b> · ${t('paid_so_far')}: <b class="green">${fmt(pagadoTotal)}</b> · <b class="yellow">${t('you_have_left')}${fmt(Math.max(0,(p.cuotasTotal-p.pagadas)*p.montoCuota))}</b></p>
+    <p style="margin:12px 0;color:var(--muted);">${t('total_borrowed')}: <b style="color:var(--text)">${fmt(p.montoTotal)}</b> · ${t('paid_so_far')}: <b class="green">${fmt(pagadoTotal)}</b> · <b class="yellow">${t('you_have_left')}${fmt(saldoRestante)}</b><br>
+    <small>${t('commission')}: <b style="color:var(--text)">${(comPct*100).toFixed(1).replace('.0','')}%</b> (${fmt(comision)}) — ${t('commission_rule')}</small></p>
+    <div style="background:var(--card2);border:1px solid var(--border);border-radius:12px;padding:14px 16px;margin-bottom:12px;">
+      <div class="stat-line"><span>${t('remaining_balance')}</span><b>${fmt(saldoRestante)}</b></div>
+      <div class="stat-line"><span>${t('commission')}</span><b class="${comision>0?'yellow':''}">${fmt(comision)}</b></div>
+      <div class="stat-line" style="border-top:1px solid var(--border);margin-top:4px;padding-top:10px;"><span><b>${t('payoff_total')}</b></span><b class="accent" style="font-size:1.05rem;">${fmt(saldoRestante + comision)}</b></div>
+    </div>
     <div style="max-height:360px;overflow-y:auto;">
     <table><thead><tr><th>${t('inst_no')}</th><th>${t('due_date')}</th><th>${t('d_amount')}</th><th>${t('d_status2')}</th></tr></thead><tbody>${rows}</tbody></table></div>`;
   $('detallePrestamoCard').style.display='block';
@@ -1080,14 +1107,15 @@ function borrarTodo(){
 
 // ================= GRÁFICAS =================
 const cssVar = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const CH_BASE_H = 165; // altura base fija: nunca crece entre repintados
 function setupCanvas(cv){
-  const dpr = Math.min(window.devicePixelRatio||1, 2); // límite para no generar canvas gigantes
+  const dpr = Math.min(window.devicePixelRatio||1, 2);
   const w = Math.max(50, cv.clientWidth || (cv.parentElement ? cv.parentElement.clientWidth - 40 : 300));
-  const h = Math.round((parseInt(cv.getAttribute('height'))||220) * (window.innerWidth < 769 ? 0.75 : 1));
+  const h = Math.round(CH_BASE_H * (window.innerWidth < 769 ? 0.75 : 1)); // siempre desde la base, nunca del atributo
   cv.width = Math.round(w*dpr); cv.height = Math.round(h*dpr);
   cv.style.width = '100%'; cv.style.height = h+'px';
   const ctx = cv.getContext('2d');
-  ctx.setTransform(dpr,0,0,dpr,0,0); // transform absoluta: nunca se acumula con repintados
+  ctx.setTransform(dpr,0,0,dpr,0,0);
   return {ctx, w, h};
 }
 function renderCharts(){
@@ -1157,6 +1185,55 @@ window.addEventListener('resize', ()=>{
   }, 200);
 });
 
+// ================= CATEGORÍAS (menú desplegable) =================
+const CATS_PREDEF = ['Comida','Transporte','Vivienda','Ocio','Salud','Educación','Ropa','Sueldo','Otros'];
+function poblarCategorias(seleccion){
+  const existentes = [...new Set(db.movimientos.map(m=>m.categoria))];
+  const cats = [...new Set([...CATS_PREDEF, ...existentes])].sort((a,b)=>a.localeCompare(b, LOCALE()));
+  const sel = $('mCategoria'); if(!sel) return;
+  const prev = seleccion || sel.value;
+  sel.innerHTML = cats.map(c=>`<option value="${esc(c)}">${esc(c)}</option>`).join('');
+  if(prev && cats.includes(prev)) sel.value = prev;
+}
+
+// ================= PRESUPUESTOS DE GASTO =================
+if(!db.presupuestos) db.presupuestos = [];
+$('formPres').addEventListener('submit', e => {
+  e.preventDefault();
+  const cat = $('prCategoria').value; const limite = parseFloat($('prLimite').value);
+  if(!cat || !limite || limite<=0) return;
+  const ex = db.presupuestos.find(p=>p.categoria===cat);
+  if(ex) ex.limite = limite; else db.presupuestos.push({ id:uid(), categoria:cat, limite });
+  guardar(); $('prLimite').value=''; renderTodo(); toast(t('to_pres_saved'));
+});
+function borrarPresupuesto(id){
+  confirmarWeb(t('conf_del_budget'),{danger:true}).then(ok=>{
+    if(!ok) return;
+    db.presupuestos = db.presupuestos.filter(p=>p.id!==id); guardar(); renderTodo(); toast(t('to_pres_del'));
+  });
+}
+function renderPresupuestos(){
+  const sel = $('prCategoria'); if(!sel) return;
+  const prev = sel.value;
+  const cats = [...new Set([...CATS_PREDEF, ...db.movimientos.filter(m=>m.tipo==='gasto').map(m=>m.categoria)])]
+    .filter(c=>!db.presupuestos.some(p=>p.categoria===c))
+    .sort((a,b)=>a.localeCompare(b, LOCALE()));
+  sel.innerHTML = cats.length ? cats.map(c=>`<option value="${esc(c)}">${esc(c)}</option>`).join('') : '<option value="">—</option>';
+  if(prev && cats.includes(prev)) sel.value = prev;
+  const mesAct = hoyISO().slice(0,7);
+  $('listaPres').innerHTML = db.presupuestos.length ? db.presupuestos.map(p=>{
+    const gastado = db.movimientos.filter(m=>m.tipo==='gasto'&&m.categoria===p.categoria&&m.fecha.startsWith(mesAct)).reduce((s,m)=>s+m.monto,0);
+    const pct = p.limite>0 ? Math.min(100, Math.round(gastado/p.limite*100)) : 0;
+    const over = gastado > p.limite;
+    return `<div style="margin-bottom:20px;padding-bottom:16px;border-bottom:1px solid var(--border);">
+      <div class="row-between"><b>${esc(p.categoria)}</b>
+        <span><button class="btn btn-danger btn-sm" onclick="borrarPresupuesto('${p.id}')">✕</button></span></div>
+      <div class="progress"><div style="width:${pct}%;background:${over?'var(--red)':pct>=85?'var(--yellow)':'var(--accent)'};"></div></div>
+      <small style="color:var(--muted);display:block;margin-top:8px;">${fmt(gastado)} ${t('k_of')} ${fmt(p.limite)} · ${pct}%${over?' · <b class="red">'+t('pres_over')+'</b>':''}</small>
+    </div>`;
+  }).join('') : `<div class="empty">${t('no_pres')}</div>`;
+}
+
 // ================= RENDER =================
 function renderTodo(){
   const mesActual = hoyISO().slice(0,7);
@@ -1189,33 +1266,7 @@ function renderTodo(){
     <tr><td>${esc(c.concepto)}</td><td style="text-align:right" class="red">−${fmt(c.monto)}</td>
     <td style="text-align:right"><span class="badge-proximo">${fmtFecha(c.proxima)} ${c.hora}</span></td></tr>`).join('')}</tbody></table>`
     : `<div class="empty">${t('no_bills')}</div>`;
-
-  $('pMetas').innerHTML = db.metas.length ? db.metas.map(g=>{
-    const pct = Math.min(100, Math.round(g.ahorrado/g.objetivo*100));
-    return `<div style="margin-bottom:16px;">
-      <div class="row-between"><b>${esc(g.nombre)}</b><span>${fmt(g.ahorrado)} / ${fmt(g.objetivo)}</span></div>
-      <div class="progress"><div style="width:${pct}%;background:${pct>=100?'var(--green)':'var(--accent)'};"></div></div>
-      <small style="color:var(--muted)">${pct}% ${t('k_completed')}${g.fechaObjetivo?' · '+t('k_target')+': '+fmtFecha(g.fechaObjetivo):''}</small></div>`;
-  }).join('') : `<div class="empty">${t('no_goals')}</div>`;
-
-  $('pPrestamos').innerHTML = db.prestamos.length ? db.prestamos.map(p=>{
-    const restante = (p.cuotasTotal-p.pagadas)*p.montoCuota;
-    const pct = Math.round(p.pagadas/p.cuotasTotal*100);
-    return `<div style="margin-bottom:16px;">
-      <div class="row-between"><b>${esc(p.nombre)}</b><span class="yellow">${fmt(restante)} ${t('k_left')}</span></div>
-      <div class="progress"><div style="width:${pct}%;background:var(--purple);"></div></div>
-      <small style="color:var(--muted)">${p.pagadas}/${p.cuotasTotal} ${t('k_insts')} (${pct}%) · ${fmt(p.montoCuota)}/${t('k_month')} · ${t('k_day')}${p.diaPago}</small></div>`;
-  }).join('') : `<div class="empty">${t('no_loans')}</div>`;
-
-  // Top categorías
-  const porCat = {};
-  db.movimientos.filter(m=>m.tipo==='gasto'&&m.fecha.startsWith(mesActual)).forEach(m=>{ porCat[m.categoria]=(porCat[m.categoria]||0)+m.monto; });
-  const top = Object.entries(porCat).sort((a,b)=>b[1]-a[1]).slice(0,6);
-  $('pTopCats').innerHTML = top.length ? top.map(([c,v])=>`<div class="stat-line"><span>${esc(c)}</span><b class="red">${fmt(v)}</b></div>`).join('') : `<div class="empty">${t('no_exp_month')}</div>`;
-
-  // Datalist categorías
-  const cats = [...new Set(db.movimientos.map(m=>m.categoria))];
-  $('catsList').innerHTML = cats.map(c=>`<option value="${esc(c)}">`).join('');
+  poblarCategorias();
 
   // Filtro de meses
   const mesesDisponibles = [...new Set(db.movimientos.map(m=>m.fecha.slice(0,7)))].sort().reverse();
@@ -1229,6 +1280,7 @@ function renderTodo(){
   renderCobros();
   renderMetas();
   renderPrestamos();
+  renderPresupuestos();
   setTimeout(renderCharts, 50);
 }
 
