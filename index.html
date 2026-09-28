@@ -198,7 +198,7 @@
   @keyframes tabPop{0%{transform:scale(.8);}60%{transform:scale(1.12);}100%{transform:scale(1);}}
   nav.bottom button.active .ico{display:inline-block;animation:tabPop .35s ease;}
   @keyframes badgePulse{0%,100%{transform:scale(1);}50%{transform:scale(1.07);}}
-  .badge-proximo{display:inline-block;animation:badgePulse 2s ease-in-out infinite;min-width:92px;text-align:center;}
+  .badge-proximo{display:inline-block;animation:none !important;transform:none !important;min-width:92px;text-align:center;}
   .fab-item{animation:riseIn .25s ease both;}
   .fab-item:nth-child(2){animation-delay:.06s;}
   @keyframes borderGlow{0%,100%{border-color:var(--border);}50%{border-color:rgba(79,140,255,.5);}}
@@ -312,6 +312,18 @@
   .countdown-number:not(.flip){
     animation:none !important;
     transform:scale(1) !important;
+  }
+
+
+  /* CONTADOR: prohibido cualquier pulso/zoom repetitivo */
+  .badge-proximo,
+  .badge-proximo .countdown-calendar,
+  .badge-proximo .countdown-card,
+  .badge-proximo .countdown-number{
+    animation-name:none !important;
+  }
+  .badge-proximo{
+    transform:none !important;
   }
 
   /* ===== CONTADOR TIPO CALENDARIO =====
