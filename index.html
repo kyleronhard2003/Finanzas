@@ -350,6 +350,18 @@
   .mov-row:active{opacity:.6;}
 </style>
 <base target="_blank">
+
+<style id="calendar-counter-fix">
+.countdown-calendar{display:flex!important;align-items:flex-start!important;justify-content:center!important;gap:10px!important;position:relative!important;transform:none!important;}
+.countdown-calendar .count-unit{position:relative!important;display:flex!important;flex-direction:column!important;align-items:center!important;min-width:58px!important;transform:none!important;}
+.countdown-calendar .count-card{position:relative!important;width:58px!important;height:48px!important;display:flex!important;align-items:center!important;justify-content:center!important;border-radius:8px!important;overflow:hidden!important;perspective:300px!important;transform:none!important;}
+.countdown-calendar .count-card::before{content:"";position:absolute;left:0;right:0;top:50%;height:1px;opacity:.28;transform:translateY(-.5px);}
+.countdown-calendar .count-number{position:relative!important;z-index:2!important;font-variant-numeric:tabular-nums!important;font-feature-settings:"tnum"!important;font-size:26px!important;font-weight:800!important;line-height:1!important;transform:none!important;display:block!important;}
+.countdown-calendar .count-label{margin-top:5px!important;font-size:9px!important;font-weight:700!important;letter-spacing:.08em!important;opacity:.65!important;transform:none!important;}
+.countdown-calendar .count-card.flip .count-number{animation:calendarFlip .42s ease-in-out!important;transform-origin:50% 50%!important;}
+@keyframes calendarFlip{0%{transform:rotateX(0deg);opacity:1}45%{transform:rotateX(-82deg);opacity:.35}100%{transform:rotateX(0deg);opacity:1}}
+@media(max-width:480px){.countdown-calendar{gap:6px!important}.countdown-calendar .count-unit{min-width:48px!important}.countdown-calendar .count-card{width:48px!important;height:43px!important}.countdown-calendar .count-number{font-size:23px!important}}
+</style>
 </head>
 <body>
 
@@ -1429,6 +1441,29 @@ renderTodo();
 const hashView = location.hash.replace('#','');
 if(['panel','movimientos','cobros','metas','ajustes'].includes(hashView)) switchView(hashView);
 renderFab(hashView || 'panel');
+</script>
+
+<script id="calendar-counter-js">
+(function(){
+  function updateCalendarCountdown(){
+    var root=document.getElementById('countdownCalendar');
+    if(!root) return;
+    var target=window.countdownTarget||window.targetDate||window.deadline||null;
+    if(!target) return;
+    var t=new Date(target).getTime();
+    if(!Number.isFinite(t)) return;
+    var diff=Math.max(0,t-Date.now());
+    var vals=[Math.floor(diff/86400000),Math.floor(diff/3600000)%24,Math.floor(diff/60000)%60,Math.floor(diff/1000)%60];
+    ['countDays','countHours','countMinutes','countSeconds'].forEach(function(id,i){
+      var n=document.getElementById(id), card=n&&n.parentElement; if(!n) return;
+      var v=String(vals[i]).padStart(2,'0');
+      if(n.textContent!==v){n.textContent=v;if(card){card.classList.remove('flip');void card.offsetWidth;card.classList.add('flip');}}
+    });
+  }
+  window.updateCalendarCountdown=updateCalendarCountdown;
+  setInterval(updateCalendarCountdown,1000);
+  setTimeout(updateCalendarCountdown,0);
+})();
 </script>
 </body>
 </html>
