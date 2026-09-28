@@ -280,6 +280,26 @@
   select#mCategoria,select#prCategoria{width:100%;}
 
 
+
+  /* Giro tipo calendario: solo se anima la cifra que cambia.
+     No hay efecto pulsante en el contador. */
+  .countdown-card{
+    perspective:180px;
+  }
+  .countdown-number{
+    transform-origin:50% 50%;
+    backface-visibility:hidden;
+  }
+  .countdown-number.flip{
+    animation:calendarFlip .28s ease-in-out;
+  }
+  @keyframes calendarFlip{
+    0%{transform:rotateX(0deg);opacity:1;}
+    45%{transform:rotateX(-90deg);opacity:.15;}
+    46%{transform:rotateX(90deg);opacity:.15;}
+    100%{transform:rotateX(0deg);opacity:1;}
+  }
+
   /* ===== CONTADOR TIPO CALENDARIO =====
      Sin animación: cada cifra se muestra como una hoja dividida
      horizontalmente, con apertura visual arriba/abajo. */
@@ -405,7 +425,7 @@
   .toast{transition:opacity .3s, bottom .3s; animation:toastIn .3s ease;}
 
   /* FAB con pulso suave de atención */
-  .fab{animation:fabPulse 2.8s ease-out infinite;}
+  .fab{animation:none 2.8s ease-out infinite;}
   .fab.open{animation:none;}
 
   /* Efecto ripple en botones táctiles */
@@ -1023,35 +1043,67 @@ function aplicarCobrosVencidos(){
 }
 
 // ================= CUENTA ATRÁS DE COBROS (PANEL) =================
-function countdownHTML(diff){
+function countdownParts(diff){
+  if(diff<=0) return null;
+  const s = Math.floor(diff/1000);
+  return {
+    d: Math.floor(s/86400),
+    h: Math.floor(s%86400/3600),
+    m: Math.floor(s%3600/60),
+    sec: s%60
+  };
+}
+
+function countdownHTML(diff, previous){
   if(diff<=0){
     return `<div class="countdown-calendar is-due"><span class="countdown-due">⚠ ${esc(t('due_now'))}</span></div>`;
   }
-  const s = Math.floor(diff/1000);
-  const d = Math.floor(s/86400), h = Math.floor(s%86400/3600), m = Math.floor(s%3600/60), sec = s%60;
+
+  const parts = countdownParts(diff);
   const p = n => String(n).padStart(2,'0');
-  const unit = (value,label) => `
-    <div class="countdown-unit">
-      <div class="countdown-card"><span class="countdown-number">${value}</span></div>
-      <span class="countdown-label">${label}</span>
-    </div>`;
+
+  const unit = (key, value, label) => {
+    const oldValue = previous ? previous[key] : null;
+    const changed = oldValue !== null && oldValue !== undefined && oldValue !== value;
+    return `
+      <div class="countdown-unit">
+        <div class="countdown-card">
+          <span class="countdown-number${changed ? ' flip' : ''}">${p(value)}</span>
+        </div>
+        <span class="countdown-label">${label}</span>
+      </div>`;
+  };
+
   return `<div class="countdown-calendar">
-    ${unit(p(d),'D')}
+    ${unit('d',parts.d,'D')}
     <span class="countdown-sep">:</span>
-    ${unit(p(h),'H')}
+    ${unit('h',parts.h,'H')}
     <span class="countdown-sep">:</span>
-    ${unit(p(m),'M')}
+    ${unit('m',parts.m,'M')}
     <span class="countdown-sep">:</span>
-    ${unit(p(sec),'S')}
+    ${unit('sec',parts.sec,'S')}
   </div>`;
 }
+
 function updateCountdowns(){
   const ahora = new Date();
+
   document.querySelectorAll('[data-cd]').forEach(el=>{
     const c = db.cobros.find(x=>x.id===el.dataset.cd);
-    el.innerHTML = c ? countdownHTML(new Date(c.proxima+'T'+(c.hora||'09:00')) - ahora) : '—';
+    if(!c){
+      el.textContent = '—';
+      return;
+    }
+
+    const diff = new Date(c.proxima+'T'+(c.hora||'09:00')) - ahora;
+    const current = countdownParts(diff);
+    const previous = el._countdownParts || null;
+
+    el.innerHTML = countdownHTML(diff, previous);
+    el._countdownParts = current;
   });
 }
+
 setInterval(updateCountdowns, 1000);
 
 // ================= MOVIMIENTOS =================
