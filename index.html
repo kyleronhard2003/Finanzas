@@ -454,104 +454,110 @@
     100%{transform:rotateX(0deg);opacity:1;}
   }
 
-  /* ===== CONTADOR TIPO CALENDARIO =====
-     Sin animación: cada cifra se muestra como una hoja dividida
-     horizontalmente, con apertura visual arriba/abajo. */
-  .countdown-calendar{
-    display:flex;
-    align-items:flex-start;
-    justify-content:flex-end;
-    gap:6px;
-    flex-wrap:nowrap;
-    margin-top:3px;
-  }
-  .countdown-unit{
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    gap:3px;
-    min-width:42px;
-  }
-  .countdown-card{
-    position:relative;
-    width:100%;
-    height:44px;
-    border:1px solid var(--border);
-    border-radius:7px;
-    background:var(--card2);
-    overflow:hidden;
-    box-shadow:0 2px 6px rgba(0,0,0,.16);
-  }
-  .countdown-card::before,
-  .countdown-card::after{
-    content:'';
-    position:absolute;
-    left:0;
-    right:0;
-    height:50%;
-    background:var(--card2);
-    pointer-events:none;
-  }
-  .countdown-card::before{
-    top:0;
-    border-bottom:1px solid rgba(0,0,0,.18);
-  }
-  .countdown-card::after{
-    bottom:0;
-  }
-  .countdown-number{
-    position:absolute;
-    inset:0;
-    z-index:1;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    font-size:1.05rem;
-    line-height:1;
-    font-weight:800;
-    font-variant-numeric:tabular-nums;
-    color:var(--text);
-  }
-  .countdown-label{
-    font-size:.58rem;
-    line-height:1;
-    color:var(--muted);
-    text-transform:uppercase;
-    font-weight:700;
-    letter-spacing:.35px;
-  }
-  .countdown-sep{
-    font-weight:800;
-    color:var(--muted);
-    font-size:.9rem;
-    line-height:44px;
-  }
-  .countdown-calendar.is-due{
-    justify-content:flex-end;
-  }
-  .countdown-due{
-    color:var(--red);
-    font-size:.72rem;
-    font-weight:800;
-    white-space:nowrap;
-  }
-  @media(max-width:430px){
-    .countdown-calendar{gap:2px;}
-    .countdown-unit{min-width:27px;}
-    .countdown-card{width:27px;height:31px;}
-    .countdown-number{font-size:.72rem;}
-    .countdown-sep{line-height:31px;font-size:.58rem;}
-    .countdown-label{font-size:.43rem;}
+  /* ===== CONTADOR TIPO CALENDARIO (limpio) =====
+   Sin animación: cada cifra se muestra como una hoja dividida
+   horizontalmente. Mitad superior e inferior del mismo color,
+   con una línea central sutil. */
+.countdown-calendar{
+  display:flex;
+  align-items:flex-start;
+  justify-content:flex-end;
+  gap:4px;
+  flex-wrap:nowrap;
+  margin-top:3px;
+}
+.countdown-unit{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:3px;
+  min-width:37px;
+}
+.countdown-card{
+  position:relative;
+  width:100%;
+  height:40px;
+  border:1px solid var(--border);
+  border-radius:7px;
+  background:var(--card2);
+  overflow:hidden;
+  box-shadow:0 2px 6px rgba(0,0,0,.16);
+}
+/* Línea central que separa las dos hojas */
+.countdown-card::before{
+  content:'';
+  position:absolute;
+  z-index:2;
+  left:0;
+  right:0;
+  top:50%;
+  height:1px;
+  margin-top:-.5px;
+  background:rgba(0,0,0,.28);
+  box-shadow:none;
+  pointer-events:none;
+}
+/* Mitad superior: mismo color que la inferior, apenas un velo sutil */
+.countdown-card::after{
+  content:'';
+  position:absolute;
+  z-index:1;
+  left:0;
+  right:0;
+  top:0;
+  height:50%;
+  background:rgba(255,255,255,.05);
+  border-bottom:1px solid rgba(0,0,0,.18);
+  box-shadow:none;
+  pointer-events:none;
+}
+.countdown-number{
+  position:absolute;
+  inset:0;
+  z-index:3;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:.95rem;
+  line-height:1;
+  font-weight:800;
+  font-variant-numeric:tabular-nums;
+  color:var(--text);
+  transform:scale(1);
+}
+.countdown-label{
+  font-size:.52rem;
+  line-height:1;
+  color:var(--muted);
+  text-transform:uppercase;
+  font-weight:700;
+  letter-spacing:.35px;
+}
+.countdown-sep{
+  font-weight:800;
+  color:var(--muted);
+  font-size:.78rem;
+  line-height:40px;
+}
+.countdown-calendar.is-due{
+  justify-content:flex-end;
+}
+.countdown-due{
+  color:var(--red);
+  font-size:.72rem;
+  font-weight:800;
+  white-space:nowrap;
+}
+@media(max-width:430px){
+  .countdown-calendar{gap:3px;}
+  .countdown-unit{min-width:30px;}
+  .countdown-card{height:32px;}
+  .countdown-number{font-size:.78rem;}
+  .countdown-sep{line-height:32px;font-size:.6rem;}
+  .countdown-label{font-size:.44rem;}
+}
 
-    .countdown-calendar{gap:4px;}
-    .countdown-unit{min-width:37px;}
-    .countdown-card{height:40px;}
-    .countdown-number{font-size:.95rem;}
-    .countdown-sep{line-height:40px;font-size:.78rem;}
-    .countdown-label{font-size:.52rem;}
-  }
-
-  /* ===== ANIMACIONES Y MICRO-DETALLES ===== */
+/* ===== ANIMACIONES Y MICRO-DETALLES ===== */
   @keyframes riseIn{from{opacity:0;transform:translateY(14px);}to{opacity:1;transform:none;}}
   
   @keyframes toastIn{from{opacity:0;transform:translate(-50%,16px);}to{opacity:1;transform:translate(-50%,0);}}
@@ -1215,53 +1221,45 @@ function countdownParts(diff){
   };
 }
 
-function countdownHTML(diff, previous){
+function countdownHTML(diff){
   if(diff<=0){
     return `<div class="countdown-calendar is-due"><span class="countdown-due">⚠ ${esc(t('due_now'))}</span></div>`;
   }
-
   const parts = countdownParts(diff);
   const p = n => String(n).padStart(2,'0');
-
-  const unit = (key, value, label) => {
-    const oldValue = previous ? previous[key] : null;
-    const changed = oldValue !== null && oldValue !== undefined && oldValue !== value;
-    return `
-      <div class="countdown-unit">
-        <div class="countdown-card">
-          <span class="countdown-number${changed ? ' flip' : ''}">${p(value)}</span>
-        </div>
-        <span class="countdown-label">${label}</span>
-      </div>`;
-  };
-
+  const unit = (value, label) => `
+    <div class="countdown-unit">
+      <div class="countdown-card">
+        <span class="countdown-number">${p(value)}</span>
+      </div>
+      <span class="countdown-label">${label}</span>
+    </div>`;
   return `<div class="countdown-calendar">
-    ${unit('d',parts.d,'D')}
+    ${unit(parts.d,'D')}
     <span class="countdown-sep">:</span>
-    ${unit('h',parts.h,'H')}
+    ${unit(parts.h,'H')}
     <span class="countdown-sep">:</span>
-    ${unit('m',parts.m,'M')}
+    ${unit(parts.m,'M')}
     <span class="countdown-sep">:</span>
-    ${unit('sec',parts.sec,'S')}
+    ${unit(parts.sec,'S')}
   </div>`;
 }
 
 function updateCountdowns(){
   const ahora = new Date();
-
   document.querySelectorAll('[data-cd]').forEach(el=>{
     const c = db.cobros.find(x=>x.id===el.dataset.cd);
-    if(!c){
-      el.textContent = '—';
-      return;
-    }
-
+    if(!c){ el.textContent = '—'; return; }
     const diff = new Date(c.proxima+'T'+(c.hora||'09:00')) - ahora;
-    const current = countdownParts(diff);
-    const previous = el._countdownParts || null;
-
-    el.innerHTML = countdownHTML(diff, previous);
-    el._countdownParts = current;
+    el.innerHTML = countdownHTML(diff);
+  });
+  document.querySelectorAll('[data-cdp]').forEach(el=>{
+    const p = db.prestamos.find(x=>x.id===el.dataset.cdp);
+    if(!p){ el.textContent = '—'; return; }
+    const info = proximaCuotaInfo(p);
+    if(!info){ el.textContent = '—'; return; }
+    const diff = new Date(info.fecha+'T23:59:59') - ahora;
+    el.innerHTML = countdownHTML(diff);
   });
 }
 
@@ -1413,6 +1411,11 @@ function fechasCuotas(p){
     arr.push(f.getFullYear()+'-'+String(f.getMonth()+1).padStart(2,'0')+'-'+String(f.getDate()).padStart(2,'0'));
   }
   return arr;
+}
+function proximaCuotaInfo(p){
+  if((p.pagadas||0) >= p.cuotasTotal) return null;
+  const fechas = fechasCuotas(p);
+  return { fecha: fechas[p.pagadas], n: p.pagadas + 1 };
 }
 function tablaCuotasHTML(id){
   const p = db.prestamos.find(x=>x.id===id); if(!p) return '';
@@ -1661,14 +1664,24 @@ function renderTodo(){
 
   const limite = new Date(); limite.setDate(limite.getDate()+7);
   const cobrosProx = db.cobros.filter(c=>c.activo && new Date(c.proxima)<=limite);
-  $('pCobros').textContent = fmt(cobrosProx.reduce((s,c)=>s+c.monto,0));
-  $('pCobrosSub').textContent = cobrosProx.length + ' ' + t('bills_pending');
+  const prestamosProx = db.prestamos.filter(p=>(p.pagadas||0)<p.cuotasTotal)
+    .filter(p=>{ const info = proximaCuotaInfo(p); return info && new Date(info.fecha+'T23:59:59')<=limite; });
+  $('pCobros').textContent = fmt(cobrosProx.reduce((s,c)=>s+c.monto,0) + prestamosProx.reduce((s,p)=>s+p.montoCuota,0));
+  $('pCobrosSub').textContent = (cobrosProx.length + prestamosProx.length) + ' ' + t('bills_pending');
 
 
   const cobrosActivos = db.cobros.filter(c=>c.activo).sort((a,b)=>a.proxima.localeCompare(b.proxima));
-  $('pCobrosLista').innerHTML = cobrosActivos.length ? `<table><tbody>${cobrosActivos.slice(0,8).map(c=>`
-    <tr><td>${esc(c.concepto)}</td><td style="text-align:right" class="red">−${fmt(c.monto)}</td>
-    <td style="text-align:right"><span class="badge-proximo countdown-holder" data-cd="${c.id}">—</span></td></tr>`).join('')}</tbody></table>`
+  const prestamosProximos = db.prestamos.filter(p=>(p.pagadas||0)<p.cuotasTotal)
+    .map(p=>({p, info:proximaCuotaInfo(p)}))
+    .filter(x=>x.info && new Date(x.info.fecha+'T23:59:59')<=limite)
+    .sort((a,b)=>a.info.fecha.localeCompare(b.info.fecha));
+  const hayCobros = cobrosActivos.length>0 || prestamosProximos.length>0;
+  $('pCobrosLista').innerHTML = hayCobros ? `<table><tbody>${[
+    ...cobrosActivos.map(c=>`<tr><td>${esc(c.concepto)}</td><td style="text-align:right" class="red">−${fmt(c.monto)}</td>
+    <td style="text-align:right"><span class="badge-proximo countdown-holder" data-cd="${c.id}">—</span></td></tr>`),
+    ...prestamosProximos.map(({p})=>`<tr><td>${esc(p.nombre)} <small style="color:var(--muted)">${t('cat_loan')}</small></td><td style="text-align:right" class="red">−${fmt(p.montoCuota)}</td>
+    <td style="text-align:right"><span class="badge-proximo countdown-holder" data-cdp="${p.id}">—</span></td></tr>`)
+  ].join('')}</tbody></table>`
     : `<div class="empty">${t('no_bills')}</div>`;
   poblarCategorias();
 
