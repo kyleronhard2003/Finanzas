@@ -1340,7 +1340,7 @@ function renderTodo(){
   $('pBalance').textContent = fmt(balance);
   $('pBalance').className = 'big ' + (balance>=0?'green':'red');
   const balanceCard = $('pBalance').closest('.card');
-  if(balanceCard) balanceCard.classList.toggle('balance-alert', balance < 100);
+  if(balanceCard) balanceCard.classList.toggle('balance-alert', balance < 0);
   $('pBalanceSub').textContent = db.movimientos.length + ' ' + t('movs_registered');
   $('pIngresos').textContent = fmt(ingresos);
   $('pGastos').textContent = fmt(gastos);
