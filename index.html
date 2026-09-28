@@ -1571,16 +1571,32 @@ async function actualizarDivisas(){
   const base=(db.moneda||'EUR').toUpperCase();
   $('fxBaseLabel').textContent=base;
   box.innerHTML='<div class="empty" style="grid-column:1/-1">…</div>';
-  try{
-    const res=await fetch('https://api.frankfurter.app/latest?from='+encodeURIComponent(base));
-    if(!res.ok) throw new Error('fx');
-    const data=await res.json();
-    const rates=Object.entries(data.rates||{}).filter(([k])=>k!==base);
-    box.innerHTML=rates.map(([cur,val])=>`<div class="card rate-card"><div class="row-between"><b>${cur}</b><span class="rate-value">${Number(val).toFixed(cur==='JPY'?2:4)}</span></div><div class="rate-meta">1 ${base} = ${Number(val).toFixed(cur==='JPY'?2:4)} ${cur}</div></div>`).join('') || `<div class="empty" style="grid-column:1/-1">—</div>`;
-    $('fxUpdated').textContent=t('fx_updated')+': '+new Date().toLocaleTimeString(LOCALE(),{hour:'2-digit',minute:'2-digit'});
-  }catch(e){
-    box.innerHTML=`<div class="empty" style="grid-column:1/-1">${LANG==='en'?'Unable to load exchange rates.':'No se pudieron cargar los tipos de cambio.'}</div>`;
+  const endpoints=[
+    'https://open.er-api.com/v6/latest/'+encodeURIComponent(base),
+    'https://api.frankfurter.app/latest?from='+encodeURIComponent(base)
+  ];
+  let data=null;
+  for(const url of endpoints){
+    try{
+      const controller=new AbortController();
+      const timer=setTimeout(()=>controller.abort(),8000);
+      const res=await fetch(url,{cache:'no-store',signal:controller.signal});
+      clearTimeout(timer);
+      if(!res.ok) continue;
+      const json=await res.json();
+      if(json && json.rates && Object.keys(json.rates).length){ data=json; break; }
+    }catch(e){ /* prueba la siguiente fuente */ }
   }
+  if(!data){
+    box.innerHTML=`<div class="empty" style="grid-column:1/-1">${LANG==='en'?'Unable to load exchange rates. Check your connection and try again.':'No se pudieron cargar los tipos de cambio. Comprueba la conexión e inténtalo de nuevo.'}</div>`;
+    return;
+  }
+  const rates=Object.entries(data.rates).filter(([k])=>k!==base);
+  box.innerHTML=rates.map(([cur,val])=>{
+    const n=Number(val); const decimals=cur==='JPY'||cur==='KRW'?2:4; const shown=n.toFixed(decimals);
+    return `<div class="card rate-card"><div class="row-between"><b>${cur}</b><span class="rate-value">${shown}</span></div><div class="rate-meta">1 ${base} = ${shown} ${cur}</div></div>`;
+  }).join('') || `<div class="empty" style="grid-column:1/-1">—</div>`;
+  $('fxUpdated').textContent=t('fx_updated')+': '+new Date().toLocaleTimeString(LOCALE(),{hour:'2-digit',minute:'2-digit'});
 }
 
 // ================= INICIO =================
