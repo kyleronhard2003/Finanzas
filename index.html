@@ -279,6 +279,97 @@
   .stat-line b{max-width:60%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-align:right;}
   select#mCategoria,select#prCategoria{width:100%;}
 
+
+  /* ===== CONTADOR TIPO CALENDARIO =====
+     Sin animación: cada cifra se muestra como una hoja dividida
+     horizontalmente, con apertura visual arriba/abajo. */
+  .countdown-calendar{
+    display:flex;
+    align-items:flex-start;
+    justify-content:flex-end;
+    gap:6px;
+    flex-wrap:nowrap;
+    margin-top:3px;
+  }
+  .countdown-unit{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:3px;
+    min-width:42px;
+  }
+  .countdown-card{
+    position:relative;
+    width:100%;
+    height:44px;
+    border:1px solid var(--border);
+    border-radius:7px;
+    background:var(--card2);
+    overflow:hidden;
+    box-shadow:0 2px 6px rgba(0,0,0,.16);
+  }
+  .countdown-card::before,
+  .countdown-card::after{
+    content:'';
+    position:absolute;
+    left:0;
+    right:0;
+    height:50%;
+    background:var(--card2);
+    pointer-events:none;
+  }
+  .countdown-card::before{
+    top:0;
+    border-bottom:1px solid rgba(0,0,0,.18);
+  }
+  .countdown-card::after{
+    bottom:0;
+  }
+  .countdown-number{
+    position:absolute;
+    inset:0;
+    z-index:1;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:1.05rem;
+    line-height:1;
+    font-weight:800;
+    font-variant-numeric:tabular-nums;
+    color:var(--text);
+  }
+  .countdown-label{
+    font-size:.58rem;
+    line-height:1;
+    color:var(--muted);
+    text-transform:uppercase;
+    font-weight:700;
+    letter-spacing:.35px;
+  }
+  .countdown-sep{
+    font-weight:800;
+    color:var(--muted);
+    font-size:.9rem;
+    line-height:44px;
+  }
+  .countdown-calendar.is-due{
+    justify-content:flex-end;
+  }
+  .countdown-due{
+    color:var(--red);
+    font-size:.72rem;
+    font-weight:800;
+    white-space:nowrap;
+  }
+  @media(max-width:430px){
+    .countdown-calendar{gap:4px;}
+    .countdown-unit{min-width:37px;}
+    .countdown-card{height:40px;}
+    .countdown-number{font-size:.95rem;}
+    .countdown-sep{line-height:40px;font-size:.78rem;}
+    .countdown-label{font-size:.52rem;}
+  }
+
   /* ===== ANIMACIONES Y MICRO-DETALLES ===== */
   @keyframes riseIn{from{opacity:0;transform:translateY(14px);}to{opacity:1;transform:none;}}
   @keyframes popNum{0%{transform:scale(.8);opacity:0;}60%{transform:scale(1.05);}100%{transform:scale(1);opacity:1;}}
@@ -932,18 +1023,33 @@ function aplicarCobrosVencidos(){
 }
 
 // ================= CUENTA ATRÁS DE COBROS (PANEL) =================
-function fmtCountdown(diff){
-  if(diff<=0) return '⚠ ' + t('due_now');
+function countdownHTML(diff){
+  if(diff<=0){
+    return `<div class="countdown-calendar is-due"><span class="countdown-due">⚠ ${esc(t('due_now'))}</span></div>`;
+  }
   const s = Math.floor(diff/1000);
   const d = Math.floor(s/86400), h = Math.floor(s%86400/3600), m = Math.floor(s%3600/60), sec = s%60;
   const p = n => String(n).padStart(2,'0');
-  return p(d)+' D - '+p(h)+' H - '+p(m)+' M - '+p(sec)+' S';
+  const unit = (value,label) => `
+    <div class="countdown-unit">
+      <div class="countdown-card"><span class="countdown-number">${value}</span></div>
+      <span class="countdown-label">${label}</span>
+    </div>`;
+  return `<div class="countdown-calendar">
+    ${unit(p(d),'D')}
+    <span class="countdown-sep">:</span>
+    ${unit(p(h),'H')}
+    <span class="countdown-sep">:</span>
+    ${unit(p(m),'M')}
+    <span class="countdown-sep">:</span>
+    ${unit(p(sec),'S')}
+  </div>`;
 }
 function updateCountdowns(){
   const ahora = new Date();
   document.querySelectorAll('[data-cd]').forEach(el=>{
     const c = db.cobros.find(x=>x.id===el.dataset.cd);
-    el.textContent = c ? fmtCountdown(new Date(c.proxima+'T'+(c.hora||'09:00')) - ahora) : '—';
+    el.innerHTML = c ? countdownHTML(new Date(c.proxima+'T'+(c.hora||'09:00')) - ahora) : '—';
   });
 }
 setInterval(updateCountdowns, 1000);
@@ -1349,7 +1455,7 @@ function renderTodo(){
   const cobrosActivos = db.cobros.filter(c=>c.activo).sort((a,b)=>a.proxima.localeCompare(b.proxima));
   $('pCobrosLista').innerHTML = cobrosActivos.length ? `<table><tbody>${cobrosActivos.slice(0,8).map(c=>`
     <tr><td>${esc(c.concepto)}</td><td style="text-align:right" class="red">−${fmt(c.monto)}</td>
-    <td style="text-align:right"><span class="badge-proximo" data-cd="${c.id}">—</span></td></tr>`).join('')}</tbody></table>`
+    <td style="text-align:right"><span class="badge-proximo countdown-holder" data-cd="${c.id}">—</span></td></tr>`).join('')}</tbody></table>`
     : `<div class="empty">${t('no_bills')}</div>`;
   poblarCategorias();
 
@@ -1443,3 +1549,5 @@ renderFab(hashView || 'panel');
 </script>
 </body>
 </html>
+
+<!-- Contador rediseñado: tipo calendario, sin animación de giro. -->
