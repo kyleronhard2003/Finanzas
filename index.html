@@ -315,7 +315,119 @@
   }
 
 
-  /* CONTADOR: prohibido cualquier pulso/zoom repetitivo */
+  /* ===== CONTADOR COMPACTO Y PULIDO ===== */
+  .badge-proximo{
+    display:inline-block;
+    animation:none !important;
+    transform:none !important;
+    min-width:0;
+    text-align:right;
+  }
+
+  .countdown-calendar{
+    display:flex;
+    align-items:flex-start;
+    justify-content:flex-end;
+    gap:3px;
+    flex-wrap:nowrap;
+    margin:1px 0 0;
+  }
+
+  .countdown-unit{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:2px;
+    min-width:30px;
+  }
+
+  .countdown-card{
+    position:relative;
+    width:30px;
+    height:34px;
+    border:1px solid var(--border);
+    border-radius:5px;
+    background:linear-gradient(180deg,var(--card2),var(--card));
+    overflow:hidden;
+    box-shadow:0 1px 3px rgba(0,0,0,.14);
+    perspective:160px;
+  }
+
+  /* Línea central y pequeñas sombras: efecto de hoja de calendario */
+  .countdown-card::before{
+    content:'';
+    position:absolute;
+    z-index:2;
+    left:0;
+    right:0;
+    top:50%;
+    height:1px;
+    background:rgba(0,0,0,.18);
+    box-shadow:0 -1px 0 rgba(255,255,255,.10);
+    pointer-events:none;
+  }
+
+  .countdown-card::after{
+    content:'';
+    position:absolute;
+    z-index:2;
+    left:0;
+    right:0;
+    top:0;
+    height:45%;
+    background:linear-gradient(180deg,rgba(255,255,255,.08),transparent);
+    pointer-events:none;
+  }
+
+  .countdown-number{
+    position:absolute;
+    inset:0;
+    z-index:1;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:.78rem;
+    line-height:1;
+    font-weight:800;
+    font-variant-numeric:tabular-nums;
+    color:var(--text);
+    transform-origin:50% 50%;
+    backface-visibility:hidden;
+  }
+
+  .countdown-number.flip{
+    animation:calendarFlip .28s ease-in-out !important;
+  }
+
+  .countdown-label{
+    font-size:.47rem;
+    line-height:1;
+    color:var(--muted);
+    text-transform:uppercase;
+    font-weight:700;
+    letter-spacing:.25px;
+  }
+
+  .countdown-sep{
+    font-weight:800;
+    color:var(--muted);
+    font-size:.65rem;
+    line-height:34px;
+    opacity:.8;
+  }
+
+  .countdown-calendar.is-due{
+    justify-content:flex-end;
+  }
+
+  .countdown-due{
+    color:var(--red);
+    font-size:.62rem;
+    font-weight:800;
+    white-space:nowrap;
+  }
+
+  /* El contador nunca hace zoom/pulso: solo puede girar la cifra que cambia. */
   .badge-proximo,
   .badge-proximo .countdown-calendar,
   .badge-proximo .countdown-card,
@@ -324,6 +436,22 @@
   }
   .badge-proximo{
     transform:none !important;
+  }
+  .countdown-calendar,
+  .countdown-calendar *,
+  .countdown-number{
+    transition:none !important;
+  }
+  .countdown-number:not(.flip){
+    animation:none !important;
+    transform:scale(1) !important;
+  }
+
+  @keyframes calendarFlip{
+    0%{transform:rotateX(0deg);opacity:1;}
+    45%{transform:rotateX(-90deg);opacity:.15;}
+    46%{transform:rotateX(90deg);opacity:.15;}
+    100%{transform:rotateX(0deg);opacity:1;}
   }
 
   /* ===== CONTADOR TIPO CALENDARIO =====
@@ -408,6 +536,13 @@
     white-space:nowrap;
   }
   @media(max-width:430px){
+    .countdown-calendar{gap:2px;}
+    .countdown-unit{min-width:27px;}
+    .countdown-card{width:27px;height:31px;}
+    .countdown-number{font-size:.72rem;}
+    .countdown-sep{line-height:31px;font-size:.58rem;}
+    .countdown-label{font-size:.43rem;}
+
     .countdown-calendar{gap:4px;}
     .countdown-unit{min-width:37px;}
     .countdown-card{height:40px;}
