@@ -46,7 +46,6 @@
   @keyframes fadeIn{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:none;}}
   .grid{display:grid;gap:16px;}
   .grid-4{grid-template-columns:repeat(auto-fit,minmax(200px,1fr));}
-  .grid-3{grid-template-columns:repeat(auto-fit,minmax(250px,1fr));}
   .grid-2{grid-template-columns:repeat(auto-fit,minmax(330px,1fr));}
   .card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:20px;box-shadow:var(--shadow);}
   .card h3{font-size:.8rem;color:var(--muted);text-transform:uppercase;letter-spacing:.6px;margin-bottom:10px;}
@@ -93,8 +92,6 @@
   td{padding:10px 8px;border-bottom:1px solid var(--border);}
   tr:hover td{background:var(--card2);}
   .tag{display:inline-block;padding:3px 10px;border-radius:20px;font-size:.72rem;font-weight:600;white-space:nowrap;}
-  .tag-ingreso{background:rgba(52,201,142,.15);color:var(--green);}
-  .tag-gasto{background:rgba(229,83,75,.15);color:var(--red);}
   .tag-auto{background:rgba(79,140,255,.12);color:var(--accent);font-size:.68rem;padding:2px 8px;}
   .progress{height:10px;background:var(--card2);border-radius:20px;overflow:hidden;margin-top:8px;}
   .progress>div{height:100%;border-radius:20px;transition:width .8s cubic-bezier(.22,1,.36,1);}
@@ -130,7 +127,6 @@
   @keyframes popIn{from{opacity:0;transform:translateY(14px) scale(.97);}to{opacity:1;transform:none;}}
   .modal-close{position:absolute;top:12px;right:12px;width:34px;height:34px;border-radius:10px;background:var(--card2);border:1px solid var(--border);color:var(--muted);cursor:pointer;font-size:.95rem;line-height:1;transition:.15s;z-index:2;}
   .modal-close:hover{color:var(--text);border-color:var(--red);}
-  .section-actions{display:flex;gap:10px;flex-wrap:wrap;margin:4px 0 16px;}
 
   /* ===== FAB: botón flotante de nuevos registros ===== */
   .fab-wrap{position:fixed;right:16px;bottom:calc(98px + env(safe-area-inset-bottom));z-index:96;display:none;pointer-events:auto;flex-direction:column;align-items:flex-end;gap:10px;}
@@ -143,7 +139,6 @@
   .fab-item:hover{border-color:var(--accent);}
   .fab-item:active{transform:scale(.97);}
   /* Botones de sección más integrados */
-  .section-actions .btn{padding:10px 16px;font-size:.88rem;}
 
   /* Tocar un movimiento abre su ventana de edición (igual que los registros normales) */
   .mov-row{cursor:pointer;}
@@ -158,13 +153,11 @@
   #tablaMov td{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding:10px 5px;}
   #tablaMov .tag-auto{font-size:.58rem;padding:1px 5px;}
   .cell-dim{color:var(--muted);font-size:.8rem;}
-  .mini-meta{display:flex;gap:10px;flex-wrap:wrap;align-items:center;font-size:.8rem;color:var(--muted);margin-bottom:12px;}
   #tablaCobros th:nth-child(1){width:37%;}
   #tablaCobros th:nth-child(2){width:25%;}
   #tablaCobros th:nth-child(3){width:20%;}
   #tablaCobros th:nth-child(4){width:18%;}
   #tablaCobros td{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding:9px 5px;font-size:.85rem;}
-  #tablaCobros .table-actions{overflow:visible;white-space:nowrap;}
   #tablaCobros .btn-sm{padding:6px 7px;font-size:.7rem;}
 
   /* ===== Pulido visual de listas ===== */
@@ -199,8 +192,7 @@
   .section-title::before{animation:floaty 3s ease-in-out infinite;}
 
   @keyframes tabPop{0%{transform:scale(.8);}60%{transform:scale(1.12);}100%{transform:scale(1);}}
-  nav.bottom button.active .ico{display:inline-block;animation:tabPop .35s ease;}
-  @keyframes badgePulse{0%,100%{transform:scale(1);}50%{transform:scale(1.07);}}
+  nav.bottom button.active .ico{display:inline-block;animation:tabPop .35s ease;}50%{transform:scale(1.07);}}
   .badge-proximo{display:inline-block;animation:none !important;transform:none !important;min-width:92px;text-align:center;}
   .fab-item{animation:riseIn .25s ease both;}
   .fab-item:nth-child(2){animation-delay:.06s;}
@@ -215,12 +207,10 @@
     header{padding:14px 14px;}
     header h1{font-size:1.1rem;}
     .fecha-hoy{display:none;}
-    .grid-2,.grid-3{grid-template-columns:1fr;}
     .big{font-size:1.5rem;}
     .card{padding:16px;}
     .section-title{font-size:1.05rem;}
     .btn{padding:15px;} /* objetivo táctil mayor */
-    .table-actions{white-space:nowrap;}
     th,td{padding:9px 6px;font-size:.83rem;}
     #tablaMov th, #tablaMov td{padding:9px 5px;font-size:.85rem;}
 
@@ -244,7 +234,6 @@
 
   /* Grillas adaptadas a pantalla estrecha */
   .grid-4{grid-template-columns:repeat(2,1fr);gap:12px;}
-  .grid-3,.grid-2{grid-template-columns:1fr;gap:14px;}
   .big{font-size:1.4rem;}
   .kpi-sub{font-size:.72rem;}
 
@@ -284,287 +273,39 @@
 
 
 
-  /* Giro tipo calendario: solo se anima la cifra que cambia.
-     No hay efecto pulsante en el contador. */
-  .countdown-card{
-    perspective:180px;
-  }
-  .countdown-number{
-    transform-origin:50% 50%;
-    backface-visibility:hidden;
-  }
-  .countdown-number.flip{
-    animation:calendarFlip .28s ease-in-out !important;
-    transform:scale(1);
-  }
+  /* ===== CONTADOR TIPO CALENDARIO ===== */
+  .countdown-card{position:relative;perspective:160px;}
+  .countdown-number.flip{animation:calendarFlip .28s ease-in-out !important;}
   @keyframes calendarFlip{
     0%{transform:rotateX(0deg);opacity:1;}
     45%{transform:rotateX(-90deg);opacity:.15;}
     46%{transform:rotateX(90deg);opacity:.15;}
     100%{transform:rotateX(0deg);opacity:1;}
   }
-
-
-  /* El contador no debe crecer, encogerse ni hacer pulso.
-     Su única transición permitida es el giro de hoja. */
-  .countdown-calendar,
-  .countdown-calendar *,
-  .countdown-number{
-    transition:none !important;
+  .countdown-calendar{display:flex;align-items:flex-start;justify-content:flex-end;gap:4px;flex-wrap:nowrap;margin-top:3px;}
+  .countdown-unit{display:flex;flex-direction:column;align-items:center;gap:3px;min-width:37px;}
+  .countdown-card{width:100%;height:40px;border:1px solid var(--border);border-radius:7px;background:var(--card2);overflow:hidden;box-shadow:0 2px 6px rgba(0,0,0,.16);}
+  .countdown-card::before{content:'';position:absolute;z-index:2;left:0;right:0;top:50%;height:1px;margin-top:-.5px;background:rgba(0,0,0,.28);pointer-events:none;}
+  .countdown-card::after{content:'';position:absolute;z-index:1;left:0;right:0;top:0;height:50%;background:rgba(255,255,255,.05);border-bottom:1px solid rgba(0,0,0,.18);pointer-events:none;}
+  .countdown-number{position:absolute;inset:0;z-index:3;display:flex;align-items:center;justify-content:center;font-size:.95rem;line-height:1;font-weight:800;font-variant-numeric:tabular-nums;color:var(--text);transform:scale(1);backface-visibility:hidden;}
+  .countdown-label{font-size:.52rem;line-height:1;color:var(--muted);text-transform:uppercase;font-weight:700;letter-spacing:.35px;}
+  .countdown-sep{font-weight:800;color:var(--muted);font-size:.78rem;line-height:40px;}
+  .countdown-calendar.is-due{justify-content:flex-end;}
+  .countdown-due{color:var(--red);font-size:.72rem;font-weight:800;white-space:nowrap;}
+  .badge-proximo{display:inline-block;animation:none !important;transform:none !important;min-width:0;text-align:right;}
+  @media(max-width:430px){
+    .countdown-calendar{gap:3px;}
+    .countdown-unit{min-width:30px;}
+    .countdown-card{height:32px;}
+    .countdown-number{font-size:.78rem;}
+    .countdown-sep{line-height:32px;font-size:.6rem;}
+    .countdown-label{font-size:.44rem;}
   }
-  .countdown-number:not(.flip){
-    animation:none !important;
-    transform:scale(1) !important;
-  }
-
-
-  /* ===== CONTADOR COMPACTO Y PULIDO ===== */
-  .badge-proximo{
-    display:inline-block;
-    animation:none !important;
-    transform:none !important;
-    min-width:0;
-    text-align:right;
-  }
-
-  .countdown-calendar{
-    display:flex;
-    align-items:flex-start;
-    justify-content:flex-end;
-    gap:3px;
-    flex-wrap:nowrap;
-    margin:1px 0 0;
-  }
-
-  .countdown-unit{
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    gap:2px;
-    min-width:30px;
-  }
-
-  .countdown-card{
-    position:relative;
-    width:30px;
-    height:34px;
-    border:1px solid var(--border);
-    border-radius:5px;
-    background:linear-gradient(180deg,var(--card2),var(--card));
-    overflow:hidden;
-    box-shadow:0 1px 3px rgba(0,0,0,.14);
-    perspective:160px;
-  }
-
-  /* Línea central y pequeñas sombras: efecto de hoja de calendario */
-  .countdown-card::before{
-    content:'';
-    position:absolute;
-    z-index:2;
-    left:0;
-    right:0;
-    top:50%;
-    height:1px;
-    background:rgba(0,0,0,.18);
-    box-shadow:0 -1px 0 rgba(255,255,255,.10);
-    pointer-events:none;
-  }
-
-  .countdown-card::after{
-    content:'';
-    position:absolute;
-    z-index:2;
-    left:0;
-    right:0;
-    top:0;
-    height:45%;
-    background:linear-gradient(180deg,rgba(255,255,255,.08),transparent);
-    pointer-events:none;
-  }
-
-  .countdown-number{
-    position:absolute;
-    inset:0;
-    z-index:1;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    font-size:.78rem;
-    line-height:1;
-    font-weight:800;
-    font-variant-numeric:tabular-nums;
-    color:var(--text);
-    transform-origin:50% 50%;
-    backface-visibility:hidden;
-  }
-
-  .countdown-number.flip{
-    animation:calendarFlip .28s ease-in-out !important;
-  }
-
-  .countdown-label{
-    font-size:.47rem;
-    line-height:1;
-    color:var(--muted);
-    text-transform:uppercase;
-    font-weight:700;
-    letter-spacing:.25px;
-  }
-
-  .countdown-sep{
-    font-weight:800;
-    color:var(--muted);
-    font-size:.65rem;
-    line-height:34px;
-    opacity:.8;
-  }
-
-  .countdown-calendar.is-due{
-    justify-content:flex-end;
-  }
-
-  .countdown-due{
-    color:var(--red);
-    font-size:.62rem;
-    font-weight:800;
-    white-space:nowrap;
-  }
-
-  /* El contador nunca hace zoom/pulso: solo puede girar la cifra que cambia. */
-  .badge-proximo,
-  .badge-proximo .countdown-calendar,
-  .badge-proximo .countdown-card,
-  .badge-proximo .countdown-number{
-    animation-name:none !important;
-  }
-  .badge-proximo{
-    transform:none !important;
-  }
-  .countdown-calendar,
-  .countdown-calendar *,
-  .countdown-number{
-    transition:none !important;
-  }
-  .countdown-number:not(.flip){
-    animation:none !important;
-    transform:scale(1) !important;
-  }
-
-  @keyframes calendarFlip{
-    0%{transform:rotateX(0deg);opacity:1;}
-    45%{transform:rotateX(-90deg);opacity:.15;}
-    46%{transform:rotateX(90deg);opacity:.15;}
-    100%{transform:rotateX(0deg);opacity:1;}
-  }
-
-  /* ===== CONTADOR TIPO CALENDARIO (limpio) =====
-   Sin animación: cada cifra se muestra como una hoja dividida
-   horizontalmente. Mitad superior e inferior del mismo color,
-   con una línea central sutil. */
-.countdown-calendar{
-  display:flex;
-  align-items:flex-start;
-  justify-content:flex-end;
-  gap:4px;
-  flex-wrap:nowrap;
-  margin-top:3px;
-}
-.countdown-unit{
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  gap:3px;
-  min-width:37px;
-}
-.countdown-card{
-  position:relative;
-  width:100%;
-  height:40px;
-  border:1px solid var(--border);
-  border-radius:7px;
-  background:var(--card2);
-  overflow:hidden;
-  box-shadow:0 2px 6px rgba(0,0,0,.16);
-}
-/* Línea central que separa las dos hojas */
-.countdown-card::before{
-  content:'';
-  position:absolute;
-  z-index:2;
-  left:0;
-  right:0;
-  top:50%;
-  height:1px;
-  margin-top:-.5px;
-  background:rgba(0,0,0,.28);
-  box-shadow:none;
-  pointer-events:none;
-}
-/* Mitad superior: mismo color que la inferior, apenas un velo sutil */
-.countdown-card::after{
-  content:'';
-  position:absolute;
-  z-index:1;
-  left:0;
-  right:0;
-  top:0;
-  height:50%;
-  background:rgba(255,255,255,.05);
-  border-bottom:1px solid rgba(0,0,0,.18);
-  box-shadow:none;
-  pointer-events:none;
-}
-.countdown-number{
-  position:absolute;
-  inset:0;
-  z-index:3;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-size:.95rem;
-  line-height:1;
-  font-weight:800;
-  font-variant-numeric:tabular-nums;
-  color:var(--text);
-  transform:scale(1);
-}
-.countdown-label{
-  font-size:.52rem;
-  line-height:1;
-  color:var(--muted);
-  text-transform:uppercase;
-  font-weight:700;
-  letter-spacing:.35px;
-}
-.countdown-sep{
-  font-weight:800;
-  color:var(--muted);
-  font-size:.78rem;
-  line-height:40px;
-}
-.countdown-calendar.is-due{
-  justify-content:flex-end;
-}
-.countdown-due{
-  color:var(--red);
-  font-size:.72rem;
-  font-weight:800;
-  white-space:nowrap;
-}
-@media(max-width:430px){
-  .countdown-calendar{gap:3px;}
-  .countdown-unit{min-width:30px;}
-  .countdown-card{height:32px;}
-  .countdown-number{font-size:.78rem;}
-  .countdown-sep{line-height:32px;font-size:.6rem;}
-  .countdown-label{font-size:.44rem;}
-}
 
 /* ===== ANIMACIONES Y MICRO-DETALLES ===== */
   @keyframes riseIn{from{opacity:0;transform:translateY(14px);}to{opacity:1;transform:none;}}
   
-  @keyframes toastIn{from{opacity:0;transform:translate(-50%,16px);}to{opacity:1;transform:translate(-50%,0);}}
-  @keyframes fabPulse{0%{box-shadow:0 6px 22px rgba(79,140,255,.45),0 0 0 0 rgba(79,140,255,.4);}70%{box-shadow:0 6px 22px rgba(79,140,255,.45),0 0 0 16px rgba(79,140,255,0);}100%{box-shadow:0 6px 22px rgba(79,140,255,.45),0 0 0 0 rgba(79,140,255,0);}}
+  @keyframes toastIn{from{opacity:0;transform:translate(-50%,16px);}to{opacity:1;transform:translate(-50%,0);}}70%{box-shadow:0 6px 22px rgba(79,140,255,.45),0 0 0 16px rgba(79,140,255,0);}100%{box-shadow:0 6px 22px rgba(79,140,255,.45),0 0 0 0 rgba(79,140,255,0);}}
 
   /* Tarjetas: entrada escalonada al cambiar de vista */
   .view.active .card{animation:riseIn .45s cubic-bezier(.22,1,.36,1) both;}
@@ -596,7 +337,6 @@
 
   /* FAB con pulso suave de atención */
   .fab{animation:none 2.8s ease-out infinite;}
-  .fab.open{animation:none;}
 
   /* Efecto ripple en botones táctiles */
   .btn,.fab,.icon-btn,.fab-item{position:relative;overflow:hidden;}
@@ -712,8 +452,8 @@
       </div>
     </div>
     <div class="grid grid-2" style="margin-top:16px;">
-      <div class="card"><div class="row-between"><h3 data-i18n="my_goals">Mis metas</h3><button class="btn btn-sm btn-ghost" onclick="nuevoMeta()" data-i18n="btn_new_goal">＋ Nueva meta</button></div><div id="listaMetas"></div></div>
-      <div class="card"><div class="row-between"><h3 data-i18n="pres_mine">Mis presupuestos (este mes)</h3><button class="btn btn-sm btn-ghost" onclick="nuevoPres()" data-i18n="fab_budget">💸 Nuevo presupuesto</button></div><div id="listaPres"></div></div>
+      <div class="card"><h3 data-i18n="my_goals">Mis metas</h3><div id="listaMetas"></div></div>
+      <div class="card"><h3 data-i18n="pres_mine">Mis presupuestos (este mes)</h3><div id="listaPres"></div></div>
     </div>
   </section>
 
