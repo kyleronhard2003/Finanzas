@@ -22,7 +22,7 @@
   html,body{touch-action:pan-x pan-y;}
   *{touch-action:manipulation;}
   body{background:var(--bg);color:var(--text);min-height:100vh;transition:background .25s;}
-  header{padding:18px 24px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--border);flex-wrap:wrap;gap:8px;position:sticky;top:0;background:var(--bg);z-index:50;}
+  header{padding:18px 24px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--border);flex-wrap:wrap;gap:8px;position:fixed;top:0;left:0;right:0;background:var(--bg);z-index:80;}
   header h1{font-size:1.3rem;}
   header h1 span{color:var(--accent);}
   .fecha-hoy{color:var(--muted);font-size:.85rem;}
@@ -40,7 +40,7 @@
   nav.bottom button{background:none;border:none;color:var(--muted);cursor:pointer;font-size:.62rem;display:flex;flex-direction:column;align-items:center;gap:3px;padding:6px 8px;border-radius:12px;min-width:56px;transition:.15s;}
   nav.bottom button .ico{font-size:1.35rem;line-height:1;}
   nav.bottom button.active{color:var(--accent);font-weight:700;}
-  main{padding:8px 24px 90px;max-width:1150px;margin:0 auto;}
+  main{padding:92px 24px 90px;max-width:1150px;margin:0 auto;}
   .view{display:none;}
   .view.active{display:block;animation:fadeIn .25s ease;}
   @keyframes fadeIn{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:none;}}
@@ -238,7 +238,7 @@
   nav.bottom{display:block !important;position:fixed;bottom:0;left:0;right:0;}
 
   /* App en columna estrecha, centrada, estilo app nativa */
-  main{max-width:520px;margin:0 auto;padding:12px 14px 140px;}
+  main{max-width:520px;margin:0 auto;padding:92px 14px 140px;}
   header{padding:14px 16px;box-shadow:0 1px 0 var(--border);}
   header h1{font-size:1.15rem;}
 
@@ -639,7 +639,7 @@
   <button data-view="panel" class="nav-btn active" data-i18n="nav_panel">📊 Panel</button>
   <button data-view="movimientos" class="nav-btn" data-i18n="nav_movs">💸 Movimientos</button>
   <button data-view="cobros" class="nav-btn" data-i18n="nav_cobros">💳 Cobros y préstamos</button>
-  <button data-view="metas" class="nav-btn" data-i18n="nav_metas">🎯 Metas</button>
+  <button data-view="divisas" class="nav-btn" data-i18n="nav_fx">💱 Divisas</button>
   <button data-view="ajustes" class="nav-btn" data-i18n="nav_ajustes">⚙️ Ajustes</button>
 </nav>
 
@@ -648,7 +648,7 @@
     <button data-view="panel" class="nav-btn active"><span class="ico">📊</span><span data-i18n="nav_panel_s">Panel</span></button>
     <button data-view="movimientos" class="nav-btn"><span class="ico">💸</span><span data-i18n="nav_movs_s">Movs.</span></button>
     <button data-view="cobros" class="nav-btn"><span class="ico">💳</span><span data-i18n="nav_pagos_s">Pagos</span></button>
-    <button data-view="metas" class="nav-btn"><span class="ico">🎯</span><span data-i18n="nav_metas_s">Metas</span></button>
+    <button data-view="divisas" class="nav-btn"><span class="ico">💱</span><span data-i18n="nav_fx_s">Divisas</span></button>
   </div>
 </nav>
 
@@ -711,6 +711,10 @@
         </div>
       </div>
     </div>
+    <div class="grid grid-2" style="margin-top:16px;">
+      <div class="card"><div class="row-between"><h3 data-i18n="my_goals">Mis metas</h3><button class="btn btn-sm btn-ghost" onclick="nuevoMeta()" data-i18n="btn_new_goal">＋ Nueva meta</button></div><div id="listaMetas"></div></div>
+      <div class="card"><div class="row-between"><h3 data-i18n="pres_mine">Mis presupuestos (este mes)</h3><button class="btn btn-sm btn-ghost" onclick="nuevoPres()" data-i18n="fab_budget">💸 Nuevo presupuesto</button></div><div id="listaPres"></div></div>
+    </div>
   </section>
 
   <!-- ============ COBROS ============ -->
@@ -737,16 +741,12 @@
     </div>
     </section>
 
-  <!-- ============ METAS ============ -->
-  <section id="view-metas" class="view">
-    <div class="row-between" style="margin-top:8px;"><h2 class="section-title" style="margin:0;" data-i18n="metas_title">🎯 Metas de ahorro</h2><button class="btn" onclick="nuevoMeta()" data-i18n="btn_new_goal">＋ Nueva meta</button></div>
-    <div class="grid grid-2">
-
-      <div class="card"><h3 data-i18n="my_goals">Mis metas</h3><div id="listaMetas"></div></div>
-    </div>
-    <div class="row-between" style="margin-top:34px;"><h3 class="section-title" style="margin:0;" data-i18n="pres_title">💸 Presupuestos de gasto</h3></div>
-    <div class="grid grid-2">
-      <div class="card"><h3 data-i18n="pres_mine">Mis presupuestos (este mes)</h3><div id="listaPres"></div></div>
+  <!-- ============ DIVISAS ============ -->
+  <section id="view-divisas" class="view">
+    <div class="row-between" style="margin-top:8px;"><h2 class="section-title" style="margin:0;" data-i18n="fx_title">💱 Divisas y tipos de cambio</h2><button class="btn btn-sm btn-ghost" onclick="actualizarDivisas()" data-i18n="fx_refresh">↻ Actualizar</button></div>
+    <div class="card" style="margin-top:14px;">
+      <div class="row-between" style="margin-bottom:12px;"><div><b id="fxBaseLabel">EUR</b><div class="rate-meta" data-i18n="fx_desc">Tipos de cambio de referencia, actualizados desde una fuente pública.</div></div><span id="fxUpdated" class="rate-meta">—</span></div>
+      <div id="fxRates" class="currency-grid"><div class="empty" style="grid-column:1/-1">—</div></div>
     </div>
   </section>
 
@@ -867,7 +867,7 @@
         <div class="edit-note" id="editNoteMeta"><span data-i18n="editing_goal">✏️ Editando meta</span> — <a href="#" onclick="cancelarEdicionMeta();return false;" style="color:var(--yellow)"><span data-i18n="cancel">cancelar</span></a></div>
         <form id="formMeta">
           <input type="hidden" id="gId">
-          <div><label data-i18n="lbl_goal_name">Nombre de la meta</label><input type="text" id="gNombre" required data-i18n-ph="ph_goal" placeholder="ej. Viaje a Japón"></div>
+          <div><label data-i18n="lbl_goal_name">Nombre de la meta</label><input type="text" id="gNombre" required maxlength="15" data-i18n-ph="ph_goal" placeholder="ej. Viaje a Japón"></div>
           <div><label data-i18n="lbl_target">Monto objetivo (€)</label><input type="number" id="gObjetivo" min="1" step="0.01" required placeholder="0.00" inputmode="decimal"></div>
           <div><label data-i18n="lbl_target_date">Fecha objetivo (opcional)</label><input type="date" id="gFecha"></div>
           <button class="btn btn-block" type="submit" id="btnSubmitMeta" data-i18n="create_goal">Crear meta</button>
@@ -940,7 +940,7 @@ if(!db.moneda) db.moneda = 'EUR';
 const I18N = {
 es: {
 brand:"Mis Finanzas", nav_panel:"📊 Panel", nav_movs:"💸 Movimientos", nav_cobros:"💳 Cobros y préstamos", nav_metas:"🎯 Metas", nav_ajustes:"⚙️ Ajustes",
-nav_panel_s:"Panel", nav_movs_s:"Regis.", nav_pagos_s:"Pagos", nav_metas_s:"Metas",
+nav_panel_s:"Panel", nav_movs_s:"Regis.", nav_pagos_s:"Pagos", nav_metas_s:"Metas", nav_fx_s:"Divisas", nav_fx:"💱 Divisas",
 kpi_balance:"💼 Balance total", kpi_income:"📈 Ingresos este mes", kpi_expense:"📉 Gastos este mes", kpi_due:"⏰ Cobros próximos 15 días",
 ch_6m:"Últimos 6 meses", ch_by_cat:"Gastos por categoría (este mes)", leg_income:"Ingresos", leg_expense:"Gastos",
 p_recent:"🕐 Últimos movimientos", p_bills:"⏰ Cobros programados", p_goals:"🎯 Metas", p_loans:"🏦 Préstamos", p_topcat:"🏆 Top categorías de gasto (este mes)",
@@ -987,12 +987,12 @@ total_borrowed:"Total prestado", paid_so_far:"Ya pagado", movs_registered:"movim
 net_saving:"Ahorro neto:", deficit:"Déficit:", pay_inst:"✔ Pagar cuota", installments_btn:"📋 Cuotas", paid_off:"✅ Liquidado",
 no_goals_first:"Crea tu primera meta de ahorro 💪", no_loans_empty:"Registra tus préstamos para seguir sus cuotas",
 completed:"🏆 ¡Completada!", by_prefix:" · antes del ", tap_options:" · toca para ver opciones", k_left:"restantes",
-pres_title:"💸 Presupuestos de gasto", pres_new:"Nuevo presupuesto", pres_mine:"Mis presupuestos (este mes)", lbl_limit:"Límite mensual (€)", pres_create:"Crear presupuesto", pres_over:"¡Presupuesto superado!", no_pres:"No tienes presupuestos creados", to_pres_saved:"✅ Presupuesto guardado", to_pres_del:"🗑️ Presupuesto eliminado", conf_del_budget:"¿Eliminar este presupuesto?", k_of:"de", commission:"Comisión por amortización anticipada", remaining_balance:"Saldo restante", payoff_total:"Total a pagar si amortizas hoy", commission_rule:"más de 12 meses restantes: 1% · 12 meses o menos: 0,5%", d_principal:"Capital pendiente", d_saved_interest:"Interés que te ahorras", d_penalty:"Penalización anticipada", due_now:"¡vence ahora!", fab_budget:"💸 Nuevo presupuesto",
-d_no:"No.", d_due:"Due date", d_amount:"Amount", d_status_en:"Status"
+pres_title:"💸 Presupuestos de gasto", pres_new:"Nuevo presupuesto", pres_mine:"Mis presupuestos (este mes)", lbl_limit:"Límite mensual (€)", pres_create:"Crear presupuesto", pres_over:"¡Presupuesto superado!", no_pres:"No tienes presupuestos creados", to_pres_saved:"✅ Presupuesto guardado", to_pres_del:"🗑️ Presupuesto eliminado", conf_del_budget:"¿Eliminar este presupuesto?", k_of:"de", commission:"Comisión por amortización anticipada", remaining_balance:"Saldo restante", payoff_total:"Amortización Completo", commission_rule:"más de 12 meses restantes: 1% · 12 meses o menos: 0,5%", d_principal:"Capital pendiente", d_saved_interest:"Interés que te ahorras", d_penalty:"Penalización anticipada", due_now:"¡vence ahora!", fab_budget:"💸 Nuevo presupuesto",
+d_no:"No.", d_due:"Due date", d_amount:"Amount", d_status_en:"Status", fx_title:"💱 Exchange rates", fx_refresh:"↻ Refresh", fx_desc:"Reference exchange rates, updated from a public source.", fx_updated:"Updated"
 },
 en: {
 brand:"My Finances", nav_panel:"📊 Dashboard", nav_movs:"💸 Transactions", nav_cobros:"💳 Bills & loans", nav_metas:"🎯 Goals", nav_ajustes:"⚙️ Settings",
-nav_panel_s:"Home", nav_movs_s:"Regis", nav_pagos_s:"Bills", nav_metas_s:"Goals",
+nav_panel_s:"Home", nav_movs_s:"Regis", nav_pagos_s:"Bills", nav_metas_s:"Goals", nav_fx_s:"FX", nav_fx:"💱 Exchange rates",
 kpi_balance:"💼 Total balance", kpi_income:"📈 Income this month", kpi_expense:"📉 Expenses this month", kpi_due:"⏰ Due in next 15 days",
 ch_6m:"Last 6 months", ch_by_cat:"Spending by category (this month)", leg_income:"Income", leg_expense:"Expenses",
 p_recent:"🕐 Recent transactions", p_bills:"⏰ Scheduled bills", p_goals:"🎯 Goals", p_loans:"🏦 Loans", p_topcat:"🏆 Top spending categories (this month)",
@@ -1039,8 +1039,8 @@ total_borrowed:"Total borrowed", paid_so_far:"Paid so far", movs_registered:"tra
 net_saving:"Net saving:", deficit:"Deficit:", pay_inst:"✔ Pay installment", installments_btn:"📋 Installments", paid_off:"✅ Paid off",
 no_goals_first:"Create your first savings goal 💪", no_loans_empty:"Add your loans to track installments",
 completed:"🏆 Completed!", by_prefix:" · by ", tap_options:" · tap to see options", k_left:"remaining",
-pres_title:"💸 Spending budgets", pres_new:"New budget", pres_mine:"My budgets (this month)", lbl_limit:"Monthly limit (€)", pres_create:"Create budget", pres_over:"Budget exceeded!", no_pres:"No budgets yet", to_pres_saved:"✅ Budget saved", to_pres_del:"🗑️ Budget deleted", conf_del_budget:"Delete this budget?", k_of:"of", commission:"Early repayment fee", remaining_balance:"Remaining balance", payoff_total:"Total to pay if you pay it off today", commission_rule:"more than 12 months left: 1% · 12 months or less: 0.5%", d_principal:"Remaining principal", d_saved_interest:"Interest you save", d_penalty:"Early repayment fee", due_now:"due now!", fab_budget:"💸 New budget",
-d_no:"No.", d_due:"Due date", d_amount:"Amount", d_status_en:"Status"
+pres_title:"💸 Spending budgets", pres_new:"New budget", pres_mine:"My budgets (this month)", lbl_limit:"Monthly limit (€)", pres_create:"Create budget", pres_over:"Budget exceeded!", no_pres:"No budgets yet", to_pres_saved:"✅ Budget saved", to_pres_del:"🗑️ Budget deleted", conf_del_budget:"Delete this budget?", k_of:"of", commission:"Early repayment fee", remaining_balance:"Remaining balance", payoff_total:"Full amortization", commission_rule:"more than 12 months left: 1% · 12 months or less: 0.5%", d_principal:"Remaining principal", d_saved_interest:"Interest you save", d_penalty:"Early repayment fee", due_now:"due now!", fab_budget:"💸 New budget",
+d_no:"No.", d_due:"Due date", d_amount:"Amount", d_status_en:"Status", fx_title:"💱 Exchange rates", fx_refresh:"↻ Refresh", fx_desc:"Reference exchange rates, updated from a public source.", fx_updated:"Updated"
 }
 };
 let LANG = db.lang || 'es';
@@ -1055,8 +1055,8 @@ function aplicarIdioma(){
 }
 function guardar(){ localStorage.setItem(LS_KEY, JSON.stringify(db)); }
 
-function abrirModal(id){ $(id).classList.add('open'); document.body.style.overflow='hidden'; }
-function cerrarModal(id){ $(id).classList.remove('open'); document.body.style.overflow=''; }
+function abrirModal(id){ $(id).classList.add('open'); document.body.style.overflow='hidden'; const fw=$('fabWrap'); if(fw) fw.style.display='none'; }
+function cerrarModal(id){ $(id).classList.remove('open'); document.body.style.overflow=''; if(!document.querySelector('.modal-backdrop.open')) renderFab(vistaActiva()); }
 // Ventana de detalle con botones (igual en movs, pagos y metas)
 function abrirDetalle(titulo, cuerpo, acciones){
   $('detalleTituloGenerico').textContent = titulo;
@@ -1162,12 +1162,13 @@ function nuevoMeta(){ cancelarEdicionMeta(); abrirModal('modalMeta'); }
 function nuevoPres(){ $('prLimite').value=''; renderPresupuestos(); abrirModal('modalPres'); }
 const FAB_ITEMS = {
   panel:[{k:'fab_tx', fn:()=>nuevoMov()}],
-  movimientos:[{k:'fab_tx', fn:()=>nuevoMov()}],
+  movimientos:[{k:'fab_tx', fn:()=>nuevoMov()},{k:'fab_goal', fn:()=>nuevoMeta()},{k:'fab_budget', fn:()=>nuevoPres()}],
   cobros:[{k:'fab_bill', fn:()=>nuevoCobro()},
           {k:'fab_loan', fn:()=>nuevoPrestamo()}],
   metas:[{k:'fab_goal', fn:()=>nuevoMeta()},
          {k:'fab_budget', fn:()=>nuevoPres()}],
-  ajustes:[]
+  ajustes:[],
+  divisas:[]
 };
 function vistaActiva(){ const v = document.querySelector('.view.active'); return v ? v.id.replace('view-','') : 'panel'; }
 function renderFab(view){
@@ -1207,6 +1208,7 @@ function switchView(v){
   $('view-'+v).classList.add('active');
   history.replaceState(null,'','#'+v);
   if(v==='panel') setTimeout(renderCharts, 60);
+  if(v==='divisas') actualizarDivisas();
   renderFab(v);
   window.scrollTo({top:0});
 }
@@ -1766,15 +1768,15 @@ function renderCobros(){
   const cobros = [...db.cobros].sort((a,b)=>(a.activo===b.activo? a.proxima.localeCompare(b.proxima) : (a.activo?-1:1)));
   const freqTxt = {unico:t('f_unico'), mensual:t('f_mensual'), semanal:t('f_semanal'), anual:t('f_anual')};
   $('tablaCobros').innerHTML = cobros.length ? cobros.map(c=>`
-    <tr class="mov-row" style="${c.activo?'':'opacity:.45'}" onclick="verDetalleCobro('${c.id}')"><td><span class="dot" style="background:${c.activo?'var(--green)':'var(--muted)'};width:8px;height:8px;margin-right:4px;"></span><b>${esc(c.concepto)}</b> <small style="color:var(--muted)">${freqTxt[c.frecuencia]}</small></td>
-    <td class="cell-dim">${fmtFechaCorta(c.proxima)} <small style="color:var(--muted)">${c.hora}</small></td>
+    <tr class="mov-row bill-row" data-bill-id="${c.id}" style="${c.activo?'':'opacity:.45'}"><td><span class="dot" style="background:${c.activo?'var(--green)':'var(--muted)'};width:8px;height:8px;margin-right:4px;"></span><b>${esc(c.concepto)}</b></td>
+    <td class="cell-dim">${fmtFechaCorta(c.proxima)}</td>
     <td class="red" style="text-align:right">−${fmt(c.monto)}</td></tr>`).join('')
     : '<tr><td colspan="3"><div class="empty">'+t('no_bills')+'</div></td></tr>';
 }
 function renderMetas(){
   $('listaMetas').innerHTML = db.metas.length ? db.metas.map(g=>{
     const pct = Math.min(100, Math.round(g.ahorrado/g.objetivo*100));
-    return `<div class="mov-row" style="margin-bottom:20px;padding-bottom:16px;border-bottom:1px solid var(--border);" onclick="verDetalleMeta('${g.id}')">
+    return `<div class="mov-row goal-card" data-goal-id="${g.id}" role="button" tabindex="0" style="margin-bottom:20px;padding-bottom:16px;border-bottom:1px solid var(--border);">
       <div class="row-between">
         <b>${esc(g.nombre)}</b>
         <span class="${pct>=100?'green':'accent'}" style="font-weight:700;">${pct>=100?t('completed'):fmt(g.ahorrado)+' / '+fmt(g.objetivo)}</span>
@@ -1788,13 +1790,23 @@ function renderPrestamos(){
   $('listaPrestamos').innerHTML = db.prestamos.length ? db.prestamos.map(p=>{
     const restante = (p.cuotasTotal-p.pagadas)*p.montoCuota;
     const pct = Math.round(p.pagadas/p.cuotasTotal*100);
-    return `<div class="mov-row" style="margin-bottom:20px;padding-bottom:16px;border-bottom:1px solid var(--border);" onclick="verDetallePrestamo('${p.id}')">
+    return `<div class="mov-row loan-card" data-loan-id="${p.id}" role="button" tabindex="0" style="margin-bottom:20px;padding:16px;border:1px solid var(--border);border-radius:14px;background:var(--card2);">
       <div class="row-between"><b>${esc(p.nombre)}</b><span class="yellow" style="font-weight:700;">${p.pagadas>=p.cuotasTotal?t('paid_off'):t('you_have_left')+fmt(restante)}</span></div>
       <div class="progress"><div style="width:${pct}%;background:${pct>=100?'var(--green)':'var(--purple)'};"></div></div>
       <small style="color:var(--muted);display:block;margin-top:8px;">${p.pagadas}/${p.cuotasTotal} ${t('k_insts')} · ${fmt(p.montoCuota)}/${t('k_inst')} · ${t('k_day')}${p.diaPago}${t('tap_options')}</small>
     </div>`;
   }).join('') : t('no_loans_empty');
 }
+
+// Clic fiable en toda la tarjeta de préstamos/cobros/metas (no solo en el nombre).
+document.addEventListener('click', e=>{
+  const loan=e.target.closest('.loan-card'); if(loan && !e.target.closest('button,select,a,input')){ verDetallePrestamo(loan.dataset.loanId); return; }
+  const bill=e.target.closest('.bill-row'); if(bill){ verDetalleCobro(bill.dataset.billId); return; }
+  const goal=e.target.closest('.goal-card'); if(goal){ verDetalleMeta(goal.dataset.goalId); return; }
+});
+document.addEventListener('keydown', e=>{
+  if((e.key==='Enter'||e.key===' ') && e.target.closest('.loan-card')){ e.preventDefault(); verDetallePrestamo(e.target.closest('.loan-card').dataset.loanId); }
+});
 
 // En iOS el teclado tapa el botón: llevamos el campo enfocado a la vista
 document.addEventListener('focusin', e => {
@@ -1813,6 +1825,24 @@ document.addEventListener('touchend', e => {
   lastTouchEnd = ahora;
 }, {passive:false});
 
+// ================= DIVISAS =================
+async function actualizarDivisas(){
+  const box=$('fxRates'); if(!box) return;
+  const base=(db.moneda||'EUR').toUpperCase();
+  $('fxBaseLabel').textContent=base;
+  box.innerHTML='<div class="empty" style="grid-column:1/-1">…</div>';
+  try{
+    const res=await fetch('https://api.frankfurter.app/latest?from='+encodeURIComponent(base));
+    if(!res.ok) throw new Error('fx');
+    const data=await res.json();
+    const rates=Object.entries(data.rates||{}).filter(([k])=>k!==base);
+    box.innerHTML=rates.map(([cur,val])=>`<div class="card rate-card"><div class="row-between"><b>${cur}</b><span class="rate-value">${Number(val).toFixed(cur==='JPY'?2:4)}</span></div><div class="rate-meta">1 ${base} = ${Number(val).toFixed(cur==='JPY'?2:4)} ${cur}</div></div>`).join('') || `<div class="empty" style="grid-column:1/-1">—</div>`;
+    $('fxUpdated').textContent=t('fx_updated')+': '+new Date().toLocaleTimeString(LOCALE(),{hour:'2-digit',minute:'2-digit'});
+  }catch(e){
+    box.innerHTML=`<div class="empty" style="grid-column:1/-1">${LANG==='en'?'Unable to load exchange rates.':'No se pudieron cargar los tipos de cambio.'}</div>`;
+  }
+}
+
 // ================= INICIO =================
 $('fechaHoy').textContent = new Date().toLocaleDateString(LOCALE(),{weekday:'long',day:'numeric',month:'long',year:'numeric'});
 $('mFecha').value = hoyISO(); $('cFecha').value = hoyISO();
@@ -1823,10 +1853,21 @@ aplicarIdioma();
 aplicarCobrosVencidos();
 renderTodo();
 const hashView = location.hash.replace('#','');
-if(['panel','movimientos','cobros','metas','ajustes'].includes(hashView)) switchView(hashView);
+if(['panel','movimientos','cobros','divisas','metas','ajustes'].includes(hashView)) switchView(hashView);
 renderFab(hashView || 'panel');
 </script>
 </body>
 </html>
 
 <!-- Contador rediseñado: tipo calendario, sin animación de giro. -->
+
+<style>
+.loan-card,.bill-row,.goal-card{cursor:pointer;user-select:none;-webkit-user-select:none;}
+.loan-card:active,.bill-row:active,.goal-card:active{opacity:.72;transform:scale(.995);}
+#view-divisas .rate-card{padding:14px 16px;}
+.rate-value{font-size:1.1rem;font-weight:800;}
+.rate-meta{font-size:.72rem;color:var(--muted);margin-top:4px;}
+.currency-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;}
+@media(max-width:430px){.currency-grid{grid-template-columns:1fr;}}
+</style>
+
