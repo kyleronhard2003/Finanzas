@@ -124,7 +124,7 @@
   .form-card::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(90deg,var(--accent),var(--purple));}
   .form-card h3{display:flex;align-items:center;gap:8px;color:var(--text);text-transform:none;letter-spacing:0;font-size:.95rem;margin-bottom:16px;}
   .form-card h3::after{content:'';flex:1;height:1px;background:var(--border);}
-  .modal-backdrop{position:fixed;inset:0;background:rgba(4,8,16,.62);backdrop-filter:blur(3px);z-index:80;display:none;align-items:flex-start;justify-content:center;padding:20px 14px;overflow-y:auto;-webkit-overflow-scrolling:touch;}
+  .modal-backdrop{position:fixed;inset:0;background:rgba(4,8,16,.75);z-index:90;display:none;-webkit-transform:translateZ(0);align-items:flex-start;justify-content:center;padding:20px 14px;overflow-y:auto;-webkit-overflow-scrolling:touch;}
   .modal-backdrop.open{display:flex;animation:fadeIn .2s ease;}
   .modal-card{width:100%;max-width:470px;margin:auto;max-height:calc(100vh - 40px);overflow-y:auto;animation:popIn .22s ease;}
   @keyframes popIn{from{opacity:0;transform:translateY(14px) scale(.97);}to{opacity:1;transform:none;}}
@@ -133,8 +133,8 @@
   .section-actions{display:flex;gap:10px;flex-wrap:wrap;margin:4px 0 16px;}
 
   /* ===== FAB: botón flotante de nuevos registros ===== */
-  .fab-wrap{position:fixed;right:16px;bottom:calc(84px + env(safe-area-inset-bottom));z-index:70;display:none;flex-direction:column;align-items:flex-end;gap:10px;}
-  .fab{width:56px;height:56px;border-radius:50%;border:none;background:linear-gradient(135deg,#5c9dff,#3a78e8);color:#fff;font-size:1.55rem;line-height:1;cursor:pointer;box-shadow:0 6px 22px rgba(79,140,255,.45);display:flex;align-items:center;justify-content:center;transition:transform .18s, box-shadow .2s;touch-action:manipulation;}
+  .fab-wrap{position:fixed;right:16px;bottom:calc(98px + env(safe-area-inset-bottom));z-index:96;display:none;pointer-events:auto;flex-direction:column;align-items:flex-end;gap:10px;}
+  .fab{width:60px;height:60px;border-radius:50%;border:none;background:linear-gradient(135deg,#5c9dff,#3a78e8);color:#fff;font-size:1.55rem;line-height:1;cursor:pointer;box-shadow:0 6px 22px rgba(79,140,255,.45);display:flex;align-items:center;justify-content:center;transition:transform .18s, box-shadow .2s;touch-action:manipulation;}
   .fab:active{transform:scale(.92);}
   .fab.open{transform:rotate(45deg);}
   .fab-menu{display:flex;flex-direction:column;gap:8px;align-items:flex-end;opacity:0;pointer-events:none;transform:translateY(8px);transition:.18s;}
@@ -617,6 +617,10 @@
   /* Filas táctiles con feedback al pulsar */
   .mov-row{transition:opacity .15s, transform .15s;}
   .mov-row:active{opacity:.6;}
+/* ===== FIXES v2.4 (iOS) ===== */
+#modalConfirm{z-index:120;}
+.modal-card{overscroll-behavior:contain;-webkit-overflow-scrolling:touch;}
+.btn,.fab,.fab-item,.icon-btn{user-select:none;-webkit-user-select:none;}
 </style>
 <base target="_blank">
 </head>
@@ -685,7 +689,7 @@
 
   <!-- ============ MOVIMIENTOS ============ -->
   <section id="view-movimientos" class="view">
-    <div class="row-between" style="margin-top:8px;"><h2 class="section-title" style="margin:0;" data-i18n="v_movs_title">💸 Ingresos y gastos</h2><button class="btn" onclick="abrirModal('modalMov')" data-i18n="btn_new_tx">＋ Nuevo movimiento</button></div>
+    <div class="row-between" style="margin-top:8px;"><h2 class="section-title" style="margin:0;" data-i18n="v_movs_title">💸 Ingresos y gastos</h2><button class="btn" onclick="nuevoMov()" data-i18n="btn_new_tx">＋ Nuevo movimiento</button></div>
     <div class="grid grid-2">
 
       <div class="card">
@@ -711,7 +715,7 @@
 
   <!-- ============ COBROS ============ -->
   <section id="view-cobros" class="view">
-    <div class="row-between" style="margin-top:8px;"><h2 class="section-title" style="margin:0;" data-i18n="v_cobros_title">💳 Pagos y préstamos</h2><button class="btn" onclick="abrirModal('modalCobro')" data-i18n="btn_new_bill">＋ Nuevo cobro</button></div>
+    <div class="row-between" style="margin-top:8px;"><h2 class="section-title" style="margin:0;" data-i18n="v_cobros_title">💳 Pagos y préstamos</h2><button class="btn" onclick="nuevoCobro()" data-i18n="btn_new_bill">＋ Nuevo cobro</button></div>
     <div class="grid grid-2">
 
       <div class="card">
@@ -726,7 +730,7 @@
     </div>
   <!-- ============ PRÉSTAMOS ============ -->
   
-    <div class="row-between" style="margin-top:34px;"><h3 class="section-title" style="margin:0;" data-i18n="loans_title">🏦 Préstamos y cuotas</h3><button class="btn" onclick="abrirModal('modalPrestamo')" data-i18n="btn_new_loan">＋ Nuevo préstamo</button></div>
+    <div class="row-between" style="margin-top:34px;"><h3 class="section-title" style="margin:0;" data-i18n="loans_title">🏦 Préstamos y cuotas</h3><button class="btn" onclick="nuevoPrestamo()" data-i18n="btn_new_loan">＋ Nuevo préstamo</button></div>
     <div class="grid grid-2">
 
       <div class="card"><h3 data-i18n="my_loans">Mis préstamos</h3><div id="listaPrestamos"></div></div>
@@ -735,7 +739,7 @@
 
   <!-- ============ METAS ============ -->
   <section id="view-metas" class="view">
-    <div class="row-between" style="margin-top:8px;"><h2 class="section-title" style="margin:0;" data-i18n="metas_title">🎯 Metas de ahorro</h2><button class="btn" onclick="abrirModal('modalMeta')" data-i18n="btn_new_goal">＋ Nueva meta</button></div>
+    <div class="row-between" style="margin-top:8px;"><h2 class="section-title" style="margin:0;" data-i18n="metas_title">🎯 Metas de ahorro</h2><button class="btn" onclick="nuevoMeta()" data-i18n="btn_new_goal">＋ Nueva meta</button></div>
     <div class="grid grid-2">
 
       <div class="card"><h3 data-i18n="my_goals">Mis metas</h3><div id="listaMetas"></div></div>
@@ -756,6 +760,15 @@
         <select id="selLang">
           <option value="es">🇪🇸 Español</option>
           <option value="en">🇬🇧 English</option>
+        </select>
+      </div>
+      <div class="card">
+        <h3 data-i18n="set_money">💱 Moneda</h3>
+        <p data-i18n="set_money_desc" style="color:var(--muted);font-size:.88rem;margin-bottom:14px;">Elige la moneda de toda la app.</p>
+        <select id="selMoneda">
+          <option value="EUR">💶 Euro (EUR)</option>
+          <option value="USD">💵 Dólar (USD)</option>
+          <option value="PHP">🇵🇭 Peso filipino (PHP)</option>
         </select>
       </div>
       <div class="card">
@@ -879,8 +892,8 @@
     <p id="textoMetaMonto" style="color:var(--muted);margin:0 0 14px;"></p>
     <form id="formMetaMonto">
       <input type="hidden" id="metaMontoId"><input type="hidden" id="metaMontoModo">
-      <div><label>Monto (€)</label><input type="number" id="metaMontoValor" min="0.01" step="0.01" required placeholder="0.00" inputmode="decimal"></div>
-      <button class="btn btn-block" type="submit" id="btnMetaMonto">Guardar</button>
+      <div><label data-i18n="lbl_amount">Monto</label><input type="number" id="metaMontoValor" min="0.01" step="0.01" required placeholder="0.00" inputmode="decimal"></div>
+      <button class="btn btn-block" type="submit" id="btnMetaMonto" data-i18n="save">Guardar</button>
     </form>
   </div>
 </div>
@@ -911,7 +924,7 @@
 // ================= UTILIDADES =================
 const $ = id => document.getElementById(id);
 const LS_KEY = 'misFinanzas_v2';
-const fmt = n => new Intl.NumberFormat(LOCALE(),{style:'currency',currency:'EUR'}).format(n);
+const fmt = n => new Intl.NumberFormat(LOCALE(),{style:'currency',currency:(typeof db!=='undefined'&&db&&db.moneda)?db.moneda:'EUR'}).format(n);
 const fmtFechaCorta = iso => { if(!iso) return '—'; const d=new Date(iso.length===10?iso+'T12:00:00':iso); const p=n=>String(n).padStart(2,'0'); return p(d.getDate())+'/'+p(d.getMonth()+1)+'/'+String(d.getFullYear()).slice(2); };
 const fmtFecha = iso => { if(!iso) return '—'; const d=new Date(iso.length===10?iso+'T12:00:00':iso); return d.toLocaleDateString(LOCALE(),{day:'2-digit',month:'2-digit',year:'numeric'}); };
 const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2,7);
@@ -920,21 +933,22 @@ const esc = s => String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replac
 
 let movLimit = 10; // filas visibles en el historial de movimientos
 let db = JSON.parse(localStorage.getItem(LS_KEY) || 'null');
-if(!db) db = { movimientos:[], cobros:[], metas:[], prestamos:[], prestamoPagos:[], theme:'dark' };
+if(!db) db = { movimientos:[], cobros:[], metas:[], prestamos:[], prestamoPagos:[], theme:'dark', moneda:'EUR' };
+if(!db.moneda) db.moneda = 'EUR';
 
 // ================= IDIOMAS (ES / EN) =================
 const I18N = {
 es: {
 brand:"Mis Finanzas", nav_panel:"📊 Panel", nav_movs:"💸 Movimientos", nav_cobros:"💳 Cobros y préstamos", nav_metas:"🎯 Metas", nav_ajustes:"⚙️ Ajustes",
-nav_panel_s:"Panel", nav_movs_s:"Movs.", nav_pagos_s:"Pagos", nav_metas_s:"Metas",
-kpi_balance:"💼 Balance total", kpi_income:"📈 Ingresos este mes", kpi_expense:"📉 Gastos este mes", kpi_due:"⏰ Cobros próximos 7 días",
+nav_panel_s:"Panel", nav_movs_s:"Regis.", nav_pagos_s:"Pagos", nav_metas_s:"Metas",
+kpi_balance:"💼 Balance total", kpi_income:"📈 Ingresos este mes", kpi_expense:"📉 Gastos este mes", kpi_due:"⏰ Cobros próximos 15 días",
 ch_6m:"Últimos 6 meses", ch_by_cat:"Gastos por categoría (este mes)", leg_income:"Ingresos", leg_expense:"Gastos",
 p_recent:"🕐 Últimos movimientos", p_bills:"⏰ Cobros programados", p_goals:"🎯 Metas", p_loans:"🏦 Préstamos", p_topcat:"🏆 Top categorías de gasto (este mes)",
 no_tx_yet:"Sin movimientos todavía", no_bills:"No tienes cobros programados", no_goals:"No tienes metas creadas", no_loans:"No tienes préstamos registrados", no_exp_month:"Sin gastos este mes",
 v_movs_title:"💸 Ingresos y gastos", btn_new_tx:"＋ Nuevo movimiento", hist_filters:"Historial y filtros", ph_search:"🔍 Buscar…", opt_all:"Todos", opt_income:"Ingresos", opt_expense:"Gastos", all_months:"Todos los meses",
 th_cat:"Categoría", th_date:"Fecha", th_amount:"Monto", no_results:"Sin resultados", k_results:"resultado(s)", k_net:"Neto:", show_more:"▼ Mostrar más (", remaining:" restantes)", show_less:"▲ Mostrar menos",
 frm_new_tx:"Nuevo movimiento", frm_edit_tx:"Editar movimiento", editing_tx:"✏️ Editando movimiento", cancel_edit:"cancelar edición",
-lbl_type:"Tipo", lbl_amount:"Monto (€)", lbl_category:"Categoría", lbl_description:"Descripción", lbl_date:"Fecha",
+lbl_type:"Tipo", lbl_amount:"Monto", lbl_category:"Categoría", lbl_description:"Descripción", lbl_date:"Fecha",
 opt_inc_s:"📈 Ingreso", opt_exp_s:"📉 Gasto", save_tx:"Guardar movimiento", update_tx:"Actualizar movimiento", ph_cats:"ej. Comida, Sueldo, Transporte…", ph_detail:"Detalle (opcional)",
 v_cobros_title:"💳 Pagos y préstamos", btn_new_bill:"＋ Nuevo cobro", scheduled_bills:"Cobros programados", th_concept:"Concepto", th_next:"Próximo",
 frm_new_bill:"Nuevo cobro programado", frm_edit_bill:"Editar cobro", editing_bill:"✏️ Editando cobro", cancel:"cancelar",
@@ -954,8 +968,8 @@ t_ingreso:"ingreso", t_gasto:"gasto",
 set_title:"⚙️ Ajustes y datos", set_backup:"💾 Copia de seguridad", set_backup_desc:"Tus datos viven solo en este navegador. Exporta una copia para no perderlos o para moverlos a otro dispositivo.",
 export_data:"⬇️ Exportar datos (JSON)", import_tap:"⬆️ Toca para importar una copia", import_note:"(reemplaza los datos actuales)",
 danger:"🗑️ Zona de peligro", danger_desc:"Esta acción no se puede deshacer.", delete_all:"🗑️ Borrar todos los datos",
-about:"ℹ️ Acerca de", about_1:"App 100% local: ningún dato sale de tu dispositivo.", about_2:"Los cobros programados se descuentan automáticamente al abrir la app cuando llega su fecha y hora.", about_3:"Versión 2.3 · Diseño móvil · Septiembre 2026",
-set_lang:"🌐 Idioma", set_lang_desc:"Elige el idioma de toda la app.",
+about:"ℹ️ Acerca de", about_1:"App 100% local: ningún dato sale de tu dispositivo.", about_2:"Los cobros programados se descuentan automáticamente al abrir la app cuando llega su fecha y hora.", about_3:"Versión 2.4 · Diseño móvil · Septiembre 2026",
+set_lang:"🌐 Idioma", set_lang_desc:"Elige el idioma de toda la app.", set_money:"💱 Moneda", set_money_desc:"Elige la moneda de toda la app (préstamos, cobros, metas y movimientos).", save:"Guardar", add_money:"💰 Añadir dinero", withdraw_money:"− Retirar dinero", confirm_pay_n:"¿Confirmar pago de {n} cuota(s) ({d}–{a}/{t})? Total: {tot}", inst_label_n:"Cuotas {d}–{a}/{t} — {name}", to_money:"💱 Moneda actualizada",
 close:"Cerrar ✕", fab_tx:"💸 Nuevo movimiento", fab_bill:"💳 Nuevo cobro programado", fab_loan:"🏦 Nuevo préstamo", fab_goal:"🎯 Nueva meta",
 to_tx_upd:"✏️ Movimiento actualizado", to_tx_saved:"✅ Movimiento guardado", to_tx_del:"🗑️ Movimiento eliminado",
 to_bill_upd:"✏️ Cobro actualizado", to_bill_sched:"⏰ Cobro programado", to_bill_resumed:"▶ Cobro activado", to_bill_paused:"⏸ Cobro pausado", to_bill_del:"🗑️ Cobro eliminado",
@@ -978,15 +992,15 @@ d_no:"No.", d_due:"Due date", d_amount:"Amount", d_status_en:"Status"
 },
 en: {
 brand:"My Finances", nav_panel:"📊 Dashboard", nav_movs:"💸 Transactions", nav_cobros:"💳 Bills & loans", nav_metas:"🎯 Goals", nav_ajustes:"⚙️ Settings",
-nav_panel_s:"Home", nav_movs_s:"Txns", nav_pagos_s:"Bills", nav_metas_s:"Goals",
-kpi_balance:"💼 Total balance", kpi_income:"📈 Income this month", kpi_expense:"📉 Expenses this month", kpi_due:"⏰ Due in next 7 days",
+nav_panel_s:"Home", nav_movs_s:"Regis", nav_pagos_s:"Bills", nav_metas_s:"Goals",
+kpi_balance:"💼 Total balance", kpi_income:"📈 Income this month", kpi_expense:"📉 Expenses this month", kpi_due:"⏰ Due in next 15 days",
 ch_6m:"Last 6 months", ch_by_cat:"Spending by category (this month)", leg_income:"Income", leg_expense:"Expenses",
 p_recent:"🕐 Recent transactions", p_bills:"⏰ Scheduled bills", p_goals:"🎯 Goals", p_loans:"🏦 Loans", p_topcat:"🏆 Top spending categories (this month)",
 no_tx_yet:"No transactions yet", no_bills:"No scheduled bills", no_goals:"No goals yet", no_loans:"No loans yet", no_exp_month:"No expenses this month",
 v_movs_title:"💸 Income & expenses", btn_new_tx:"＋ New transaction", hist_filters:"History & filters", ph_search:"🔍 Search…", opt_all:"All", opt_income:"Income", opt_expense:"Expenses", all_months:"All months",
 th_cat:"Category", th_date:"Date", th_amount:"Amount", no_results:"No results", k_results:"result(s)", k_net:"Net:", show_more:"▼ Show more (", remaining:" remaining)", show_less:"▲ Show less",
 frm_new_tx:"New transaction", frm_edit_tx:"Edit transaction", editing_tx:"✏️ Editing transaction", cancel_edit:"cancel editing",
-lbl_type:"Type", lbl_amount:"Amount (€)", lbl_category:"Category", lbl_description:"Description", lbl_date:"Date",
+lbl_type:"Type", lbl_amount:"Amount", lbl_category:"Category", lbl_description:"Description", lbl_date:"Date",
 opt_inc_s:"📈 Income", opt_exp_s:"📉 Expense", save_tx:"Save transaction", update_tx:"Update transaction", ph_cats:"e.g. Food, Salary, Transport…", ph_detail:"Details (optional)",
 v_cobros_title:"💳 Bills & loans", btn_new_bill:"＋ New bill", scheduled_bills:"Scheduled bills", th_concept:"Bill", th_next:"Next",
 frm_new_bill:"New scheduled bill", frm_edit_bill:"Edit bill", editing_bill:"✏️ Editing bill", cancel:"cancel",
@@ -1006,8 +1020,8 @@ t_ingreso:"income", t_gasto:"expense",
 set_title:"⚙️ Settings & data", set_backup:"💾 Backup", set_backup_desc:"Your data lives only in this browser. Export a copy to avoid losing it or to move it to another device.",
 export_data:"⬇️ Export data (JSON)", import_tap:"⬆️ Tap to import a backup", import_note:"(replaces current data)",
 danger:"🗑️ Danger zone", danger_desc:"This action cannot be undone.", delete_all:"🗑️ Delete all data",
-about:"ℹ️ About", about_1:"100% local app: no data leaves your device.", about_2:"Scheduled bills are deducted automatically when you open the app at their date and time.", about_3:"Version 2.3 · Mobile design · September 2026",
-set_lang:"🌐 Language", set_lang_desc:"Choose the app language.",
+about:"ℹ️ About", about_1:"100% local app: no data leaves your device.", about_2:"Scheduled bills are deducted automatically when you open the app at their date and time.", about_3:"Version 2.4 · Mobile design · September 2026",
+set_lang:"🌐 Language", set_lang_desc:"Choose the app language.", set_money:"💱 Currency", set_money_desc:"Choose the currency for the whole app (loans, bills, goals and transactions).", save:"Save", add_money:"💰 Add money", withdraw_money:"− Withdraw money", confirm_pay_n:"Confirm payment of {n} installment(s) ({d}–{a}/{t})? Total: {tot}", inst_label_n:"Installments {d}–{a}/{t} — {name}", to_money:"💱 Currency updated",
 close:"Close ✕", fab_tx:"💸 New transaction", fab_bill:"💳 New scheduled bill", fab_loan:"🏦 New loan", fab_goal:"🎯 New goal",
 to_tx_upd:"✏️ Transaction updated", to_tx_saved:"✅ Transaction saved", to_tx_del:"🗑️ Transaction deleted",
 to_bill_upd:"✏️ Bill updated", to_bill_sched:"⏰ Bill scheduled", to_bill_resumed:"▶ Bill resumed", to_bill_paused:"⏸ Bill paused", to_bill_del:"🗑️ Bill deleted",
@@ -1036,6 +1050,8 @@ function aplicarIdioma(){
   document.documentElement.lang = LANG;
   document.querySelectorAll('[data-i18n]').forEach(el => { el.textContent = t(el.dataset.i18n); });
   document.querySelectorAll('[data-i18n-ph]').forEach(el => { el.placeholder = t(el.dataset.i18nPh); });
+  const cur = (db && db.moneda) ? db.moneda : 'EUR';
+  document.querySelectorAll('[data-i18n="lbl_amount"]').forEach(el => { el.textContent = t('lbl_amount') + ' (' + cur + ')'; });
 }
 function guardar(){ localStorage.setItem(LS_KEY, JSON.stringify(db)); }
 
@@ -1132,15 +1148,25 @@ $('selLang').addEventListener('change', e => {
   aplicarIdioma(); renderFab(vistaActiva()); renderTodo();
   toast(t('to_lang'));
 });
+$('selMoneda').addEventListener('change', e => {
+  db.moneda = e.target.value; guardar();
+  aplicarIdioma(); renderTodo();
+  toast(t('to_money'));
+});
 
 // ================= FAB: NUEVOS REGISTROS =================
+function nuevoMov(){ cancelarEdicionMov(); $('mFecha').value=hoyISO(); abrirModal('modalMov'); }
+function nuevoCobro(){ cancelarEdicionCobro(); $('cFecha').value=hoyISO(); abrirModal('modalCobro'); }
+function nuevoPrestamo(){ cancelarEdicionPrestamo(); abrirModal('modalPrestamo'); }
+function nuevoMeta(){ cancelarEdicionMeta(); abrirModal('modalMeta'); }
+function nuevoPres(){ $('prLimite').value=''; renderPresupuestos(); abrirModal('modalPres'); }
 const FAB_ITEMS = {
-  panel:[{k:'fab_tx', fn:()=>abrirModal('modalMov')}],
-  movimientos:[{k:'fab_tx', fn:()=>abrirModal('modalMov')}],
-  cobros:[{k:'fab_bill', fn:()=>abrirModal('modalCobro')},
-          {k:'fab_loan', fn:()=>abrirModal('modalPrestamo')}],
-  metas:[{k:'fab_goal', fn:()=>abrirModal('modalMeta')},
-         {k:'fab_budget', fn:()=>abrirModal('modalPres')}],
+  panel:[{k:'fab_tx', fn:()=>nuevoMov()}],
+  movimientos:[{k:'fab_tx', fn:()=>nuevoMov()}],
+  cobros:[{k:'fab_bill', fn:()=>nuevoCobro()},
+          {k:'fab_loan', fn:()=>nuevoPrestamo()}],
+  metas:[{k:'fab_goal', fn:()=>nuevoMeta()},
+         {k:'fab_budget', fn:()=>nuevoPres()}],
   ajustes:[]
 };
 function vistaActiva(){ const v = document.querySelector('.view.active'); return v ? v.id.replace('view-','') : 'panel'; }
@@ -1271,6 +1297,7 @@ setInterval(updateCountdowns, 1000);
 // ================= MOVIMIENTOS =================
 $('formMov').addEventListener('submit', e => {
   e.preventDefault();
+  if(window.__savingMov) return; window.__savingMov = true;
   const id = $('mId').value;
   const data = { tipo:$('mTipo').value, monto:parseFloat($('mMonto').value), categoria:$('mCategoria').value.trim()||'General', descripcion:$('mDesc').value.trim(), fecha:$('mFecha').value };
   if(id){
@@ -1278,7 +1305,7 @@ $('formMov').addEventListener('submit', e => {
   } else {
     db.movimientos.push({ id:uid(), ...data }); toast(t('to_tx_saved'));
   }
-  guardar(); cancelarEdicionMov(); cerrarModal('modalMov'); $('mFecha').value = hoyISO(); $('mMonto').value=''; $('mDesc').value=''; renderTodo();
+  guardar(); cancelarEdicionMov(); cerrarModal('modalMov'); $('mFecha').value = hoyISO(); $('mMonto').value=''; $('mDesc').value=''; renderTodo(); window.__savingMov=false;
 });
 function editarMov(id){
   const m = db.movimientos.find(x=>x.id===id); if(!m) return;
@@ -1287,7 +1314,7 @@ function editarMov(id){
   $('editNoteMov').style.display='block'; abrirModal('modalMov');
 }
 function cancelarEdicionMov(){
-  $('mId').value=''; $('tituloFormMov').textContent=t('frm_new_tx'); $('btnSubmitMov').textContent=t('save_tx'); $('editNoteMov').style.display='none'; cerrarModal('modalMov');
+  $('mId').value=''; $('mMonto').value=''; $('mDesc').value=''; $('mFecha').value=hoyISO(); $('tituloFormMov').textContent=t('frm_new_tx'); $('btnSubmitMov').textContent=t('save_tx'); $('editNoteMov').style.display='none'; cerrarModal('modalMov');
 }
 function borrarMov(id){
   confirmarWeb(t('conf_del_tx'),{danger:true}).then(ok=>{
@@ -1314,7 +1341,7 @@ function editarCobro(id){
   $('cId').value=c.id; $('cConcepto').value=c.concepto; $('cMonto').value=c.monto; $('cFecha').value=c.proxima; $('cHora').value=c.hora; $('cFrec').value=c.frecuencia;
   $('tituloFormCobro').textContent=t('frm_edit_bill'); $('btnSubmitCobro').textContent=t('update_bill'); $('editNoteCobro').style.display='block'; abrirModal('modalCobro');
 }
-function cancelarEdicionCobro(){ $('cId').value=''; $('tituloFormCobro').textContent=t('frm_new_bill'); $('btnSubmitCobro').textContent=t('schedule_bill'); $('editNoteCobro').style.display='none'; cerrarModal('modalCobro'); }
+function cancelarEdicionCobro(){ $('cId').value=''; $('cConcepto').value=''; $('cMonto').value=''; $('cFecha').value=hoyISO(); $('tituloFormCobro').textContent=t('frm_new_bill'); $('btnSubmitCobro').textContent=t('schedule_bill'); $('editNoteCobro').style.display='none'; cerrarModal('modalCobro'); }
 function toggleCobro(id){ const c = db.cobros.find(x=>x.id===id); c.activo=!c.activo; guardar(); renderTodo(); toast(c.activo?t('to_bill_resumed'):t('to_bill_paused')); }
 function borrarCobro(id){
   confirmarWeb(t('conf_del_bill'),{danger:true}).then(ok=>{
@@ -1340,12 +1367,12 @@ function editarMeta(id){
   $('gId').value=g.id; $('gNombre').value=g.nombre; $('gObjetivo').value=g.objetivo; $('gFecha').value=g.fechaObjetivo||'';
   $('tituloFormMeta').textContent=t('frm_edit_goal'); $('btnSubmitMeta').textContent=t('update_goal'); $('editNoteMeta').style.display='block'; abrirModal('modalMeta');
 }
-function cancelarEdicionMeta(){ $('gId').value=''; $('tituloFormMeta').textContent=t('frm_new_goal'); $('btnSubmitMeta').textContent=t('create_goal'); $('editNoteMeta').style.display='none'; cerrarModal('modalMeta'); }
+function cancelarEdicionMeta(){ $('gId').value=''; $('gNombre').value=''; $('gObjetivo').value=''; $('gFecha').value=''; $('tituloFormMeta').textContent=t('frm_new_goal'); $('btnSubmitMeta').textContent=t('create_goal'); $('editNoteMeta').style.display='none'; cerrarModal('modalMeta'); }
 function abrirMetaMonto(id, modo){
   const meta=db.metas.find(m=>m.id===id); if(!meta) return;
   $('metaMontoId').value=id; $('metaMontoModo').value=modo; $('metaMontoValor').value='';
   const retiro=modo==='retirar';
-  $('tituloMetaMonto').textContent=retiro?'− Retirar dinero':'＋ Añadir dinero';
+  $('tituloMetaMonto').textContent=retiro?t('withdraw_money'):t('add_money');
   $('textoMetaMonto').textContent=meta.nombre;
   $('btnMetaMonto').textContent=retiro?t('withdraw'):t('add');
   abrirModal('modalMetaMonto');
@@ -1387,16 +1414,21 @@ function editarPrestamo(id){
   $('pMontoCuota').value=p.montoCuota; $('pDia').value=p.diaPago; $('pFechaInicio').value=p.fechaInicio;
   $('tituloFormPrestamo').textContent=t('frm_edit_loan'); $('btnSubmitPrestamo').textContent=t('update_loan'); $('editNotePrestamo').style.display='block'; abrirModal('modalPrestamo');
 }
-function cancelarEdicionPrestamo(){ $('pId').value=''; $('tituloFormPrestamo').textContent=t('frm_new_loan'); $('btnSubmitPrestamo').textContent=t('register_loan'); $('editNotePrestamo').style.display='none'; cerrarModal('modalPrestamo'); }
-function pagarCuota(id){
-  const p = db.prestamos.find(x=>x.id===id);
+function cancelarEdicionPrestamo(){ $('pId').value=''; $('pNombre').value=''; $('pTotal').value=''; $('pCuotas').value=''; $('pMontoCuota').value=''; $('pDia').value=''; $('pFechaInicio').value=''; $('tituloFormPrestamo').textContent=t('frm_new_loan'); $('btnSubmitPrestamo').textContent=t('register_loan'); $('editNotePrestamo').style.display='none'; cerrarModal('modalPrestamo'); }
+function pagarCuota(id, n){
+  const p = db.prestamos.find(x=>x.id===id); if(!p) return;
+  p.pagadas = p.pagadas || 0;
   if(p.pagadas >= p.cuotasTotal){ toast(t('to_loan_paid_full')); return; }
-  confirmarWeb(t('confirm_pay').replace('{n}',p.pagadas+1).replace('{t}',p.cuotasTotal).replace('{a}',fmt(p.montoCuota))).then(ok=>{
+  n = Math.max(1, Math.min(parseInt(n)||1, p.cuotasTotal - p.pagadas));
+  const de = p.pagadas + 1, a2 = p.pagadas + n, total = p.montoCuota * n;
+  confirmarWeb(t('confirm_pay_n').replace('{n}',n).replace('{d}',de).replace('{a}',a2).replace('{t}',p.cuotasTotal).replace('{tot}',fmt(total))).then(ok=>{
     if(!ok) return;
-    p.pagadas++;
-    db.prestamoPagos.push({ id:uid(), prestamoId:id, nCuota:p.pagadas, monto:p.montoCuota, fecha:hoyISO() });
-    db.movimientos.push({ id:uid(), tipo:'gasto', monto:p.montoCuota, categoria:t('cat_loan'), descripcion:t('inst_label').replace('{n}',p.pagadas).replace('{t}',p.cuotasTotal).replace('{name}',p.nombre), fecha:hoyISO(), auto:true });
-    guardar(); renderTodo(); verDetallePrestamo(id); toast(t('to_inst_paid'));
+    for(let i=0;i<n;i++){
+      p.pagadas++;
+      db.prestamoPagos.push({ id:uid(), prestamoId:id, nCuota:p.pagadas, monto:p.montoCuota, fecha:hoyISO() });
+    }
+    db.movimientos.push({ id:uid(), tipo:'gasto', monto:total, categoria:t('cat_loan'), descripcion:t('inst_label_n').replace('{d}',de).replace('{a}',a2).replace('{t}',p.cuotasTotal).replace('{name}',p.nombre), fecha:hoyISO(), auto:true });
+    guardar(); renderTodo(); verDetallePrestamo(id); toast(t('to_inst_paid')+(n>1?' ×'+n:''));
   });
 }
 function borrarPrestamo(id){
@@ -1463,7 +1495,7 @@ function verDetallePrestamo(id){
        <small style="color:var(--muted);display:block;margin-top:8px;">${t('commission_rule')}</small>
      </div>
      <div id="cuotasPrestamo" style="display:none;max-height:280px;overflow-y:auto;"></div>`,
-    `${p.pagadas<p.cuotasTotal?`<button class="btn btn-green btn-sm" onclick="cerrarModal('modalDetalle');pagarCuota('${p.id}')">${t('pay_inst')}</button>`:`<span class="green" style="font-weight:700;">${t('paid_off')}</span>`}
+    `${p.pagadas<p.cuotasTotal?`<div style="display:flex;gap:8px;align-items:center;flex:1 1 100%;"><select id="selNPagar" style="flex:1;min-width:90px;padding:9px 10px;font-size:.9rem;">${Array.from({length:p.cuotasTotal-p.pagadas},(_,i)=>`<option value="${i+1}">${i+1}</option>`).join('')}</select><button class="btn btn-green btn-sm" style="flex:1;" onclick="pagarCuota('${p.id}', document.getElementById('selNPagar').value)">${t('pay_inst')}</button></div>`:`<span class="green" style="font-weight:700;">${t('paid_off')}</span>`}
      <button class="btn btn-ghost btn-sm" onclick="toggleTablaCuotas('${p.id}')">${t('installments_btn')}</button>
      <button class="btn btn-ghost btn-sm" onclick="cerrarModal('modalDetalle');editarPrestamo('${p.id}')">${t('edit')}</button>
      <button class="btn btn-danger btn-sm" onclick="cerrarModal('modalDetalle');borrarPrestamo('${p.id}')">${t('delete')}</button>`);
@@ -1665,7 +1697,7 @@ function renderTodo(){
   const ahorro = ingresos - gastos;
   $('pAhorroMes').innerHTML = ahorro>=0 ? `${t('net_saving')} <b class="green">${fmt(ahorro)}</b>` : `${t('deficit')} <b class="red">${fmt(-ahorro)}</b>`;
 
-  const limite = new Date(); limite.setDate(limite.getDate()+7);
+  const limite = new Date(); limite.setDate(limite.getDate()+15);
   const cobrosProx = db.cobros.filter(c=>c.activo && new Date(c.proxima)<=limite);
   const prestamosProx = db.prestamos.filter(p=>(p.pagadas||0)<p.cuotasTotal)
     .filter(p=>{ const info = proximaCuotaInfo(p); return info && new Date(info.fecha+'T23:59:59')<=limite; });
@@ -1764,6 +1796,11 @@ function renderPrestamos(){
   }).join('') : t('no_loans_empty');
 }
 
+// En iOS el teclado tapa el botón: llevamos el campo enfocado a la vista
+document.addEventListener('focusin', e => {
+  setTimeout(() => { try{ e.target.scrollIntoView({block:'center', behavior:'smooth'}); }catch(_){} }, 350);
+});
+
 // ================= BLOQUEO DE ZOOM =================
 document.addEventListener('gesturestart', e => e.preventDefault());
 document.addEventListener('gesturechange', e => e.preventDefault());
@@ -1781,6 +1818,7 @@ $('fechaHoy').textContent = new Date().toLocaleDateString(LOCALE(),{weekday:'lon
 $('mFecha').value = hoyISO(); $('cFecha').value = hoyISO();
 aplicarTema();
 $('selLang').value = LANG;
+$('selMoneda').value = db.moneda || 'EUR';
 aplicarIdioma();
 aplicarCobrosVencidos();
 renderTodo();
