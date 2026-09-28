@@ -930,7 +930,7 @@ function fmtCountdown(diff){
   const s = Math.floor(diff/1000);
   const d = Math.floor(s/86400), h = Math.floor(s%86400/3600), m = Math.floor(s%3600/60), sec = s%60;
   const p = n => String(n).padStart(2,'0');
-  return `${p(d)} ${LANG==='en'?'DAYS':'DÍAS'} - ${p(h)} ${LANG==='en'?'HOURS':'HORAS'} - ${p(m)} ${LANG==='en'?'MINUTES':'MINUTOS'} - ${p(sec)} ${LANG==='en'?'SECONDS':'SEGUNDOS'}`;
+  return `${p(d)} D - ${p(h)} H - ${p(m)} M - ${p(sec)} S`;
 }
 function updateCountdowns(){
   const ahora = new Date();
@@ -1299,7 +1299,7 @@ $('formPres').addEventListener('submit', e => {
   const ex = presupuestoParaCategoria(canon);
   if(ex) ex.limite = limite;
   else db.presupuestos.push({ id:uid(), categoria:canon, limite });
-  guardar(); $('prLimite').value=''; renderTodo(); toast(t('to_pres_saved'));
+  guardar(); $('prLimite').value=''; cerrarModal('modalPres'); renderTodo(); toast(t('to_pres_saved'));
 });
 function borrarPresupuesto(id){
   confirmarWeb(t('conf_del_budget'),{danger:true}).then(ok=>{
