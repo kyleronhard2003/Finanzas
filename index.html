@@ -358,8 +358,11 @@
 .countdown-calendar .count-card::before{content:"";position:absolute;left:0;right:0;top:50%;height:1px;opacity:.28;transform:translateY(-.5px);}
 .countdown-calendar .count-number{position:relative!important;z-index:2!important;font-variant-numeric:tabular-nums!important;font-feature-settings:"tnum"!important;font-size:26px!important;font-weight:800!important;line-height:1!important;transform:none!important;display:block!important;}
 .countdown-calendar .count-label{margin-top:5px!important;font-size:9px!important;font-weight:700!important;letter-spacing:.08em!important;opacity:.65!important;transform:none!important;}
-.countdown-calendar .count-card.flip .count-number{animation:calendarFlip .42s ease-in-out!important;transform-origin:50% 50%!important;}
-@keyframes calendarFlip{0%{transform:rotateX(0deg);opacity:1}45%{transform:rotateX(-82deg);opacity:.35}100%{transform:rotateX(0deg);opacity:1}}
+.countdown-calendar .count-card{background:var(--card2)!important;border:1px solid var(--border)!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.06),0 2px 5px rgba(0,0,0,.12)!important;isolation:isolate;}
+.countdown-calendar .count-card::after{content:"";position:absolute;left:0;right:0;top:50%;height:1px;background:var(--border);opacity:.55;z-index:1;}
+.countdown-calendar .count-number{overflow:hidden!important;height:1em!important;min-width:100%!important;text-align:center!important;}
+.countdown-calendar .count-number.flip{animation:calendarSheetDown .38s cubic-bezier(.2,.75,.25,1) both!important;}
+@keyframes calendarSheetDown{0%{transform:translateY(-115%);opacity:0}55%{transform:translateY(8%);opacity:1}100%{transform:translateY(0);opacity:1}}
 @media(max-width:480px){.countdown-calendar{gap:6px!important}.countdown-calendar .count-unit{min-width:48px!important}.countdown-calendar .count-card{width:48px!important;height:43px!important}.countdown-calendar .count-number{font-size:23px!important}}
 </style>
 </head>
@@ -946,17 +949,32 @@ function aplicarCobrosVencidos(){
 
 // ================= CUENTA ATRÁS DE COBROS (PANEL) =================
 function fmtCountdown(diff){
-  if(diff<=0) return '<span class=\"countdown-calendar\"><span class=\"countdown-unit\"><span class=\"countdown-number\">00</span><span class=\"countdown-label\">D</span></span><span class=\"countdown-unit\"><span class=\"countdown-number\">00</span><span class=\"countdown-label\">H</span></span><span class=\"countdown-unit\"><span class=\"countdown-number\">00</span><span class=\"countdown-label\">M</span></span><span class=\"countdown-unit\"><span class=\"countdown-number\">00</span><span class=\"countdown-label\">S</span></span></span>';
+  const p = n => String(Math.max(0,n)).padStart(2,'0');
+  if(diff<=0) diff=0;
   const s = Math.floor(diff/1000);
   const d = Math.floor(s/86400), h = Math.floor(s%86400/3600), m = Math.floor(s%3600/60), sec = s%60;
-  const p = n => String(n).padStart(2,'0');
-  return `<span class=\"countdown-calendar\"><span class=\"countdown-unit\"><span class=\"countdown-number\">${p(d)}</span><span class=\"countdown-label\">D</span></span><span class=\"countdown-unit\"><span class=\"countdown-number\">${p(h)}</span><span class=\"countdown-label\">H</span></span><span class=\"countdown-unit\"><span class=\"countdown-number\">${p(m)}</span><span class=\"countdown-label\">M</span></span><span class=\"countdown-unit\"><span class=\"countdown-number\">${p(sec)}</span><span class=\"countdown-label\">S</span></span></span>`;
+  return `<span class="countdown-calendar"><span class="count-unit"><span class="count-card"><span class="count-number">${p(d)}</span></span><span class="count-label">D</span></span><span class="count-unit"><span class="count-card"><span class="count-number">${p(h)}</span></span><span class="count-label">H</span></span><span class="count-unit"><span class="count-card"><span class="count-number">${p(m)}</span></span><span class="count-label">M</span></span><span class="count-unit"><span class="count-card"><span class="count-number">${p(sec)}</span></span><span class="count-label">S</span></span></span>`;
 }
+
 function updateCountdowns(){
   const ahora = new Date();
   document.querySelectorAll('[data-cd]').forEach(el=>{
     const c = db.cobros.find(x=>x.id===el.dataset.cd);
-    el.innerHTML = c ? fmtCountdown(new Date(c.proxima+'T'+(c.hora||'09:00')) - ahora) : '—';
+    if(!c){ el.textContent='—'; return; }
+    const diff=Math.max(0,new Date(c.proxima+'T'+(c.hora||'09:00'))-ahora);
+    const total=Math.floor(diff/1000);
+    const vals=[Math.floor(total/86400),Math.floor(total%86400/3600),Math.floor(total%3600/60),total%60].map(n=>String(n).padStart(2,'0'));
+    const nums=el.querySelectorAll('.count-number');
+    if(nums.length!==4){ el.innerHTML=fmtCountdown(diff); return; }
+    nums.forEach((n,i)=>{
+      if(n.textContent!==vals[i]){
+        n.textContent=vals[i];
+        n.classList.remove('flip');
+        void n.offsetWidth;
+        n.classList.add('flip');
+        setTimeout(()=>n.classList.remove('flip'),420);
+      }
+    });
   });
 }
 setInterval(updateCountdowns, 1000);
