@@ -147,6 +147,10 @@
   .form-card h3::after{content:'';flex:1;height:1px;background:var(--border);}
   .modal-backdrop{position:fixed;inset:0;background:rgba(4,8,16,.75);z-index:90;display:none;-webkit-transform:translateZ(0);align-items:flex-start;justify-content:center;padding:20px 14px;overflow-y:auto;-webkit-overflow-scrolling:touch;}
   .modal-backdrop.open{display:flex;animation:fadeIn .2s ease;}
+  html.modal-open{overflow:hidden!important;overscroll-behavior:none;}
+  body.modal-open{overflow:hidden!important;overscroll-behavior:none;touch-action:none;}
+  .modal-backdrop{overscroll-behavior:contain;touch-action:none;}
+  .modal-card{touch-action:pan-y;overscroll-behavior:contain;}
   .modal-card{width:100%;max-width:470px;margin:auto;max-height:calc(100vh - 40px);overflow-y:auto;animation:popIn .22s ease;}
   @keyframes popIn{from{opacity:0;transform:translateY(14px) scale(.97);}to{opacity:1;transform:none;}}
   .modal-close{position:absolute;top:12px;right:12px;width:34px;height:34px;border-radius:10px;background:var(--card2);border:1px solid var(--border);color:var(--muted);cursor:pointer;font-size:.95rem;line-height:1;transition:.15s;z-index:2;}
@@ -412,16 +416,29 @@
 .loan-card .loan-balance{font-size:.9rem;white-space:nowrap;}
 .loan-card .loan-meta{font-size:.78rem;line-height:1.6;margin-top:10px;display:block;}
 @media(max-width:520px){
-  .dashboard-kpi-row{grid-template-columns:1fr 1fr;}
-  .dashboard-kpi-row-3 .card:first-child{grid-column:1/-1;}
-  .dashboard-kpi-row-3 .card:first-child .big{font-size:1.65rem;}
-  .dashboard-kpi-row-second .card:first-child{grid-column:auto;}
-  .dashboard-kpi-row-second .card:nth-child(2){grid-column:auto;}
+  .dashboard-kpi-row{grid-template-columns:repeat(3,minmax(0,1fr));gap:7px;}
+  .dashboard-kpi-row .card{padding:10px 8px;border-radius:14px;}
+  .dashboard-kpi-row h3{font-size:.63rem;line-height:1.2;margin-bottom:7px;}
+  .dashboard-kpi-row .big{font-size:.92rem;line-height:1.15;}
+  .dashboard-kpi-row .kpi-sub{font-size:.57rem;line-height:1.25;margin-top:4px;}
   .loan-form-grid{grid-template-columns:1fr;}
   .loan-form-wide{grid-column:auto;}
 }
 </style>
 <base target="_blank">
+<style id="selection-lock">
+/* ===== BLOQUEO DE SELECCIÓN / COPIADO ===== */
+html,body,main,header,nav,section,.card,.mov-row,.goal-card,.loan-card,.bill-row,.budget-item,button,h1,h2,h3,p,span,b,small,label{
+  -webkit-user-select:none!important;
+  user-select:none!important;
+  -webkit-touch-callout:none!important;
+}
+input,textarea,select,[contenteditable="true"]{
+  -webkit-user-select:text!important;
+  user-select:text!important;
+  -webkit-touch-callout:default!important;
+}
+</style>
 </head>
 <body>
 
@@ -910,8 +927,39 @@ function aplicarIdioma(){
 }
 function guardar(){ localStorage.setItem(LS_KEY, JSON.stringify(db)); }
 
-function abrirModal(id){ $(id).classList.add('open'); document.body.style.overflow='hidden'; const fw=$('fabWrap'); if(fw) fw.style.display='none'; }
-function cerrarModal(id){ $(id).classList.remove('open'); document.body.style.overflow=''; if(!document.querySelector('.modal-backdrop.open')) renderFab(vistaActiva()); }
+function abrirModal(id){
+  const modal=$(id); if(!modal) return;
+  if(!document.querySelector('.modal-backdrop.open')){
+    const y=window.scrollY||window.pageYOffset||0;
+    document.body.dataset.modalScrollY=String(y);
+    document.body.style.position='fixed';
+    document.body.style.top=`-${y}px`;
+    document.body.style.left='0';
+    document.body.style.right='0';
+    document.body.style.width='100%';
+    document.documentElement.classList.add('modal-open');
+    document.body.classList.add('modal-open');
+  }
+  modal.classList.add('open');
+  const fw=$('fabWrap'); if(fw) fw.style.display='none';
+}
+function cerrarModal(id){
+  const modal=$(id); if(!modal) return;
+  modal.classList.remove('open');
+  if(!document.querySelector('.modal-backdrop.open')){
+    const y=parseInt(document.body.dataset.modalScrollY||'0',10)||0;
+    document.documentElement.classList.remove('modal-open');
+    document.body.classList.remove('modal-open');
+    document.body.style.position='';
+    document.body.style.top='';
+    document.body.style.left='';
+    document.body.style.right='';
+    document.body.style.width='';
+    delete document.body.dataset.modalScrollY;
+    window.scrollTo(0,y);
+    renderFab(vistaActiva());
+  }
+}
 // Ventana de detalle con botones (igual en movs, pagos y metas)
 function abrirDetalle(titulo, cuerpo, acciones){
   $('detalleTituloGenerico').textContent = titulo;
@@ -1557,7 +1605,7 @@ function renderPresupuestos(){
     const pct=p.limite>0?Math.min(100,Math.round(gastado/p.limite*100)):0; const over=gastado>p.limite;
     const restante=Math.max(0,p.limite-gastado);
     const estado=over ? `<span class="red budget-status">${t('pres_over')}</span>` : pct>=85 ? `<span class="yellow budget-status">${t('pres_near')}</span>` : `<span class="green budget-status">${t('pres_ok')}</span>`;
-    return `<div class="budget-item ${over?'alert-blink':''}" onclick="verDetallePresupuesto('${p.id}')">
+    return `<div class="budget-item ${over?'alert-blink':''}" data-budget-id="${p.id}" role="button" tabindex="0">
       <div class="budget-head"><div><b>${esc(catLabel(key))}</b><small>${t('pres_month')}</small></div>${estado}</div>
       <div class="budget-values"><b>${fmt(gastado)}</b><span>${t('k_of')} ${fmt(p.limite)}</span><strong>${pct}%</strong></div>
       <div class="progress budget-progress"><div style="width:${pct}%;background:${over?'var(--red)':pct>=85?'var(--yellow)':'var(--accent)'}"></div></div>
@@ -1708,7 +1756,7 @@ function renderPrestamos(){
   $('listaPrestamos').innerHTML = db.prestamos.length ? db.prestamos.map(p=>{
     const restante = (p.cuotasTotal-p.pagadas)*p.montoCuota;
     const pct = Math.round(p.pagadas/p.cuotasTotal*100);
-    return `<div class="mov-row loan-card" data-loan-id="${p.id}" role="button" tabindex="0">
+    return `<div class="loan-card" data-loan-id="${p.id}" role="button" tabindex="0">
       <div class="row-between"><b class="loan-title">${esc(p.nombre)}</b><span class="yellow loan-balance">${p.pagadas>=p.cuotasTotal?t('paid_off'):t('you_have_left')+fmt(restante)}</span></div>
       <div class="progress"><div style="width:${pct}%;background:${pct>=100?'var(--green)':'var(--purple)'};"></div></div>
       <small class="loan-meta">${p.pagadas}/${p.cuotasTotal} ${t('k_insts')} &nbsp;•&nbsp; ${fmt(p.montoCuota)} / ${t('k_inst')} &nbsp;•&nbsp; ${t('k_day')}${p.diaPago}<br><span style="color:var(--accent);">${t('tap_options')}</span></small>
@@ -2038,6 +2086,47 @@ input:focus,select:focus,textarea:focus{
 .loan-card:active,.bill-row:active,.goal-card:active{opacity:.72;transform:scale(.995);}
 #listaMetas{gap:18px;}
 .goal-card{padding:18px;border-radius:18px;background:linear-gradient(180deg,var(--card2),rgba(255,255,255,.015));box-shadow:0 3px 12px rgba(0,0,0,.10);}
+
+/* Préstamos: tarjetas claramente separadas del fondo, al estilo de Metas */
+#listaPrestamos{display:flex;flex-direction:column;gap:14px;margin-top:14px;}
+.loan-card{
+  position:relative;
+  display:block;
+  padding:18px 42px 16px 18px!important;
+  margin:0!important;
+  border:1px solid var(--border);
+  border-radius:18px!important;
+  background:linear-gradient(180deg,var(--card2),rgba(255,255,255,.015));
+  box-shadow:0 3px 12px rgba(0,0,0,.10);
+  cursor:pointer;
+  user-select:none;
+  -webkit-user-select:none;
+}
+.loan-card:hover{border-color:rgba(79,140,255,.38);box-shadow:0 5px 16px rgba(0,0,0,.12);}
+.loan-card:active{opacity:.72;transform:scale(.995);}
+.loan-card::after{
+  content:'›';position:absolute;right:15px;top:50%;transform:translateY(-50%);
+  color:var(--muted);font-size:1.4rem;opacity:.55;pointer-events:none;
+}
+.loan-card .progress{margin-top:14px;height:9px;}
+.loan-card .loan-title{display:block;max-width:65%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:1rem;line-height:1.35;}
+.loan-card .loan-balance{font-size:.88rem;white-space:nowrap;}
+.loan-card .loan-meta{display:block;margin-top:10px;font-size:.75rem;line-height:1.55;color:var(--muted);}
+
+/* Presupuestos: misma sensación de tarjeta independiente que Metas */
+#listaPres{display:flex;flex-direction:column;gap:14px;margin-top:14px;}
+.budget-item{
+  position:relative;
+  margin:0!important;
+  padding:17px 42px 14px 17px!important;
+  border:1px solid var(--border);
+  border-radius:18px!important;
+  background:linear-gradient(180deg,var(--card2),rgba(255,255,255,.015));
+  box-shadow:0 3px 12px rgba(0,0,0,.10);
+  cursor:pointer;
+}
+.budget-item:hover{border-color:rgba(79,140,255,.38);box-shadow:0 5px 16px rgba(0,0,0,.12);}
+.budget-item:active{opacity:.72;transform:scale(.995);}
 .goal-head,.goal-name-wrap,.goal-amounts,.goal-footer,.budget-head,.budget-values,.budget-footer{display:flex;align-items:center;justify-content:space-between;gap:10px;}
 .goal-name-wrap{justify-content:flex-start;min-width:0;}
 .goal-icon{width:34px;height:34px;display:grid;place-items:center;border-radius:10px;background:rgba(79,140,255,.10);flex:none;}
