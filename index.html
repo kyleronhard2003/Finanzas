@@ -38,7 +38,30 @@
   nav.bottom .inner{display:flex;justify-content:space-between;padding:0 6px;}
   nav.bottom button{flex:1;}
   nav.bottom button{background:none;border:none;color:var(--muted);cursor:pointer;font-size:.62rem;display:flex;flex-direction:column;align-items:center;gap:3px;padding:6px 8px;border-radius:12px;min-width:56px;transition:.15s;}
-  nav.bottom button .ico{font-size:1.35rem;line-height:1;}
+  nav.bottom button .ico{font-size:1.35rem;line-height:1;display:grid;place-items:center;width:28px;height:28px;}
+  nav.bottom button .ico svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;transition:transform .2s ease,stroke-width .2s ease;}
+  nav.bottom button.active .ico svg{transform:scale(1.08);stroke-width:2.25;}
+  nav.bottom button{gap:4px;padding:7px 8px 8px;}
+  nav.bottom button span:last-child{font-size:.64rem;letter-spacing:.15px;}
+  .currency-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;}
+  .rate-card{position:relative;overflow:hidden;transition:transform .18s ease,border-color .18s ease,box-shadow .18s ease;}
+  .rate-card.is-favorite{border-color:rgba(242,193,78,.5);box-shadow:0 5px 18px rgba(242,193,78,.08);}
+  .rate-card.is-favorite::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--yellow);}
+  .rate-card-top{display:flex;align-items:center;justify-content:space-between;gap:8px;}
+  .rate-currency{display:flex;align-items:center;gap:8px;min-width:0;}
+  .rate-flag{width:30px;height:30px;border-radius:9px;display:grid;place-items:center;background:var(--card2);font-size:1rem;flex:none;}
+  .rate-code{font-weight:800;letter-spacing:.3px;}
+  .rate-name{font-size:.67rem;color:var(--muted);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .fx-fav{width:34px;height:34px;border:1px solid var(--border);background:var(--card2);color:var(--muted);border-radius:10px;display:grid;place-items:center;cursor:pointer;font-size:1.05rem;transition:.16s;flex:none;}
+  .fx-fav:hover{border-color:var(--yellow);color:var(--yellow);transform:translateY(-1px);}
+  .fx-fav.active{color:var(--yellow);border-color:rgba(242,193,78,.55);background:rgba(242,193,78,.10);}
+  .fx-fav:active{transform:scale(.92);}
+  .fx-favorites-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:0 0 10px;}
+  .fx-favorites-title{font-size:.76rem;color:var(--muted);font-weight:800;text-transform:uppercase;letter-spacing:.65px;}
+  .fx-favorites-count{font-size:.68rem;color:var(--muted);background:var(--card2);padding:4px 8px;border-radius:20px;}
+  .fx-all-title{margin:18px 0 10px;font-size:.76rem;color:var(--muted);font-weight:800;text-transform:uppercase;letter-spacing:.65px;}
+  .fx-empty-favs{grid-column:1/-1;border:1px dashed var(--border);border-radius:14px;padding:16px;text-align:center;color:var(--muted);font-size:.82rem;background:rgba(79,140,255,.035);}
+  @media(max-width:430px){.currency-grid{grid-template-columns:1fr;}}
   nav.bottom button.active{color:var(--accent);font-weight:700;}
   main{padding:92px 24px 90px;max-width:1150px;margin:0 auto;}
   .view{display:none;}
@@ -385,10 +408,22 @@
 
 <nav class="bottom">
   <div class="inner">
-    <button data-view="panel" class="nav-btn active"><span class="ico">📊</span><span data-i18n="nav_panel_s">Panel</span></button>
-    <button data-view="movimientos" class="nav-btn"><span class="ico">💸</span><span data-i18n="nav_movs_s">Movs.</span></button>
-    <button data-view="cobros" class="nav-btn"><span class="ico">💳</span><span data-i18n="nav_pagos_s">Pagos</span></button>
-    <button data-view="divisas" class="nav-btn"><span class="ico">💱</span><span data-i18n="nav_fx_s">Divisas</span></button>
+    <button data-view="panel" class="nav-btn active">
+      <span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 19V10"/><path d="M10 19V5"/><path d="M16 19v-7"/><path d="M22 19V3"/></svg></span>
+      <span data-i18n="nav_panel_s">Panel</span>
+    </button>
+    <button data-view="movimientos" class="nav-btn">
+      <span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 6h16"/><path d="M4 12h10"/><path d="M4 18h7"/><circle cx="18" cy="15" r="3"/><path d="M18 13.5v3l2 1"/></svg></span>
+      <span data-i18n="nav_movs_s">Movs.</span>
+    </button>
+    <button data-view="cobros" class="nav-btn">
+      <span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="3"/><path d="M3 10h18"/><path d="M7 15h4"/></svg></span>
+      <span data-i18n="nav_pagos_s">Pagos</span>
+    </button>
+    <button data-view="divisas" class="nav-btn">
+      <span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M7 7h10l-3-3"/><path d="M17 17H7l3 3"/><path d="M17 7a7 7 0 0 1 2 5"/><path d="M7 17a7 7 0 0 1-2-5"/></svg></span>
+      <span data-i18n="nav_fx_s">Divisas</span>
+    </button>
   </div>
 </nav>
 
@@ -673,8 +708,9 @@ const esc = s => String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replac
 
 let movLimit = 10; // filas visibles en el historial de movimientos
 let db = JSON.parse(localStorage.getItem(LS_KEY) || 'null');
-if(!db) db = { movimientos:[], cobros:[], metas:[], prestamos:[], prestamoPagos:[], theme:'dark', moneda:'EUR' };
+if(!db) db = { movimientos:[], cobros:[], metas:[], prestamos:[], prestamoPagos:[], theme:'dark', moneda:'EUR', divisaFavoritas:['USD','GBP','JPY'] };
 if(!db.moneda) db.moneda = 'EUR';
+if(!Array.isArray(db.divisaFavoritas)) db.divisaFavoritas = ['USD','GBP','JPY'];
 
 // ================= IDIOMAS (ES / EN) =================
 const I18N = {
@@ -708,7 +744,7 @@ t_ingreso:"ingreso", t_gasto:"gasto",
 set_title:"⚙️ Ajustes y datos", set_backup:"💾 Copia de seguridad", set_backup_desc:"Tus datos viven solo en este navegador. Exporta una copia para no perderlos o para moverlos a otro dispositivo.",
 export_data:"⬇️ Exportar datos (JSON)", import_tap:"⬆️ Toca para importar una copia", import_note:"(reemplaza los datos actuales)",
 danger:"🗑️ Zona de peligro", danger_desc:"Esta acción no se puede deshacer.", delete_all:"🗑️ Borrar todos los datos",
-about:"ℹ️ Acerca de", about_1:"App 100% local: ningún dato sale de tu dispositivo.", about_2:"Los cobros programados se descuentan automáticamente al abrir la app cuando llega su fecha y hora.", about_3:"Versión 2.4 · Diseño móvil · Septiembre 2026",
+about:"ℹ️ Acerca de", about_1:"App 100% local: ningún dato sale de tu dispositivo.", about_2:"Los cobros programados se descuentan automáticamente al abrir la app cuando llega su fecha y hora.", about_3:"Versión 2.5 · Favoritos de divisas · Septiembre 2026",
 set_lang:"🌐 Idioma", set_lang_desc:"Elige el idioma de toda la app.", set_money:"💱 Moneda", set_money_desc:"Elige la moneda de toda la app (préstamos, cobros, metas y movimientos).", save:"Guardar", add_money:"💰 Añadir dinero", withdraw_money:"− Retirar dinero", confirm_pay_n:"¿Confirmar pago de {n} cuota(s) ({d}–{a}/{t})? Total: {tot}", inst_label_n:"Cuotas {d}–{a}/{t} — {name}", to_money:"💱 Moneda actualizada",
 close:"Cerrar ✕", fab_tx:"💸 Nuevo movimiento", fab_bill:"💳 Nuevo cobro programado", fab_loan:"🏦 Nuevo préstamo", fab_goal:"🎯 Nueva meta",
 to_tx_upd:"✏️ Movimiento actualizado", to_tx_saved:"✅ Movimiento guardado", to_tx_del:"🗑️ Movimiento eliminado",
@@ -760,7 +796,7 @@ t_ingreso:"income", t_gasto:"expense",
 set_title:"⚙️ Settings & data", set_backup:"💾 Backup", set_backup_desc:"Your data lives only in this browser. Export a copy to avoid losing it or to move it to another device.",
 export_data:"⬇️ Export data (JSON)", import_tap:"⬆️ Tap to import a backup", import_note:"(replaces current data)",
 danger:"🗑️ Danger zone", danger_desc:"This action cannot be undone.", delete_all:"🗑️ Delete all data",
-about:"ℹ️ About", about_1:"100% local app: no data leaves your device.", about_2:"Scheduled bills are deducted automatically when you open the app at their date and time.", about_3:"Version 2.4 · Mobile design · September 2026",
+about:"ℹ️ About", about_1:"100% local app: no data leaves your device.", about_2:"Scheduled bills are deducted automatically when you open the app at their date and time.", about_3:"Version 2.5 · Currency favorites · September 2026",
 set_lang:"🌐 Language", set_lang_desc:"Choose the app language.", set_money:"💱 Currency", set_money_desc:"Choose the currency for the whole app (loans, bills, goals and transactions).", save:"Save", add_money:"💰 Add money", withdraw_money:"− Withdraw money", confirm_pay_n:"Confirm payment of {n} installment(s) ({d}–{a}/{t})? Total: {tot}", inst_label_n:"Installments {d}–{a}/{t} — {name}", to_money:"💱 Currency updated",
 close:"Close ✕", fab_tx:"💸 New transaction", fab_bill:"💳 New scheduled bill", fab_loan:"🏦 New loan", fab_goal:"🎯 New goal",
 to_tx_upd:"✏️ Transaction updated", to_tx_saved:"✅ Transaction saved", to_tx_del:"🗑️ Transaction deleted",
@@ -1594,6 +1630,7 @@ async function actualizarDivisas(){
   const base=(db.moneda||'EUR').toUpperCase();
   $('fxBaseLabel').textContent=base;
   box.innerHTML='<div class="empty" style="grid-column:1/-1">…</div>';
+
   const endpoints=[
     'https://open.er-api.com/v6/latest/'+encodeURIComponent(base),
     'https://api.frankfurter.app/latest?from='+encodeURIComponent(base)
@@ -1614,12 +1651,74 @@ async function actualizarDivisas(){
     box.innerHTML=`<div class="empty" style="grid-column:1/-1">${LANG==='en'?'Unable to load exchange rates. Check your connection and try again.':'No se pudieron cargar los tipos de cambio. Comprueba la conexión e inténtalo de nuevo.'}</div>`;
     return;
   }
+
+  const currencyNames = LANG==='en' ? {
+    USD:'US Dollar', GBP:'British Pound', JPY:'Japanese Yen', CHF:'Swiss Franc',
+    CAD:'Canadian Dollar', AUD:'Australian Dollar', MXN:'Mexican Peso', BRL:'Brazilian Real',
+    PLN:'Polish Zloty', SEK:'Swedish Krona', NOK:'Norwegian Krone', DKK:'Danish Krone',
+    CNY:'Chinese Yuan', INR:'Indian Rupee', PHP:'Philippine Peso', KRW:'South Korean Won'
+  } : {
+    USD:'Dólar estadounidense', GBP:'Libra esterlina', JPY:'Yen japonés', CHF:'Franco suizo',
+    CAD:'Dólar canadiense', AUD:'Dólar australiano', MXN:'Peso mexicano', BRL:'Real brasileño',
+    PLN:'Zloty polaco', SEK:'Corona sueca', NOK:'Corona noruega', DKK:'Corona danesa',
+    CNY:'Yuan chino', INR:'Rupia india', PHP:'Peso filipino', KRW:'Won surcoreano'
+  };
+  const flags = {USD:'🇺🇸',GBP:'🇬🇧',JPY:'🇯🇵',CHF:'🇨🇭',CAD:'🇨🇦',AUD:'🇦🇺',MXN:'🇲🇽',BRL:'🇧🇷',PLN:'🇵🇱',SEK:'🇸🇪',NOK:'🇳🇴',DKK:'🇩🇰',CNY:'🇨🇳',INR:'🇮🇳',PHP:'🇵🇭',KRW:'🇰🇷',EUR:'🇪🇺'};
   const rates=Object.entries(data.rates).filter(([k])=>k!==base);
-  box.innerHTML=rates.map(([cur,val])=>{
-    const n=Number(val); const decimals=cur==='JPY'||cur==='KRW'?2:4; const shown=n.toFixed(decimals);
-    return `<div class="card rate-card"><div class="row-between"><b>${cur}</b><span class="rate-value">${shown}</span></div><div class="rate-meta">1 ${base} = ${shown} ${cur}</div></div>`;
-  }).join('') || `<div class="empty" style="grid-column:1/-1">—</div>`;
+  const favs = Array.isArray(db.divisaFavoritas) ? db.divisaFavoritas.filter(c=>c!==base && data.rates[c]!==undefined) : [];
+  const rest = rates.filter(([cur])=>!favs.includes(cur));
+  const ordered = [...favs.map(cur=>[cur,data.rates[cur]]), ...rest];
+
+  const card = ([cur,val]) => {
+    const n=Number(val);
+    const decimals=cur==='JPY'||cur==='KRW'?2:4;
+    const shown=n.toFixed(decimals);
+    const fav=favs.includes(cur);
+    const name=currencyNames[cur] || cur;
+    return `<div class="card rate-card ${fav?'is-favorite':''}">
+      <div class="rate-card-top">
+        <div class="rate-currency">
+          <span class="rate-flag">${flags[cur]||'💱'}</span>
+          <div style="min-width:0;"><b class="rate-code">${cur}</b><div class="rate-name">${esc(name)}</div></div>
+        </div>
+        <button type="button" class="fx-fav ${fav?'active':''}" onclick="toggleDivisaFavorita('${cur}')" aria-label="${fav?(LANG==='en'?'Remove from favorites':'Quitar de favoritos'):(LANG==='en'?'Add to favorites':'Añadir a favoritos')}" title="${fav?(LANG==='en'?'Remove from favorites':'Quitar de favoritos'):(LANG==='en'?'Add to favorites':'Añadir a favoritos')}">${fav?'★':'☆'}</button>
+      </div>
+      <div style="display:flex;align-items:baseline;justify-content:space-between;gap:8px;margin-top:13px;">
+        <span class="rate-meta" style="margin:0;">1 ${base}</span>
+        <span class="rate-value">${shown} ${cur}</span>
+      </div>
+    </div>`;
+  };
+
+  const favHtml = favs.length
+    ? favs.map(cur=>card([cur,data.rates[cur]])).join('')
+    : `<div class="fx-empty-favs">${LANG==='en'?'Tap ☆ on a currency to keep it here.':'Pulsa ☆ en una divisa para tenerla siempre aquí.'}</div>`;
+
+  const restHtml = rest.length
+    ? rest.map(x=>card(x)).join('')
+    : `<div class="empty" style="grid-column:1/-1">—</div>`;
+
+  box.innerHTML = `
+    <div style="grid-column:1/-1;">
+      <div class="fx-favorites-head">
+        <span class="fx-favorites-title">${LANG==='en'?'★ Favorites':'★ Favoritas'}</span>
+        <span class="fx-favorites-count">${favs.length}</span>
+      </div>
+      <div class="currency-grid">${favHtml}</div>
+      <div class="fx-all-title">${LANG==='en'?'All currencies':'Todas las divisas'}</div>
+      <div class="currency-grid">${restHtml}</div>
+    </div>`;
+
   $('fxUpdated').textContent=t('fx_updated')+': '+new Date().toLocaleTimeString(LOCALE(),{hour:'2-digit',minute:'2-digit'});
+}
+
+function toggleDivisaFavorita(cur){
+  if(!Array.isArray(db.divisaFavoritas)) db.divisaFavoritas=[];
+  const i=db.divisaFavoritas.indexOf(cur);
+  if(i>=0) db.divisaFavoritas.splice(i,1);
+  else db.divisaFavoritas.push(cur);
+  guardar();
+  actualizarDivisas();
 }
 
 // ================= INICIO =================
