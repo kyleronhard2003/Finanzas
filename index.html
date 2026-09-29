@@ -567,7 +567,7 @@
         <p style="color:var(--muted);font-size:.85rem;line-height:1.6;">
           <span data-i18n="about_1">App 100% local: ningún dato sale de tu dispositivo.</span><br>
           <span data-i18n="about_2">Los cobros programados se descuentan automáticamente al abrir la app cuando llega su fecha y hora.</span><br>
-          <span data-i18n="about_3">Versión 2.2 · Diseño móvil · Septiembre 2026</span>
+          <span data-i18n="about_3">Versión 2.7 · Diseño móvil · Septiembre 2026</span>
         </p>
       </div>
     </div>
@@ -797,7 +797,7 @@ t_ingreso:"income", t_gasto:"expense",
 set_title:"⚙️ Settings & data", set_backup:"💾 Backup", set_backup_desc:"Your data lives only in this browser. Export a copy to avoid losing it or to move it to another device.",
 export_data:"⬇️ Export data (JSON)", import_tap:"⬆️ Tap to import a backup", import_note:"(replaces current data)",
 danger:"🗑️ Danger zone", danger_desc:"This action cannot be undone.", delete_all:"🗑️ Delete all data",
-about:"ℹ️ About", about_1:"100% local app: no data leaves your device.", about_2:"Scheduled bills are deducted automatically when you open the app at their date and time.", about_3:"Version 2.6 · Optimized currencies · September 2026",
+about:"ℹ️ About", about_1:"100% local app: no data leaves your device.", about_2:"Scheduled bills are deducted automatically when you open the app at their date and time.", about_3:"Version 2.7 · Optimized currencies · September 2026",
 set_lang:"🌐 Language", set_lang_desc:"Choose the app language.", set_money:"💱 Currency", set_money_desc:"Choose the currency for the whole app (loans, bills, goals and transactions).", save:"Save", add_money:"💰 Add money", withdraw_money:"− Withdraw money", confirm_pay_n:"Confirm payment of {n} installment(s) ({d}–{a}/{t})? Total: {tot}", inst_label_n:"Installments {d}–{a}/{t} — {name}", to_money:"💱 Currency updated",
 close:"Close ✕", fab_tx:"💸 New transaction", fab_bill:"💳 New scheduled bill", fab_loan:"🏦 New loan", fab_goal:"🎯 New goal",
 to_tx_upd:"✏️ Transaction updated", to_tx_saved:"✅ Transaction saved", to_tx_del:"🗑️ Transaction deleted",
@@ -1600,12 +1600,22 @@ function renderPrestamos(){
 
 // Clic fiable en toda la tarjeta de préstamos/cobros/metas (no solo en el nombre).
 document.addEventListener('click', e=>{
-  const loan=e.target.closest('.loan-card'); if(loan && !e.target.closest('button,select,a,input')){ verDetallePrestamo(loan.dataset.loanId); return; }
-  const bill=e.target.closest('.bill-row'); if(bill){ verDetalleCobro(bill.dataset.billId); return; }
-  const goal=e.target.closest('.goal-card'); if(goal){ verDetalleMeta(goal.dataset.goalId); return; }
+  const clickable = e.target.closest('.loan-card,.bill-row,.goal-card,.budget-item');
+  if(!clickable) return;
+  if(e.target.closest('button,select,a,input,textarea,[data-no-open]')) return;
+  if(clickable.classList.contains('loan-card')) verDetallePrestamo(clickable.dataset.loanId);
+  else if(clickable.classList.contains('bill-row')) verDetalleCobro(clickable.dataset.billId);
+  else if(clickable.classList.contains('goal-card')) verDetalleMeta(clickable.dataset.goalId);
+  else if(clickable.classList.contains('budget-item')){
+    const id=clickable.dataset.budgetId || clickable.dataset.id;
+    if(typeof verDetallePresupuesto==='function' && id) verDetallePresupuesto(id);
+  }
 });
 document.addEventListener('keydown', e=>{
-  if((e.key==='Enter'||e.key===' ') && e.target.closest('.loan-card')){ e.preventDefault(); verDetallePrestamo(e.target.closest('.loan-card').dataset.loanId); }
+  if((e.key==='Enter'||e.key===' ') && e.target.closest('.loan-card,.bill-row,.goal-card,.budget-item')){
+    e.preventDefault();
+    e.target.closest('.loan-card,.bill-row,.goal-card,.budget-item').click();
+  }
 });
 
 // En iOS el teclado tapa el botón: llevamos el campo enfocado a la vista
@@ -1774,6 +1784,123 @@ const hashView = location.hash.replace('#','');
 if(['panel','movimientos','cobros','divisas','metas','ajustes'].includes(hashView)) switchView(hashView);
 renderFab(hashView || 'panel');
 </script>
+
+<style id="visual-redesign-v27">
+/* ===== VISUAL REDESIGN 2.7 — content only; top/bottom navigation untouched ===== */
+:root{
+  --content-glow: rgba(79,140,255,.10);
+  --card-radius:18px;
+}
+main, .main, .content, .view{scroll-behavior:smooth;}
+.card, .goal-card, .loan-card, .bill-row, .budget-item{
+  border-radius:var(--card-radius)!important;
+  transition:transform .20s cubic-bezier(.2,.8,.2,1), box-shadow .20s ease,
+             border-color .20s ease, background .20s ease, opacity .20s ease;
+  will-change:transform;
+}
+.card:hover, .goal-card:hover, .loan-card:hover, .bill-row:hover, .budget-item:hover{
+  transform:translateY(-2px);
+  box-shadow:0 10px 28px rgba(0,0,0,.12);
+  border-color:rgba(79,140,255,.28);
+}
+.card:active, .goal-card:active, .loan-card:active, .bill-row:active, .budget-item:active{
+  transform:scale(.985);
+}
+.goal-card, .loan-card, .bill-row, .budget-item{
+  cursor:pointer;
+}
+.goal-card:focus-visible, .loan-card:focus-visible, .bill-row:focus-visible, .budget-item:focus-visible{
+  outline:2px solid var(--accent);
+  outline-offset:3px;
+}
+.goal-card::after, .loan-card::after, .budget-item::after{
+  content:'›';
+  position:absolute;
+  right:14px;
+  top:50%;
+  transform:translateY(-50%);
+  color:var(--muted);
+  font-size:1.35rem;
+  opacity:.45;
+  pointer-events:none;
+}
+.goal-card, .loan-card, .budget-item{position:relative;padding-right:42px!important;}
+.bill-row{position:relative;}
+.bill-row::after{
+  content:'›';
+  float:right;
+  color:var(--muted);
+  font-size:1.2rem;
+  opacity:.45;
+}
+.empty{
+  border-radius:16px;
+  padding:24px 16px!important;
+  background:rgba(79,140,255,.035);
+  border:1px dashed var(--border);
+}
+.section-title, .view-title, h2{
+  letter-spacing:-.02em;
+}
+input,select,textarea{
+  transition:border-color .18s ease, box-shadow .18s ease, transform .18s ease;
+}
+input:focus,select:focus,textarea:focus{
+  box-shadow:0 0 0 4px var(--content-glow);
+  transform:translateY(-1px);
+}
+.btn{
+  transition:transform .16s ease, box-shadow .16s ease, opacity .16s ease;
+}
+.btn:active{transform:scale(.97);}
+.tag, .badge, .pill{
+  transition:transform .16s ease, opacity .16s ease;
+}
+.tag:hover, .badge:hover, .pill:hover{transform:translateY(-1px);}
+
+/* Emoji / icon polish for content areas */
+.goal-icon{
+  font-size:1.15rem!important;
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.04);
+}
+.emoji-icon, .category-icon, .mov-icon, .bill-icon, .loan-icon, .budget-icon{
+  display:inline-grid;
+  place-items:center;
+  width:34px;height:34px;
+  border-radius:10px;
+  background:rgba(79,140,255,.08);
+  margin-right:7px;
+  vertical-align:middle;
+  transition:transform .2s ease;
+}
+.card:hover .emoji-icon,.card:hover .category-icon,.mov-row:hover .mov-icon{
+  transform:scale(1.08) rotate(-2deg);
+}
+
+/* Normal records get a subtle entrance animation */
+@keyframes recordIn{
+  from{opacity:0;transform:translateY(7px);}
+  to{opacity:1;transform:translateY(0);}
+}
+.mov-row, .bill-row, .goal-card, .loan-card, .budget-item, .card{
+  animation:recordIn .35s ease both;
+}
+.mov-row:nth-child(2), .bill-row:nth-child(2), .goal-card:nth-child(2), .loan-card:nth-child(2), .budget-item:nth-child(2), .card:nth-child(2){animation-delay:.025s;}
+.mov-row:nth-child(3), .bill-row:nth-child(3), .goal-card:nth-child(3), .loan-card:nth-child(3), .budget-item:nth-child(3), .card:nth-child(3){animation-delay:.05s;}
+.mov-row:nth-child(4), .bill-row:nth-child(4), .goal-card:nth-child(4), .loan-card:nth-child(4), .budget-item:nth-child(4), .card:nth-child(4){animation-delay:.075s;}
+.mov-row:nth-child(5), .bill-row:nth-child(5), .goal-card:nth-child(5), .loan-card:nth-child(5), .budget-item:nth-child(5), .card:nth-child(5){animation-delay:.1s;}
+
+/* Hero title */
+.brand-title{
+  font-weight:850!important;
+  letter-spacing:-.035em;
+  text-shadow:0 1px 14px rgba(79,140,255,.14);
+}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.001ms!important;transition-duration:.001ms!important;scroll-behavior:auto!important;}
+}
+</style>
+
 </body>
 </html>
 
