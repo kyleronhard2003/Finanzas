@@ -389,7 +389,7 @@ document.addEventListener('keydown', e=>{
 function switchView(v){
   const target=document.getElementById('view-'+v);
   if(!target){
-    const pages={panel:'panel.html',movimientos:'regis.html',cobros:'pagos.html',divisas:'divisas.html',ajustes:'Ajustes.html'};
+    const pages={panel:'index.html',movimientos:'regis.html',cobros:'pagos.html',divisas:'divisas.html',ajustes:'Ajustes.html'};
     if(pages[v]) location.href=pages[v];
     return;
   }
