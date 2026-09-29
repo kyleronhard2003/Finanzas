@@ -424,6 +424,17 @@
   .loan-form-grid{grid-template-columns:1fr;}
   .loan-form-wide{grid-column:auto;}
 }
+
+/* ===== Ajuste dashboard: balance grande + resto 2x2 ===== */
+.dashboard-kpis{display:flex;flex-direction:column;gap:12px;}
+.dashboard-kpi-balance{min-height:150px;display:flex;flex-direction:column;justify-content:center;}
+.dashboard-kpi-balance .big{font-size:2.25rem;}
+.dashboard-kpi-row{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;}
+.dashboard-kpi-row .card{min-width:0;}
+.dashboard-kpi-row .big{font-variant-numeric:tabular-nums;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.dashboard-kpi-row h3{line-height:1.25;}
+.dashboard-kpi-row .card{min-height:118px;}
+.loan-card,.budget-item{pointer-events:auto!important;touch-action:manipulation;}
 </style>
 <base target="_blank">
 <style id="selection-lock">
@@ -493,18 +504,21 @@ input,textarea,select,[contenteditable="true"]{
   <!-- ============ PANEL ============ -->
   <section id="view-panel" class="view active">
     <div class="dashboard-kpis" style="margin-top:8px;">
-      <div class="dashboard-kpi-row dashboard-kpi-row-3">
-        <div class="card"><h3 data-i18n="kpi_balance">💼 Balance total</h3><div class="big accent" id="pBalance">—</div><div class="kpi-sub" id="pBalanceSub"></div></div>
-        <div class="card"><h3 data-i18n="kpi_income">📈 Ingresos este mes</h3><div class="big green" id="pIngresos">—</div><div class="kpi-sub" id="pIngresosSub"></div></div>
-        <div class="card"><h3 data-i18n="kpi_expense">📉 Gastos este mes</h3><div class="big red" id="pGastos">—</div><div class="kpi-sub" id="pAhorroMes"></div></div>
-      </div>
-      <div class="dashboard-kpi-row dashboard-kpi-row-3 dashboard-kpi-row-second">
-        <div class="card"><h3 data-i18n="kpi_due">⏰ Cobros próximos</h3><div class="big yellow" id="pCobros">—</div><div class="kpi-sub" id="pCobrosSub"></div></div>
-        <div class="card"><h3 data-i18n="kpi_after_due">💰 Saldo después de cobrar</h3><div class="big" id="pSaldoDespuesCobros">—</div><div class="kpi-sub" id="pSaldoDespuesCobrosSub"></div></div>
-        <div class="card"><h3 data-i18n="kpi_avg_month">📊 Saldo medio entre meses</h3><div class="big purple" id="pSaldoMedio">—</div><div class="kpi-sub" id="pSaldoMedioSub"></div></div>
-      </div>
-    </div>
-    <div class="grid grid-2" style="margin-top:16px;">
+  <div class="dashboard-kpi-balance card">
+    <h3 data-i18n="kpi_balance">💼 Balance</h3>
+    <div class="big accent" id="pBalance">—</div>
+    <div class="kpi-sub" id="pBalanceSub"></div>
+  </div>
+  <div class="dashboard-kpi-row">
+    <div class="card"><h3 data-i18n="kpi_income">📈 Ingresos este mes</h3><div class="big green" id="pIngresos">—</div><div class="kpi-sub" id="pIngresosSub"></div></div>
+    <div class="card"><h3 data-i18n="kpi_expense">📉 Gastos este mes</h3><div class="big red" id="pGastos">—</div><div class="kpi-sub" id="pAhorroMes"></div></div>
+  </div>
+  <div class="dashboard-kpi-row">
+    <div class="card"><h3 data-i18n="kpi_due">⏰ Cobros próximos</h3><div class="big yellow" id="pCobros">—</div><div class="kpi-sub" id="pCobrosSub"></div></div>
+    <div class="card"><h3 data-i18n="kpi_after_due">💰 Saldo después de cobrar</h3><div class="big" id="pSaldoDespuesCobros">—</div><div class="kpi-sub" id="pSaldoDespuesCobrosSub"></div></div>
+  </div>
+</div>
+<div class="grid grid-2" style="margin-top:16px;">
       <div class="card">
         <h3 data-i18n="ch_6m">Últimos 6 meses</h3>
         <canvas id="chartBarras" class="chart-box" height="165"></canvas>
@@ -813,7 +827,7 @@ const I18N = {
 es: {
 brand:"Mis Finanzas", nav_panel:"📊 Panel", nav_movs:"💸 Movimientos", nav_cobros:"💳 Cobros y préstamos", nav_metas:"🎯 Metas", nav_ajustes:"⚙️ Ajustes",
 nav_panel_s:"Panel", nav_movs_s:"Regis.", nav_pagos_s:"Pagos", nav_metas_s:"Metas", nav_fx_s:"Divisas", nav_fx:"💱 Divisas",
-kpi_balance:"💼 Balance total", kpi_income:"📈 Ingresos este mes", kpi_expense:"📉 Gastos este mes", kpi_due:"⏰ Cobros próximos", kpi_after_due:"💰 Saldo después de cobrar", kpi_avg_month:"📊 Saldo medio entre meses", kpi_after_due_sub:"Después de todos los cobros próximos", months_with_data:"meses con datos", no_month_data:"Sin datos mensuales",
+kpi_balance:"💼 Balance total", kpi_income:"📈 Ingresos este mes", kpi_expense:"📉 Gastos este mes", kpi_due:"⏰ Cobros próximos", kpi_after_due:"💰 Saldo después de cobrar", kpi_after_due_sub:"Después de todos los cobros próximos",
 ch_6m:"Últimos 6 meses", ch_by_cat:"Gastos por categoría (este mes)", leg_income:"Ingresos", leg_expense:"Gastos",
 p_recent:"🕐 Últimos movimientos", p_bills:"⏰ Cobros programados", p_goals:"🎯 Metas", p_loans:"🏦 Préstamos", p_topcat:"🏆 Top categorías de gasto (este mes)",
 no_tx_yet:"Sin movimientos todavía", no_bills:"No tienes cobros programados", no_goals:"No tienes metas creadas", no_loans:"No tienes préstamos registrados", no_exp_month:"Sin gastos este mes",
@@ -865,7 +879,7 @@ d_no:"No.", d_due:"Due date", d_amount:"Amount", d_status_en:"Status", fx_title:
 en: {
 brand:"My Finances", nav_panel:"📊 Dashboard", nav_movs:"💸 Transactions", nav_cobros:"💳 Bills & loans", nav_metas:"🎯 Goals", nav_ajustes:"⚙️ Settings",
 nav_panel_s:"Home", nav_movs_s:"Regis", nav_pagos_s:"Bills", nav_metas_s:"Goals", nav_fx_s:"FX", nav_fx:"💱 Exchange rates",
-kpi_balance:"💼 Total balance", kpi_income:"📈 Income this month", kpi_expense:"📉 Expenses this month", kpi_due:"⏰ Upcoming payments", kpi_after_due:"💰 Balance after upcoming", kpi_avg_month:"📊 Average monthly balance", kpi_after_due_sub:"After all upcoming payments", months_with_data:"months with data", no_month_data:"No monthly data",
+kpi_balance:"💼 Total balance", kpi_income:"📈 Income this month", kpi_expense:"📉 Expenses this month", kpi_due:"⏰ Upcoming payments", kpi_after_due:"💰 Balance after upcoming", kpi_after_due_sub:"After all upcoming payments",
 ch_6m:"Last 6 months", ch_by_cat:"Spending by category (this month)", leg_income:"Income", leg_expense:"Expenses",
 p_recent:"🕐 Recent transactions", p_bills:"⏰ Scheduled bills", p_goals:"🎯 Goals", p_loans:"🏦 Loans", p_topcat:"🏆 Top spending categories (this month)",
 no_tx_yet:"No transactions yet", no_bills:"No scheduled bills", no_goals:"No goals yet", no_loans:"No loans yet", no_exp_month:"No expenses this month",
@@ -956,7 +970,11 @@ function cerrarModal(id){
     document.body.style.right='';
     document.body.style.width='';
     delete document.body.dataset.modalScrollY;
+    // Restaurar una sola vez para evitar el salto arriba/abajo en iOS.
+    const prevBehavior=document.documentElement.style.scrollBehavior;
+    document.documentElement.style.scrollBehavior='auto';
     window.scrollTo(0,y);
+    document.documentElement.style.scrollBehavior=prevBehavior;
     renderFab(vistaActiva());
   }
 }
@@ -1647,12 +1665,6 @@ function renderTodo(){
   $('pSaldoDespuesCobros').textContent = fmt(saldoDespues);
   $('pSaldoDespuesCobros').className = 'big ' + (saldoDespues>=0?'green':'red');
   $('pSaldoDespuesCobrosSub').textContent = t('kpi_after_due_sub');
-  const mesesConDatos = [...new Set(db.movimientos.map(m=>m.fecha.slice(0,7)))];
-  const saldoMensual = mesesConDatos.map(m=>db.movimientos.filter(x=>x.fecha.startsWith(m)).reduce((s,x)=>s+(x.tipo==='ingreso'?x.monto:-x.monto),0));
-  const saldoMedio = saldoMensual.length ? saldoMensual.reduce((s,v)=>s+v,0)/saldoMensual.length : 0;
-  $('pSaldoMedio').textContent = fmt(saldoMedio);
-  $('pSaldoMedio').className = 'big ' + (saldoMedio>=0?'purple':'red');
-  $('pSaldoMedioSub').textContent = mesesConDatos.length ? mesesConDatos.length + ' ' + t('months_with_data') : t('no_month_data');
 
 
   const cobrosActivos = db.cobros.filter(c=>c.activo).sort((a,b)=>a.proxima.localeCompare(b.proxima));
@@ -1764,6 +1776,16 @@ function renderPrestamos(){
   }).join('') : t('no_loans_empty');
 }
 
+// Apertura directa y prioritaria de tarjetas completas.
+document.addEventListener('click', e=>{
+  const el=e.target.closest('.loan-card,.budget-item');
+  if(!el || e.target.closest('button,select,a,input,textarea,[data-no-open]')) return;
+  e.preventDefault();
+  e.stopPropagation();
+  if(el.classList.contains('loan-card')) verDetallePrestamo(el.dataset.loanId);
+  else if(el.classList.contains('budget-item')) verDetallePresupuesto(el.dataset.budgetId);
+}, true);
+
 // Clic fiable en toda la tarjeta de préstamos/cobros/metas (no solo en el nombre).
 document.addEventListener('click', e=>{
   const clickable = e.target.closest('.loan-card,.bill-row,.goal-card,.budget-item');
@@ -1784,10 +1806,7 @@ document.addEventListener('keydown', e=>{
   }
 });
 
-// En iOS el teclado tapa el botón: llevamos el campo enfocado a la vista
-document.addEventListener('focusin', e => {
-  setTimeout(() => { try{ e.target.scrollIntoView({block:'center', behavior:'smooth'}); }catch(_){} }, 350);
-});
+// No desplazar automáticamente la página al enfocar campos: evita saltos al cerrar modales en iOS.
 
 // ================= BLOQUEO DE ZOOM =================
 document.addEventListener('gesturestart', e => e.preventDefault());
@@ -2064,6 +2083,23 @@ input:focus,select:focus,textarea:focus{
 }
 @media (prefers-reduced-motion:reduce){
   *,*::before,*::after{animation-duration:.001ms!important;transition-duration:.001ms!important;scroll-behavior:auto!important;}
+}
+/* ===== AJUSTES FINALES DE PANEL Y TARJETAS ===== */
+.dashboard-kpi-balance{display:grid;grid-template-columns:1fr;margin-bottom:12px;}
+.dashboard-kpi-balance .card{min-height:150px;display:flex;flex-direction:column;justify-content:center;}
+.dashboard-kpi-balance .big{font-size:2.35rem;}
+.dashboard-kpi-grid-2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;}
+.dashboard-kpi-grid-2 .card{min-width:0;}
+.loan-card,.budget-item{touch-action:manipulation;pointer-events:auto;}
+.loan-card *,.budget-item *{pointer-events:none;}
+@media(max-width:560px){
+  .dashboard-kpi-balance .card{min-height:132px;padding:18px;}
+  .dashboard-kpi-balance .big{font-size:2rem;}
+  .dashboard-kpi-grid-2{gap:10px;}
+  .dashboard-kpi-grid-2 .card{padding:13px;min-height:112px;}
+  .dashboard-kpi-grid-2 h3{font-size:.78rem;line-height:1.25;}
+  .dashboard-kpi-grid-2 .big{font-size:1.25rem;}
+  .dashboard-kpi-grid-2 .kpi-sub{font-size:.66rem;}
 }
 </style>
 
