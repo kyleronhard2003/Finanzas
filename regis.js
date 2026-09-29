@@ -917,6 +917,41 @@ function renderPresupuestos(){
     </div>`;
   }).join(''):`<div class="empty">${t('no_pres')}</div>`;
 }
+function editarPresupuesto(id){
+  const p=db.presupuestos.find(x=>String(x.id)===String(id));
+  if(!p) return;
+  $('prId').value=p.id;
+  renderPresupuestos();
+  const key=catKey(p.categoria);
+  if($('prCategoria') && [...$('prCategoria').options].some(o=>o.value===key)) $('prCategoria').value=key;
+  $('prLimite').value=String(p.limite);
+  $('tituloFormPres').textContent=t('pres_edit');
+  $('btnSubmitPres').textContent=t('pres_update');
+  $('editNotePres').style.display='block';
+  abrirModal('modalPres');
+  setTimeout(()=>$('prLimite').focus(),80);
+}
+function cancelarEdicionPres(){
+  $('prId').value='';
+  $('prLimite').value='';
+  $('tituloFormPres').textContent=t('pres_new');
+  $('btnSubmitPres').textContent=t('pres_create');
+  $('editNotePres').style.display='none';
+  cerrarModal('modalPres');
+}
+function borrarPresupuesto(id){
+  const p=db.presupuestos.find(x=>String(x.id)===String(id));
+  if(!p) return;
+  confirmarWeb(t('conf_del_budget'),{danger:true}).then(ok=>{
+    if(!ok) return;
+    db.presupuestos=db.presupuestos.filter(x=>String(x.id)!==String(id));
+    guardar();
+    cerrarModal('modalDetalle');
+    renderTodo();
+    renderFab(vistaActiva());
+    toast(t('to_pres_del'));
+  });
+}
 function verDetallePresupuesto(id){
  const p=db.presupuestos.find(x=>x.id===id); if(!p)return; const key=catKey(p.categoria), mes=hoyISO().slice(0,7);
  const gastado=db.movimientos.filter(m=>m.tipo==='gasto'&&catKey(m.categoria)===key&&m.fecha.startsWith(mes)).reduce((s,m)=>s+m.monto,0);

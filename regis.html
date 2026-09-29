@@ -8,26 +8,26 @@
 <link rel="stylesheet" href="regis.css">
 </head>
 <body data-page-view="movimientos">
-<header>
-  <h1 class="brand-lockup"><span class="brand-logo" aria-hidden="true">💰</span><span class="brand-word" data-i18n="brand">Mis Finanzas</span></h1>
+<header class="app-header">
+  <div class="brand-lockup">
+    <div class="brand-logo" aria-hidden="true"><span>💰</span></div>
+    <div class="brand-copy">
+      <span class="brand-word" data-i18n="brand">Mis Finanzas</span>
+      <small>Tu control financiero</small>
+    </div>
+  </div>
   <div class="header-actions">
-    <a class="profile-btn" href="Ajustes.html" title="Perfil"><span id="headerProfileAvatar">👤</span></a>
-    <a class="icon-btn" href="Ajustes.html" title="Ajustes">⚙️</a>
+    <a class="profile-btn" href="Ajustes.html" title="Perfil" aria-label="Perfil"><span id="headerProfileAvatar">👤</span></a>
+    <a class="icon-btn" href="Ajustes.html" title="Ajustes" aria-label="Ajustes">⚙️</a>
   </div>
 </header>
-<nav class="nav-page">
-  <a href="index.html" data-view="panel">📊 Panel</a>
-  <a href="regis.html" data-view="movimientos" class="active">💸 Registros</a>
-  <a href="pagos.html" data-view="cobros">💳 Pagos</a>
-  <a href="divisas.html" data-view="divisas">💱 Divisas</a>
-  <a href="Ajustes.html" data-view="ajustes">⚙️ Ajustes</a>
+<nav class="nav-page" aria-label="Navegación principal">
+  <a href="index.html" data-view="panel"><span class="nav-icon">📊</span><span>Panel</span></a>
+  <a href="regis.html" data-view="movimientos" class="active"><span class="nav-icon">↕️</span><span>Registros</span></a>
+  <a href="pagos.html" data-view="cobros"><span class="nav-icon">💳</span><span>Pagos</span></a>
+  <a href="divisas.html" data-view="divisas"><span class="nav-icon">💱</span><span>Divisas</span></a>
+  <a href="Ajustes.html" data-view="ajustes"><span class="nav-icon">⚙️</span><span>Ajustes</span></a>
 </nav>
-<nav class="bottom"><div class="inner">
-  <a class="nav-btn" data-view="panel" href="index.html"><span class="ico">📊</span><span>Panel</span></a>
-  <a class="nav-btn active" data-view="movimientos" href="regis.html"><span class="ico">💸</span><span>Regis.</span></a>
-  <a class="nav-btn" data-view="cobros" href="pagos.html"><span class="ico">💳</span><span>Pagos</span></a>
-  <a class="nav-btn" data-view="divisas" href="divisas.html"><span class="ico">💱</span><span>Divisas</span></a>
-</div></nav>
 <div class="fab-wrap" id="fabWrap"><div class="fab-menu" id="fabMenu"></div><button class="fab" id="fabBtn" aria-label="Nuevo registro">＋</button></div>
 <div class="toast" id="toast"></div>
 
