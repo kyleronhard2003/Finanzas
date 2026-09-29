@@ -761,8 +761,10 @@ input,textarea,select,[contenteditable="true"]{
 <div class="modal-backdrop" id="modalPres">
       <div class="card form-card modal-card">
         <button type="button" class="modal-close" onclick="cerrarModal('modalPres')" aria-label="Cerrar">✕</button>
-        <h3 data-i18n="pres_new">Nuevo presupuesto</h3>
+        <h3 id="tituloFormPres" data-i18n="pres_new">Nuevo presupuesto</h3>
+        <div class="edit-note" id="editNotePres" style="display:none;"><span>✏️ Editando presupuesto</span> — <a href="#" onclick="cancelarEdicionPres();return false;" style="color:var(--yellow)">cancelar</a></div>
         <form id="formPres">
+          <input type="hidden" id="prId">
           <div><label data-i18n="lbl_category">Categoría</label><select id="prCategoria"></select></div>
           <div><label data-i18n="lbl_limit">Límite mensual (€)</label><input type="number" id="prLimite" min="1" step="1" required placeholder="0.00" inputmode="decimal"></div>
           <button class="btn btn-block" type="submit" data-i18n="pres_create">Crear presupuesto</button>
@@ -1587,12 +1589,35 @@ $('mTipo').addEventListener('change', ()=>poblarCategorias());
 if(!db.presupuestos) db.presupuestos = [];
 $('formPres').addEventListener('submit', e => {
   e.preventDefault();
+  const id = $('prId').value;
   const cat = $('prCategoria').value; const limite = parseFloat($('prLimite').value);
   if(!cat || !limite || limite<=0) return;
-  const ex = db.presupuestos.find(p=>catKey(p.categoria)===cat);
-  if(ex) ex.limite=limite; else db.presupuestos.push({id:uid(),categoria:cat,limite});
-  guardar(); $('prLimite').value=''; cerrarModal('modalPres'); renderTodo(); toast(t('to_pres_saved'));
+  if(id){
+    const p = db.presupuestos.find(x=>x.id===id);
+    if(p){ p.categoria=cat; p.limite=limite; toast('✏️ Presupuesto actualizado'); }
+  } else {
+    const ex = db.presupuestos.find(p=>catKey(p.categoria)===cat);
+    if(ex) ex.limite=limite; else db.presupuestos.push({id:uid(),categoria:cat,limite});
+    toast(t('to_pres_saved'));
+  }
+  guardar(); cancelarEdicionPres(); renderTodo();
 });
+function editarPresupuesto(id){
+  const p=db.presupuestos.find(x=>x.id===id); if(!p) return;
+  renderPresupuestos();
+  $('prId').value=p.id; $('prCategoria').value=catKey(p.categoria); $('prLimite').value=p.limite;
+  $('tituloFormPres').textContent='Editar presupuesto';
+  $('editNotePres').style.display='block';
+  $('formPres button[type=submit]').textContent='Guardar cambios';
+  abrirModal('modalPres');
+}
+function cancelarEdicionPres(){
+  $('prId').value=''; $('prLimite').value='';
+  $('tituloFormPres').textContent=t('pres_new');
+  $('editNotePres').style.display='none';
+  $('formPres button[type=submit]').textContent=t('pres_create');
+  cerrarModal('modalPres');
+}
 function borrarPresupuesto(id){
   confirmarWeb(t('conf_del_budget'),{danger:true}).then(ok=>{
     if(!ok) return;
@@ -1623,7 +1648,7 @@ function renderPresupuestos(){
     const pct=p.limite>0?Math.min(100,Math.round(gastado/p.limite*100)):0; const over=gastado>p.limite;
     const restante=Math.max(0,p.limite-gastado);
     const estado=over ? `<span class="red budget-status">${t('pres_over')}</span>` : pct>=85 ? `<span class="yellow budget-status">${t('pres_near')}</span>` : `<span class="green budget-status">${t('pres_ok')}</span>`;
-    return `<div class="budget-item ${over?'alert-blink':''}" data-budget-id="${p.id}" role="button" tabindex="0">
+    return `<div class="budget-item ${over?'alert-blink':''}" data-budget-id="${p.id}" role="button" tabindex="0" onclick="verDetallePresupuesto('${p.id}')">
       <div class="budget-head"><div><b>${esc(catLabel(key))}</b><small>${t('pres_month')}</small></div>${estado}</div>
       <div class="budget-values"><b>${fmt(gastado)}</b><span>${t('k_of')} ${fmt(p.limite)}</span><strong>${pct}%</strong></div>
       <div class="progress budget-progress"><div style="width:${pct}%;background:${over?'var(--red)':pct>=85?'var(--yellow)':'var(--accent)'}"></div></div>
@@ -1635,7 +1660,7 @@ function verDetallePresupuesto(id){
  const p=db.presupuestos.find(x=>x.id===id); if(!p)return; const key=catKey(p.categoria), mes=hoyISO().slice(0,7);
  const gastado=db.movimientos.filter(m=>m.tipo==='gasto'&&catKey(m.categoria)===key&&m.fecha.startsWith(mes)).reduce((s,m)=>s+m.monto,0);
  const pct=p.limite?Math.min(100,Math.round(gastado/p.limite*100)):0;
- abrirDetalle(t('pres_title'),`<div class="stat-line"><span>${t('lbl_category')}</span><b>${esc(catLabel(key))}</b></div><div class="stat-line"><span>${t('k_of')}</span><b>${fmt(gastado)} / ${fmt(p.limite)}</b></div><div class="stat-line"><span>${t('d_progress')}</span><b>${pct}%</b></div><div class="progress" style="margin-top:12px"><div style="width:${pct}%;background:${gastado>p.limite?'var(--red)':'var(--accent)'}"></div></div>`,`<button class="btn btn-danger btn-sm" onclick="cerrarModal('modalDetalle');borrarPresupuesto('${p.id}')">${t('delete')}</button>`);
+ abrirDetalle(t('pres_title'),`<div class="stat-line"><span>${t('lbl_category')}</span><b>${esc(catLabel(key))}</b></div><div class="stat-line"><span>${t('k_of')}</span><b>${fmt(gastado)} / ${fmt(p.limite)}</b></div><div class="stat-line"><span>${t('d_progress')}</span><b>${pct}%</b></div><div class="progress" style="margin-top:12px"><div style="width:${pct}%;background:${gastado>p.limite?'var(--red)':'var(--accent)'}"></div></div>`,`<button class="btn btn-ghost btn-sm" onclick="cerrarModal('modalDetalle');editarPresupuesto('${p.id}')">✏️ Editar</button><button class="btn btn-danger btn-sm" onclick="cerrarModal('modalDetalle');borrarPresupuesto('${p.id}')">${t('delete')}</button>`);
 }
 
 // ================= RENDER =================
@@ -1768,7 +1793,7 @@ function renderPrestamos(){
   $('listaPrestamos').innerHTML = db.prestamos.length ? db.prestamos.map(p=>{
     const restante = (p.cuotasTotal-p.pagadas)*p.montoCuota;
     const pct = Math.round(p.pagadas/p.cuotasTotal*100);
-    return `<div class="loan-card" data-loan-id="${p.id}" role="button" tabindex="0">
+    return `<div class="loan-card" data-loan-id="${p.id}" role="button" tabindex="0" onclick="verDetallePrestamo('${p.id}')">
       <div class="row-between"><b class="loan-title">${esc(p.nombre)}</b><span class="yellow loan-balance">${p.pagadas>=p.cuotasTotal?t('paid_off'):t('you_have_left')+fmt(restante)}</span></div>
       <div class="progress"><div style="width:${pct}%;background:${pct>=100?'var(--green)':'var(--purple)'};"></div></div>
       <small class="loan-meta">${p.pagadas}/${p.cuotasTotal} ${t('k_insts')} &nbsp;•&nbsp; ${fmt(p.montoCuota)} / ${t('k_inst')} &nbsp;•&nbsp; ${t('k_day')}${p.diaPago}<br><span style="color:var(--accent);">${t('tap_options')}</span></small>
