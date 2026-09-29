@@ -145,7 +145,7 @@
   .form-card::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(90deg,var(--accent),var(--purple));}
   .form-card h3{display:flex;align-items:center;gap:8px;color:var(--text);text-transform:none;letter-spacing:0;font-size:.95rem;margin-bottom:16px;}
   .form-card h3::after{content:'';flex:1;height:1px;background:var(--border);}
-  .modal-backdrop{position:fixed;inset:0;background:rgba(4,8,16,.75);z-index:90;display:none;-webkit-transform:translateZ(0);align-items:flex-start;justify-content:center;padding:20px 14px;overflow:hidden;}
+  .modal-backdrop{position:fixed;inset:0;background:rgba(4,8,16,.75);z-index:90;display:none;-webkit-transform:translateZ(0);align-items:flex-start;justify-content:center;padding:20px 14px;overflow-y:auto;-webkit-overflow-scrolling:touch;}
   .modal-backdrop.open{display:flex;animation:fadeIn .2s ease;}
   html.modal-open{overflow:hidden!important;overscroll-behavior:none;}
   body.modal-open{overflow:hidden!important;overscroll-behavior:none;touch-action:none;}
@@ -220,7 +220,7 @@
   .section-title::before{animation:floaty 3s ease-in-out infinite;}
 
   @keyframes tabPop{0%{transform:scale(.8);}60%{transform:scale(1.12);}100%{transform:scale(1);}}
-  nav.bottom button.active .ico{display:inline-block;animation:tabPop .35s ease;}50%{transform:scale(1.07);}}
+  nav.bottom button.active .ico{display:inline-block;animation:tabPop .35s ease;}
   .badge-proximo{display:inline-block;animation:none !important;transform:none !important;min-width:92px;text-align:center;}
   .fab-item{animation:riseIn .25s ease both;}
   .fab-item:nth-child(2){animation-delay:.06s;}
@@ -333,7 +333,7 @@
 /* ===== ANIMACIONES Y MICRO-DETALLES ===== */
   @keyframes riseIn{from{opacity:0;transform:translateY(14px);}to{opacity:1;transform:none;}}
   
-  @keyframes toastIn{from{opacity:0;transform:translate(-50%,16px);}to{opacity:1;transform:translate(-50%,0);}}70%{box-shadow:0 6px 22px rgba(79,140,255,.45),0 0 0 16px rgba(79,140,255,0);}100%{box-shadow:0 6px 22px rgba(79,140,255,.45),0 0 0 0 rgba(79,140,255,0);}}
+  @keyframes toastIn{from{opacity:0;transform:translate(-50%,16px);}to{opacity:1;transform:translate(-50%,0);}}
 
   /* Tarjetas: entrada escalonada al cambiar de vista */
   .view.active .card{animation:riseIn .45s cubic-bezier(.22,1,.36,1) both;}
@@ -761,10 +761,8 @@ input,textarea,select,[contenteditable="true"]{
 <div class="modal-backdrop" id="modalPres">
       <div class="card form-card modal-card">
         <button type="button" class="modal-close" onclick="cerrarModal('modalPres')" aria-label="Cerrar">✕</button>
-        <h3 id="tituloFormPres" data-i18n="pres_new">Nuevo presupuesto</h3>
-        <div class="edit-note" id="editNotePres" style="display:none;"><span>✏️ Editando presupuesto</span> — <a href="#" onclick="cancelarEdicionPres();return false;" style="color:var(--yellow)">cancelar</a></div>
+        <h3 data-i18n="pres_new">Nuevo presupuesto</h3>
         <form id="formPres">
-          <input type="hidden" id="prId">
           <div><label data-i18n="lbl_category">Categoría</label><select id="prCategoria"></select></div>
           <div><label data-i18n="lbl_limit">Límite mensual (€)</label><input type="number" id="prLimite" min="1" step="1" required placeholder="0.00" inputmode="decimal"></div>
           <button class="btn btn-block" type="submit" data-i18n="pres_create">Crear presupuesto</button>
@@ -818,11 +816,34 @@ const hoyISO = () => { const d=new Date(); return d.getFullYear()+'-'+String(d.g
 const esc = s => String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 
 let movLimit = 10; // filas visibles en el historial de movimientos
-let db = JSON.parse(localStorage.getItem(LS_KEY) || 'null');
-if(!db) db = { movimientos:[], cobros:[], metas:[], prestamos:[], prestamoPagos:[], theme:'dark', moneda:'EUR', divisaFavoritas:['USD','GBP','JPY'], profilePhoto:'' };
-if(!db.moneda) db.moneda = 'EUR';
-if(!Array.isArray(db.divisaFavoritas)) db.divisaFavoritas = ['USD','GBP','JPY'];
-if(typeof db.profilePhoto !== 'string') db.profilePhoto = '';
+const DB_DEFAULTS = { movimientos:[], cobros:[], metas:[], prestamos:[], prestamoPagos:[], presupuestos:[], theme:'dark', moneda:'EUR', lang:'es', divisaFavoritas:['USD','GBP','JPY'], profilePhoto:'' };
+function cargarDB(){
+  try{
+    const raw=localStorage.getItem(LS_KEY);
+    if(!raw) return {...DB_DEFAULTS, divisaFavoritas:[...DB_DEFAULTS.divisaFavoritas]};
+    const parsed=JSON.parse(raw);
+    return parsed && typeof parsed==='object' && !Array.isArray(parsed) ? parsed : {...DB_DEFAULTS, divisaFavoritas:[...DB_DEFAULTS.divisaFavoritas]};
+  }catch(_){
+    return {...DB_DEFAULTS, divisaFavoritas:[...DB_DEFAULTS.divisaFavoritas]};
+  }
+}
+function normalizarDB(data){
+  const out=(data && typeof data==='object' && !Array.isArray(data)) ? data : {};
+  if(!Array.isArray(out.movimientos)) out.movimientos=[];
+  if(!Array.isArray(out.cobros)) out.cobros=[];
+  if(!Array.isArray(out.metas)) out.metas=[];
+  if(!Array.isArray(out.prestamos)) out.prestamos=[];
+  if(!Array.isArray(out.prestamoPagos)) out.prestamoPagos=[];
+  if(!Array.isArray(out.presupuestos)) out.presupuestos=[];
+  if(out.theme!=='dark' && out.theme!=='light') out.theme='dark';
+  if(!['EUR','USD','PHP'].includes(String(out.moneda||'').toUpperCase())) out.moneda='EUR';
+  out.moneda=String(out.moneda).toUpperCase();
+  if(out.lang!=='es' && out.lang!=='en') out.lang='es';
+  if(!Array.isArray(out.divisaFavoritas)) out.divisaFavoritas=[...DB_DEFAULTS.divisaFavoritas];
+  if(typeof out.profilePhoto!=='string') out.profilePhoto='';
+  return out;
+}
+let db = normalizarDB(cargarDB());
 
 // ================= IDIOMAS (ES / EN) =================
 const I18N = {
@@ -849,14 +870,14 @@ ph_loan:"ej. Préstamo coche — BBVA", ph_day5:"ej. 5", register_loan:"Registra
 metas_title:"🎯 Metas de ahorro", btn_new_goal:"＋ Nueva meta", my_goals:"Mis metas",
 frm_new_goal:"Nueva meta", frm_edit_goal:"Editar meta", editing_goal:"✏️ Editando meta",
 lbl_goal_name:"Nombre de la meta", lbl_target:"Monto objetivo (€)", lbl_target_date:"Fecha objetivo (opcional)", ph_goal:"ej. Viaje a Japón", create_goal:"Crear meta", update_goal:"Actualizar meta",
-det_tx:"💸 Detalle del movimiento", det_bill:"💳 Detalle del cobro", det_goal:"🎯 Detalle de la meta",
+det_tx:"💸 Detalle del movimiento", d_description:"Descripción", det_bill:"💳 Detalle del cobro", det_goal:"🎯 Detalle de la meta",
 d_type:"Tipo", d_repeats:"Se repite", d_next:"Próxima fecha", d_status:"Estado", d_goal:"Meta", d_saved:"Ahorrado", d_target2:"Objetivo", d_progress:"Progreso", d_missing:"Falta", d_target_date:"Fecha objetivo",
 no_description:"Sin descripción", active:"● Activo", paused:"⏸ Pausado", edit:"✏️ Editar", delete:"🗑️ Eliminar", pause:"⏸ Pausar", resume:"▶ Activar", add:"＋ Aportar", withdraw:"− Retirar",
 t_ingreso:"ingreso", t_gasto:"gasto",
 set_title:"⚙️ Ajustes y datos", set_profile:"👤 Perfil", set_profile_photo:"Foto de perfil", set_profile_desc:"Sube una foto para mostrarla en el encabezado. Se guarda únicamente en este dispositivo.", profile_upload:"Subir foto", profile_remove:"Quitar", set_theme:"🎨 Tema", set_theme_desc:"Elige entre tema oscuro o claro.", loan_basic:"Datos del préstamo", loan_amounts:"Importe", loan_installments:"Cuotas", loan_payment:"Pago mensual", loan_day:"Calendario", loan_start:"Inicio", set_backup:"💾 Copia de seguridad", set_backup_desc:"Tus datos viven solo en este navegador. Exporta una copia para no perderlos o para moverlos a otro dispositivo.",
 export_data:"⬇️ Exportar datos (JSON)", import_tap:"⬆️ Toca para importar una copia", import_note:"(reemplaza los datos actuales)",
 danger:"🗑️ Zona de peligro", danger_desc:"Esta acción no se puede deshacer.", delete_all:"🗑️ Borrar todos los datos",
-about:"ℹ️ Acerca de", about_1:"App 100% local: ningún dato sale de tu dispositivo.", about_2:"Los cobros programados se descuentan automáticamente al abrir la app cuando llega su fecha y hora.", about_3:"Versión 2.6 · Divisas optimizadas · Septiembre 2026",
+about:"ℹ️ Acerca de", about_1:"App 100% local: ningún dato sale de tu dispositivo.", about_2:"Los cobros programados se descuentan automáticamente al abrir la app cuando llega su fecha y hora.", about_3:"Versión 2.7 · Divisas optimizadas · Septiembre 2026",
 set_lang:"🌐 Idioma", set_lang_desc:"Elige el idioma de toda la app.", set_money:"💱 Moneda", set_money_desc:"Elige la moneda de toda la app (préstamos, cobros, metas y movimientos).", save:"Guardar", add_money:"💰 Añadir dinero", withdraw_money:"− Retirar dinero", confirm_pay_n:"¿Confirmar pago de {n} cuota(s) ({d}–{a}/{t})? Total: {tot}", inst_label_n:"Cuotas {d}–{a}/{t} — {name}", to_money:"💱 Moneda actualizada",
 close:"Cerrar ✕", fab_tx:"💸 Nuevo movimiento", fab_bill:"💳 Nuevo cobro programado", fab_loan:"🏦 Nuevo préstamo", fab_goal:"🎯 Nueva meta",
 to_tx_upd:"✏️ Movimiento actualizado", to_tx_saved:"✅ Movimiento guardado", to_tx_del:"🗑️ Movimiento eliminado",
@@ -901,7 +922,7 @@ ph_loan:"e.g. Car loan — BBVA", ph_day5:"e.g. 5", register_loan:"Register loan
 metas_title:"🎯 Savings goals", btn_new_goal:"＋ New goal", my_goals:"My goals",
 frm_new_goal:"New goal", frm_edit_goal:"Edit goal", editing_goal:"✏️ Editing goal",
 lbl_goal_name:"Goal name", lbl_target:"Target amount (€)", lbl_target_date:"Target date (optional)", ph_goal:"e.g. Trip to Japan", create_goal:"Create goal", update_goal:"Update goal",
-det_tx:"💸 Transaction details", det_bill:"💳 Bill details", det_goal:"🎯 Goal details",
+det_tx:"💸 Transaction details", d_description:"Description", det_bill:"💳 Bill details", det_goal:"🎯 Goal details",
 d_type:"Type", d_repeats:"Repeats", d_next:"Next date", d_status:"Status", d_goal:"Goal", d_saved:"Saved", d_target2:"Target", d_progress:"Progress", d_missing:"Remaining", d_target_date:"Target date",
 no_description:"No description", active:"● Active", paused:"⏸ Paused", edit:"✏️ Edit", delete:"🗑️ Delete", pause:"⏸ Pause", resume:"▶ Resume", add:"＋ Add", withdraw:"− Withdraw",
 t_ingreso:"income", t_gasto:"expense",
@@ -941,12 +962,21 @@ function aplicarIdioma(){
   const cur = (db && db.moneda) ? db.moneda : 'EUR';
   document.querySelectorAll('[data-i18n="lbl_amount"]').forEach(el => { el.textContent = t('lbl_amount') + ' (' + cur + ')'; });
 }
-function guardar(){ localStorage.setItem(LS_KEY, JSON.stringify(db)); }
+function guardar(){ try{ localStorage.setItem(LS_KEY, JSON.stringify(db)); return true; }catch(_){ toast(LANG==='en'?'⚠️ Could not save data on this device.':'⚠️ No se pudieron guardar los datos en este dispositivo.'); return false; } }
 
 function abrirModal(id){
   const modal=$(id); if(!modal) return;
-  document.documentElement.classList.add('modal-open');
-  document.body.classList.add('modal-open');
+  if(!document.querySelector('.modal-backdrop.open')){
+    const y=window.scrollY||window.pageYOffset||0;
+    document.body.dataset.modalScrollY=String(y);
+    document.body.style.position='fixed';
+    document.body.style.top=`-${y}px`;
+    document.body.style.left='0';
+    document.body.style.right='0';
+    document.body.style.width='100%';
+    document.documentElement.classList.add('modal-open');
+    document.body.classList.add('modal-open');
+  }
   modal.classList.add('open');
   const fw=$('fabWrap'); if(fw) fw.style.display='none';
 }
@@ -954,8 +984,20 @@ function cerrarModal(id){
   const modal=$(id); if(!modal) return;
   modal.classList.remove('open');
   if(!document.querySelector('.modal-backdrop.open')){
+    const y=parseInt(document.body.dataset.modalScrollY||'0',10)||0;
     document.documentElement.classList.remove('modal-open');
     document.body.classList.remove('modal-open');
+    document.body.style.position='';
+    document.body.style.top='';
+    document.body.style.left='';
+    document.body.style.right='';
+    document.body.style.width='';
+    delete document.body.dataset.modalScrollY;
+    // Restaurar una sola vez para evitar el salto arriba/abajo en iOS.
+    const prevBehavior=document.documentElement.style.scrollBehavior;
+    document.documentElement.style.scrollBehavior='auto';
+    window.scrollTo(0,y);
+    document.documentElement.style.scrollBehavior=prevBehavior;
     renderFab(vistaActiva());
   }
 }
@@ -1088,7 +1130,13 @@ function nuevoMov(){ cancelarEdicionMov(); $('mFecha').value=hoyISO(); abrirModa
 function nuevoCobro(){ cancelarEdicionCobro(); $('cFecha').value=hoyISO(); abrirModal('modalCobro'); }
 function nuevoPrestamo(){ cancelarEdicionPrestamo(); abrirModal('modalPrestamo'); }
 function nuevoMeta(){ cancelarEdicionMeta(); abrirModal('modalMeta'); }
-function nuevoPres(){ $('prLimite').value=''; renderPresupuestos(); abrirModal('modalPres'); }
+function nuevoPres(){
+  $('prLimite').value='';
+  renderPresupuestos();
+  const sel=$('prCategoria');
+  if(sel && !sel.value && sel.options.length) sel.selectedIndex=0;
+  abrirModal('modalPres');
+}
 const FAB_ITEMS = {
   panel:[{k:'fab_tx', fn:()=>nuevoMov()}],
   movimientos:[{k:'fab_tx', fn:()=>nuevoMov()},{k:'fab_goal', fn:()=>nuevoMeta()},{k:'fab_budget', fn:()=>nuevoPres()}],
@@ -1144,20 +1192,36 @@ function switchView(v){
 document.querySelectorAll('.nav-btn').forEach(b => b.addEventListener('click', () => switchView(b.dataset.view)));
 
 // ================= COBROS: DESCUENTO AUTOMÁTICO =================
+function siguienteFechaRecurrente(iso, frecuencia){
+  if(!iso || !['mensual','semanal','anual'].includes(frecuencia)) return null;
+  const base=new Date(iso+'T12:00:00');
+  if(Number.isNaN(base.getTime())) return null;
+  const dia=base.getDate();
+  if(frecuencia==='semanal'){
+    base.setDate(base.getDate()+7);
+  }else if(frecuencia==='mensual'){
+    const y=base.getFullYear(), m=base.getMonth()+1;
+    const ultimo=new Date(y,m+1,0).getDate();
+    base.setFullYear(y,m,Math.min(dia,ultimo));
+  }else{
+    const y=base.getFullYear()+1, m=base.getMonth(), ultimo=new Date(y,m+1,0).getDate();
+    base.setFullYear(y,m,Math.min(dia,ultimo));
+  }
+  return base.getFullYear()+'-'+String(base.getMonth()+1).padStart(2,'0')+'-'+String(base.getDate()).padStart(2,'0');
+}
+
 function aplicarCobrosVencidos(){
   const ahora = new Date(); const aplicados = [];
   db.cobros.forEach(c => {
     if(!c.activo) return;
+    if(c.frecuencia!=='unico' && !['mensual','semanal','anual'].includes(c.frecuencia)) return;
     let fh = new Date(c.proxima + 'T' + (c.hora||'09:00'));
     while(fh <= ahora){
       db.movimientos.push({ id:uid(), tipo:'gasto', monto:c.monto, categoria:t('cat_bill'), descripcion:c.concepto + (c.frecuencia!=='unico' ? t('recurring') : ''), fecha: c.proxima, auto:true });
       aplicados.push(c);
       if(c.frecuencia === 'unico'){ c.activo = false; break; }
-      const d = new Date(c.proxima + 'T' + (c.hora||'09:00'));
-      if(c.frecuencia==='mensual') d.setMonth(d.getMonth()+1);
-      else if(c.frecuencia==='semanal') d.setDate(d.getDate()+7);
-      else if(c.frecuencia==='anual') d.setFullYear(d.getFullYear()+1);
-      c.proxima = d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+      c.proxima = siguienteFechaRecurrente(c.proxima,c.frecuencia);
+      if(!c.proxima) { c.activo=false; break; }
       fh = new Date(c.proxima + 'T' + (c.hora||'09:00'));
     }
   });
@@ -1370,10 +1434,13 @@ function borrarPrestamo(id){
   });
 }
 function fechasCuotas(p){
-  const arr=[]; const base = new Date(p.fechaInicio + 'T12:00:00');
-  for(let i=0;i<p.cuotasTotal;i++){
-    const f = new Date(base); f.setMonth(f.getMonth()+i);
-    f.setDate(Math.min(p.diaPago, new Date(f.getFullYear(), f.getMonth()+1, 0).getDate()));
+  const arr=[]; const base=new Date(p.fechaInicio+'T12:00:00');
+  if(Number.isNaN(base.getTime())) return arr;
+  const total=Math.max(0,Number(p.cuotasTotal)||0), dia=Math.max(1,Math.min(31,Number(p.diaPago)||1));
+  for(let i=0;i<total;i++){
+    const y=base.getFullYear(), m=base.getMonth()+i;
+    const ultimo=new Date(y,m+1,0).getDate();
+    const f=new Date(y,m,Math.min(dia,ultimo),12,0,0);
     arr.push(f.getFullYear()+'-'+String(f.getMonth()+1).padStart(2,'0')+'-'+String(f.getDate()).padStart(2,'0'));
   }
   return arr;
@@ -1449,7 +1516,7 @@ function importarDatos(ev){
       if(!Array.isArray(data.movimientos)) throw 0;
       confirmarWeb(t('conf_import'),{danger:true}).then(ok=>{
         if(!ok) return;
-        db = data; guardar(); aplicarTema(); renderTodo(); toast(t('to_imported'));
+        db = normalizarDB(data); LANG=db.lang; $('selLang').value=LANG; $('selMoneda').value=db.moneda; guardar(); aplicarTema(); aplicarIdioma(); renderTodo(); renderFab(vistaActiva()); toast(t('to_imported'));
       });
     }catch(e){ toast(t('invalid_file')); }
   };
@@ -1568,35 +1635,24 @@ $('mTipo').addEventListener('change', ()=>poblarCategorias());
 if(!db.presupuestos) db.presupuestos = [];
 $('formPres').addEventListener('submit', e => {
   e.preventDefault();
-  const id = $('prId').value;
-  const cat = $('prCategoria').value; const limite = parseFloat($('prLimite').value);
-  if(!cat || !limite || limite<=0) return;
-  if(id){
-    const p = db.presupuestos.find(x=>x.id===id);
-    if(p){ p.categoria=cat; p.limite=limite; toast('✏️ Presupuesto actualizado'); }
-  } else {
-    const ex = db.presupuestos.find(p=>catKey(p.categoria)===cat);
-    if(ex) ex.limite=limite; else db.presupuestos.push({id:uid(),categoria:cat,limite});
-    toast(t('to_pres_saved'));
+  const cat = String($('prCategoria').value||'').trim();
+  const limite = Number($('prLimite').value);
+  if(!cat || !Number.isFinite(limite) || limite<=0) return;
+
+  const ex = db.presupuestos.find(p=>catKey(p.categoria)===cat);
+  if(ex){
+    ex.categoria = cat;
+    ex.limite = limite;
+  }else{
+    db.presupuestos.push({id:uid(),categoria:cat,limite});
   }
-  guardar(); cancelarEdicionPres(); renderTodo();
-});
-function editarPresupuesto(id){
-  const p=db.presupuestos.find(x=>x.id===id); if(!p) return;
-  renderPresupuestos();
-  $('prId').value=p.id; $('prCategoria').value=catKey(p.categoria); $('prLimite').value=p.limite;
-  $('tituloFormPres').textContent='Editar presupuesto';
-  $('editNotePres').style.display='block';
-  $('formPres button[type=submit]').textContent='Guardar cambios';
-  abrirModal('modalPres');
-}
-function cancelarEdicionPres(){
-  $('prId').value=''; $('prLimite').value='';
-  $('tituloFormPres').textContent=t('pres_new');
-  $('editNotePres').style.display='none';
-  $('formPres button[type=submit]').textContent=t('pres_create');
+
+  guardar();
+  $('prLimite').value='';
   cerrarModal('modalPres');
-}
+  renderTodo();
+  toast(t('to_pres_saved'));
+});
 function borrarPresupuesto(id){
   confirmarWeb(t('conf_del_budget'),{danger:true}).then(ok=>{
     if(!ok) return;
@@ -1604,9 +1660,12 @@ function borrarPresupuesto(id){
   });
 }
 function catKey(cat){
+  const raw=String(cat||'').trim();
+  if(!raw) return '';
   const map={
     'Comida':'food','Food':'food','Transporte':'transport','Transport':'transport','Vivienda':'housing','Housing':'housing','Ocio':'leisure','Leisure':'leisure','Salud':'health','Health':'health','Educación':'education','Education':'education','Ropa':'clothing','Clothing':'clothing','Suscripciones':'subscriptions','Subscriptions':'subscriptions','Otros':'others','Others':'others'
-  }; return map[cat]||cat.toLowerCase();
+  };
+  return map[raw]||raw.toLowerCase();
 }
 function catLabel(key){
   const map={food:['Comida','Food'],transport:['Transporte','Transport'],housing:['Vivienda','Housing'],leisure:['Ocio','Leisure'],health:['Salud','Health'],education:['Educación','Education'],clothing:['Ropa','Clothing'],subscriptions:['Suscripciones','Subscriptions'],others:['Otros','Others']};
@@ -1615,11 +1674,22 @@ function catLabel(key){
 function renderPresupuestos(){
   const sel=$('prCategoria'); if(!sel) return;
   const prev=sel.value;
-  const keys=[...new Set([...catsGasto().map(catKey),...db.movimientos.filter(m=>m.tipo==='gasto').map(m=>catKey(m.categoria))])];
-  const existing=new Set(db.presupuestos.map(p=>catKey(p.categoria)));
-  const cats=keys.filter(k=>!existing.has(k)).sort((a,b)=>catLabel(a).localeCompare(catLabel(b),LOCALE()));
-  sel.innerHTML=cats.length?cats.map(k=>`<option value="${esc(k)}">${esc(catLabel(k))}</option>`).join(''):'<option value="">—</option>';
-  if(prev && cats.includes(prev)) sel.value=prev;
+  const keys=[...new Set([
+    ...catsGasto().map(catKey),
+    ...db.movimientos.filter(m=>m.tipo==='gasto').map(m=>catKey(m.categoria)),
+    ...db.presupuestos.map(p=>catKey(p.categoria))
+  ].filter(Boolean))].sort((a,b)=>catLabel(a).localeCompare(catLabel(b),LOCALE()));
+
+  sel.innerHTML=keys.length
+    ? keys.map(k=>`<option value="${esc(k)}">${esc(catLabel(k))}</option>`).join('')
+    : '<option value="">—</option>';
+
+  if(prev && keys.includes(prev)){
+    sel.value=prev;
+  }else if(db.presupuestos.length){
+    const firstExisting=catKey(db.presupuestos[0].categoria);
+    if(keys.includes(firstExisting)) sel.value=firstExisting;
+  }
   const mesAct=hoyISO().slice(0,7);
   $('listaPres').innerHTML=db.presupuestos.length?db.presupuestos.map(p=>{
     const key=catKey(p.categoria);
@@ -1639,7 +1709,7 @@ function verDetallePresupuesto(id){
  const p=db.presupuestos.find(x=>x.id===id); if(!p)return; const key=catKey(p.categoria), mes=hoyISO().slice(0,7);
  const gastado=db.movimientos.filter(m=>m.tipo==='gasto'&&catKey(m.categoria)===key&&m.fecha.startsWith(mes)).reduce((s,m)=>s+m.monto,0);
  const pct=p.limite?Math.min(100,Math.round(gastado/p.limite*100)):0;
- abrirDetalle(t('pres_title'),`<div class="stat-line"><span>${t('lbl_category')}</span><b>${esc(catLabel(key))}</b></div><div class="stat-line"><span>${t('k_of')}</span><b>${fmt(gastado)} / ${fmt(p.limite)}</b></div><div class="stat-line"><span>${t('d_progress')}</span><b>${pct}%</b></div><div class="progress" style="margin-top:12px"><div style="width:${pct}%;background:${gastado>p.limite?'var(--red)':'var(--accent)'}"></div></div>`,`<button class="btn btn-ghost btn-sm" onclick="cerrarModal('modalDetalle');editarPresupuesto('${p.id}')">✏️ Editar</button><button class="btn btn-danger btn-sm" onclick="cerrarModal('modalDetalle');borrarPresupuesto('${p.id}')">${t('delete')}</button>`);
+ abrirDetalle(t('pres_title'),`<div class="stat-line"><span>${t('lbl_category')}</span><b>${esc(catLabel(key))}</b></div><div class="stat-line"><span>${t('k_of')}</span><b>${fmt(gastado)} / ${fmt(p.limite)}</b></div><div class="stat-line"><span>${t('d_progress')}</span><b>${pct}%</b></div><div class="progress" style="margin-top:12px"><div style="width:${pct}%;background:${gastado>p.limite?'var(--red)':'var(--accent)'}"></div></div>`,`<button class="btn btn-danger btn-sm" onclick="cerrarModal('modalDetalle');borrarPresupuesto('${p.id}')">${t('delete')}</button>`);
 }
 
 // ================= RENDER =================
@@ -1781,15 +1851,6 @@ function renderPrestamos(){
 }
 
 // Apertura directa y prioritaria de tarjetas completas.
-document.addEventListener('keydown', e=>{
-  if(e.key!=='Enter' && e.key!==' ') return;
-  const el=e.target.closest('.loan-card,.budget-item');
-  if(!el) return;
-  if(e.target.closest('button,select,a,input,textarea,[data-no-open]')) return;
-  e.preventDefault();
-  if(el.classList.contains('loan-card')) verDetallePrestamo(el.dataset.loanId);
-  else verDetallePresupuesto(el.dataset.budgetId);
-});
 document.addEventListener('click', e=>{
   const el=e.target.closest('.loan-card,.budget-item');
   if(!el || e.target.closest('button,select,a,input,textarea,[data-no-open]')) return;
@@ -1799,18 +1860,14 @@ document.addEventListener('click', e=>{
   else if(el.classList.contains('budget-item')) verDetallePresupuesto(el.dataset.budgetId);
 }, true);
 
-// Clic fiable en toda la tarjeta de préstamos/cobros/metas (no solo en el nombre).
+// Los préstamos y presupuestos se abren desde el listener prioritario anterior.
+// Este listener queda solo para cobros y metas.
 document.addEventListener('click', e=>{
-  const clickable = e.target.closest('.loan-card,.bill-row,.goal-card,.budget-item');
+  const clickable = e.target.closest('.bill-row,.goal-card');
   if(!clickable) return;
   if(e.target.closest('button,select,a,input,textarea,[data-no-open]')) return;
-  if(clickable.classList.contains('loan-card')) verDetallePrestamo(clickable.dataset.loanId);
-  else if(clickable.classList.contains('bill-row')) verDetalleCobro(clickable.dataset.billId);
+  if(clickable.classList.contains('bill-row')) verDetalleCobro(clickable.dataset.billId);
   else if(clickable.classList.contains('goal-card')) verDetalleMeta(clickable.dataset.goalId);
-  else if(clickable.classList.contains('budget-item')){
-    const id=clickable.dataset.budgetId || clickable.dataset.id;
-    if(typeof verDetallePresupuesto==='function' && id) verDetallePresupuesto(id);
-  }
 });
 document.addEventListener('keydown', e=>{
   if((e.key==='Enter'||e.key===' ') && e.target.closest('.loan-card,.bill-row,.goal-card,.budget-item')){
