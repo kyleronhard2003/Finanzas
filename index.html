@@ -385,6 +385,41 @@
 #modalConfirm{z-index:120;}
 .modal-card{overscroll-behavior:contain;-webkit-overflow-scrolling:touch;}
 .btn,.fab,.fab-item,.icon-btn{user-select:none;-webkit-user-select:none;}
+
+/* ===== Dashboard KPI rediseñado ===== */
+.dashboard-kpis{display:flex;flex-direction:column;gap:12px;}
+.dashboard-kpi-row{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;}
+.dashboard-kpi-row .card{min-width:0;}
+.dashboard-kpi-row .big{font-variant-numeric:tabular-nums;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.dashboard-kpi-row-second .card{min-height:118px;}
+.profile-btn{width:42px;height:42px;border-radius:50%;border:1px solid var(--border);background:var(--card);color:var(--text);cursor:pointer;display:grid;place-items:center;overflow:hidden;padding:0;box-shadow:var(--shadow);}
+.profile-btn img,.profile-preview img{width:100%;height:100%;object-fit:cover;display:block;}
+.profile-btn span{font-size:1.2rem;}
+.profile-editor{display:flex;align-items:center;gap:16px;}
+.profile-preview{width:76px;height:76px;border-radius:50%;background:var(--card2);border:1px solid var(--border);display:grid;place-items:center;overflow:hidden;font-size:2rem;flex:none;}
+.profile-editor-copy{min-width:0;}
+.profile-editor-copy>b{display:block;font-size:.95rem;margin-bottom:5px;}
+.profile-editor-copy p{color:var(--muted);font-size:.78rem;line-height:1.45;margin-bottom:10px;}
+.profile-actions{display:flex;gap:8px;flex-wrap:wrap;}
+.loan-form-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;}
+.loan-form-section{padding:15px;border:1px solid var(--border);border-radius:14px;background:rgba(79,140,255,.035);}
+.loan-form-section-title{font-size:.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:.7px;font-weight:800;margin-bottom:14px;}
+.loan-form-field label{font-size:.72rem;margin-bottom:7px;}
+.loan-form-field input{font-size:1.05rem;padding:15px 14px;min-height:52px;}
+.loan-form-wide{grid-column:1/-1;}
+.loan-card{padding:20px!important;}
+.loan-card .loan-title{font-size:1rem;line-height:1.35;}
+.loan-card .loan-balance{font-size:.9rem;white-space:nowrap;}
+.loan-card .loan-meta{font-size:.78rem;line-height:1.6;margin-top:10px;display:block;}
+@media(max-width:520px){
+  .dashboard-kpi-row{grid-template-columns:1fr 1fr;}
+  .dashboard-kpi-row-3 .card:first-child{grid-column:1/-1;}
+  .dashboard-kpi-row-3 .card:first-child .big{font-size:1.65rem;}
+  .dashboard-kpi-row-second .card:first-child{grid-column:auto;}
+  .dashboard-kpi-row-second .card:nth-child(2){grid-column:auto;}
+  .loan-form-grid{grid-template-columns:1fr;}
+  .loan-form-wide{grid-column:auto;}
+}
 </style>
 <base target="_blank">
 </head>
@@ -394,7 +429,7 @@
   <h1>💰 <span data-i18n="brand">Mis Finanzas</span></h1>
   <div class="fecha-hoy" id="fechaHoy"></div>
   <div class="header-actions">
-    <button class="icon-btn" id="btnTema" title="Cambiar tema">🌙</button>
+    <button class="profile-btn" id="btnPerfil" onclick="location.hash='#ajustes';switchView('ajustes')" title="Perfil"><span id="headerProfileAvatar">👤</span></button>
     <button class="icon-btn" onclick="location.hash='#ajustes';switchView('ajustes')" title="Ajustes">⚙️</button>
   </div>
 </header>
@@ -440,11 +475,17 @@
 
   <!-- ============ PANEL ============ -->
   <section id="view-panel" class="view active">
-    <div class="grid grid-4" style="margin-top:8px;">
-      <div class="card"><h3 data-i18n="kpi_balance">💼 Balance total</h3><div class="big accent" id="pBalance">—</div><div class="kpi-sub" id="pBalanceSub"></div></div>
-      <div class="card"><h3 data-i18n="kpi_income">📈 Ingresos este mes</h3><div class="big green" id="pIngresos">—</div><div class="kpi-sub" id="pIngresosSub"></div></div>
-      <div class="card"><h3 data-i18n="kpi_expense">📉 Gastos este mes</h3><div class="big red" id="pGastos">—</div><div class="kpi-sub" id="pAhorroMes"></div></div>
-      <div class="card"><h3 data-i18n="kpi_due">⏰ Cobros próximos 7 días</h3><div class="big yellow" id="pCobros">—</div><div class="kpi-sub" id="pCobrosSub"></div></div>
+    <div class="dashboard-kpis" style="margin-top:8px;">
+      <div class="dashboard-kpi-row dashboard-kpi-row-3">
+        <div class="card"><h3 data-i18n="kpi_balance">💼 Balance total</h3><div class="big accent" id="pBalance">—</div><div class="kpi-sub" id="pBalanceSub"></div></div>
+        <div class="card"><h3 data-i18n="kpi_income">📈 Ingresos este mes</h3><div class="big green" id="pIngresos">—</div><div class="kpi-sub" id="pIngresosSub"></div></div>
+        <div class="card"><h3 data-i18n="kpi_expense">📉 Gastos este mes</h3><div class="big red" id="pGastos">—</div><div class="kpi-sub" id="pAhorroMes"></div></div>
+      </div>
+      <div class="dashboard-kpi-row dashboard-kpi-row-3 dashboard-kpi-row-second">
+        <div class="card"><h3 data-i18n="kpi_due">⏰ Cobros próximos</h3><div class="big yellow" id="pCobros">—</div><div class="kpi-sub" id="pCobrosSub"></div></div>
+        <div class="card"><h3 data-i18n="kpi_after_due">💰 Saldo después de cobrar</h3><div class="big" id="pSaldoDespuesCobros">—</div><div class="kpi-sub" id="pSaldoDespuesCobrosSub"></div></div>
+        <div class="card"><h3 data-i18n="kpi_avg_month">📊 Saldo medio entre meses</h3><div class="big purple" id="pSaldoMedio">—</div><div class="kpi-sub" id="pSaldoMedioSub"></div></div>
+      </div>
     </div>
     <div class="grid grid-2" style="margin-top:16px;">
       <div class="card">
@@ -530,6 +571,26 @@
   <section id="view-ajustes" class="view">
     <h2 class="section-title" data-i18n="set_title">⚙️ Ajustes y datos</h2>
     <div class="grid grid-2">
+      <div class="card profile-settings-card">
+        <h3 data-i18n="set_profile">👤 Perfil</h3>
+        <div class="profile-editor">
+          <div class="profile-preview" id="profilePreview">👤</div>
+          <div class="profile-editor-copy">
+            <b data-i18n="set_profile_photo">Foto de perfil</b>
+            <p data-i18n="set_profile_desc">Sube una foto para mostrarla en el encabezado. Se guarda únicamente en este dispositivo.</p>
+            <div class="profile-actions">
+              <button class="btn btn-sm" type="button" onclick="$('profileFile').click()" data-i18n="profile_upload">Subir foto</button>
+              <button class="btn btn-sm btn-ghost" type="button" onclick="quitarFotoPerfil()" data-i18n="profile_remove">Quitar</button>
+            </div>
+            <input type="file" id="profileFile" accept="image/*" style="display:none" onchange="cambiarFotoPerfil(event)">
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <h3 data-i18n="set_theme">🎨 Tema</h3>
+        <p data-i18n="set_theme_desc" style="color:var(--muted);font-size:.88rem;margin-bottom:14px;">Elige entre tema oscuro o claro.</p>
+        <button class="btn btn-ghost btn-block" id="btnTemaAjustes" type="button" onclick="cambiarTema()">🌙 Tema oscuro</button>
+      </div>
       <div class="card">
         <h3 data-i18n="set_lang">🌐 Idioma</h3>
         <p data-i18n="set_lang_desc" style="color:var(--muted);font-size:.88rem;margin-bottom:14px;">Elige el idioma de toda la app.</p>
@@ -622,16 +683,32 @@
         <div class="edit-note" id="editNotePrestamo"><span data-i18n="editing_loan">✏️ Editando préstamo</span> — <a href="#" onclick="cancelarEdicionPrestamo();return false;" style="color:var(--yellow)"><span data-i18n="cancel">cancelar</span></a></div>
         <form id="formPrestamo">
           <input type="hidden" id="pId">
-          <div><label data-i18n="lbl_name">Nombre / entidad</label><input type="text" id="pNombre" required data-i18n-ph="ph_loan" placeholder="ej. Préstamo coche — BBVA"></div>
-          <div class="row-between" style="gap:12px;">
-            <div style="flex:1;"><label data-i18n="lbl_total">Monto total (€)</label><input type="number" id="pTotal" min="1" step="0.01" required inputmode="decimal"></div>
-            <div style="flex:1;"><label data-i18n="lbl_ninst">Nº de cuotas</label><input type="number" id="pCuotas" min="1" step="1" required inputmode="numeric"></div>
+          <div class="loan-form-section">
+            <div class="loan-form-section-title">🏦 <span data-i18n="loan_basic">Datos del préstamo</span></div>
+            <div class="loan-form-field"><label data-i18n="lbl_name">Nombre / entidad</label><input type="text" id="pNombre" required data-i18n-ph="ph_loan" placeholder="ej. Préstamo coche — BBVA"></div>
           </div>
-          <div class="row-between" style="gap:12px;">
-            <div style="flex:1;"><label data-i18n="lbl_per_inst">Monto por cuota (€)</label><input type="number" id="pMontoCuota" min="0.01" step="0.01" required inputmode="decimal"></div>
-            <div style="flex:1;"><label data-i18n="lbl_payday">Día de pago mensual</label><input type="number" id="pDia" min="1" max="31" step="1" required data-i18n-ph="ph_day5" placeholder="ej. 5" inputmode="numeric"></div>
+          <div class="loan-form-grid">
+            <div class="loan-form-section">
+              <div class="loan-form-section-title">💶 <span data-i18n="loan_amounts">Importe</span></div>
+              <div class="loan-form-field"><label data-i18n="lbl_total">Monto total (€)</label><input type="number" id="pTotal" min="1" step="0.01" required inputmode="decimal"></div>
+            </div>
+            <div class="loan-form-section">
+              <div class="loan-form-section-title">🔢 <span data-i18n="loan_installments">Cuotas</span></div>
+              <div class="loan-form-field"><label data-i18n="lbl_ninst">Nº de cuotas</label><input type="number" id="pCuotas" min="1" step="1" required inputmode="numeric"></div>
+            </div>
+            <div class="loan-form-section">
+              <div class="loan-form-section-title">📆 <span data-i18n="loan_payment">Pago mensual</span></div>
+              <div class="loan-form-field"><label data-i18n="lbl_per_inst">Monto por cuota (€)</label><input type="number" id="pMontoCuota" min="0.01" step="0.01" required inputmode="decimal"></div>
+            </div>
+            <div class="loan-form-section">
+              <div class="loan-form-section-title">🗓️ <span data-i18n="loan_day">Calendario</span></div>
+              <div class="loan-form-field"><label data-i18n="lbl_payday">Día de pago mensual</label><input type="number" id="pDia" min="1" max="31" step="1" required data-i18n-ph="ph_day5" placeholder="ej. 5" inputmode="numeric"></div>
+            </div>
+            <div class="loan-form-section loan-form-wide">
+              <div class="loan-form-section-title">🚩 <span data-i18n="loan_start">Inicio</span></div>
+              <div class="loan-form-field"><label data-i18n="lbl_first_date">Fecha de la primera cuota</label><input type="date" id="pFechaInicio" required></div>
+            </div>
           </div>
-          <div><label data-i18n="lbl_first_date">Fecha de la primera cuota</label><input type="date" id="pFechaInicio" required></div>
           <button class="btn btn-block" type="submit" id="btnSubmitPrestamo" data-i18n="register_loan">Registrar préstamo</button>
         </form>
       </div>
@@ -709,16 +786,17 @@ const esc = s => String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replac
 
 let movLimit = 10; // filas visibles en el historial de movimientos
 let db = JSON.parse(localStorage.getItem(LS_KEY) || 'null');
-if(!db) db = { movimientos:[], cobros:[], metas:[], prestamos:[], prestamoPagos:[], theme:'dark', moneda:'EUR', divisaFavoritas:['USD','GBP','JPY'] };
+if(!db) db = { movimientos:[], cobros:[], metas:[], prestamos:[], prestamoPagos:[], theme:'dark', moneda:'EUR', divisaFavoritas:['USD','GBP','JPY'], profilePhoto:'' };
 if(!db.moneda) db.moneda = 'EUR';
 if(!Array.isArray(db.divisaFavoritas)) db.divisaFavoritas = ['USD','GBP','JPY'];
+if(typeof db.profilePhoto !== 'string') db.profilePhoto = '';
 
 // ================= IDIOMAS (ES / EN) =================
 const I18N = {
 es: {
 brand:"Mis Finanzas", nav_panel:"📊 Panel", nav_movs:"💸 Movimientos", nav_cobros:"💳 Cobros y préstamos", nav_metas:"🎯 Metas", nav_ajustes:"⚙️ Ajustes",
 nav_panel_s:"Panel", nav_movs_s:"Regis.", nav_pagos_s:"Pagos", nav_metas_s:"Metas", nav_fx_s:"Divisas", nav_fx:"💱 Divisas",
-kpi_balance:"💼 Balance total", kpi_income:"📈 Ingresos este mes", kpi_expense:"📉 Gastos este mes", kpi_due:"⏰ Cobros próximos 15 días",
+kpi_balance:"💼 Balance total", kpi_income:"📈 Ingresos este mes", kpi_expense:"📉 Gastos este mes", kpi_due:"⏰ Cobros próximos", kpi_after_due:"💰 Saldo después de cobrar", kpi_avg_month:"📊 Saldo medio entre meses", kpi_after_due_sub:"Después de todos los cobros próximos", months_with_data:"meses con datos", no_month_data:"Sin datos mensuales",
 ch_6m:"Últimos 6 meses", ch_by_cat:"Gastos por categoría (este mes)", leg_income:"Ingresos", leg_expense:"Gastos",
 p_recent:"🕐 Últimos movimientos", p_bills:"⏰ Cobros programados", p_goals:"🎯 Metas", p_loans:"🏦 Préstamos", p_topcat:"🏆 Top categorías de gasto (este mes)",
 no_tx_yet:"Sin movimientos todavía", no_bills:"No tienes cobros programados", no_goals:"No tienes metas creadas", no_loans:"No tienes préstamos registrados", no_exp_month:"Sin gastos este mes",
@@ -742,7 +820,7 @@ det_tx:"💸 Detalle del movimiento", det_bill:"💳 Detalle del cobro", det_goa
 d_type:"Tipo", d_repeats:"Se repite", d_next:"Próxima fecha", d_status:"Estado", d_goal:"Meta", d_saved:"Ahorrado", d_target2:"Objetivo", d_progress:"Progreso", d_missing:"Falta", d_target_date:"Fecha objetivo",
 no_description:"Sin descripción", active:"● Activo", paused:"⏸ Pausado", edit:"✏️ Editar", delete:"🗑️ Eliminar", pause:"⏸ Pausar", resume:"▶ Activar", add:"＋ Aportar", withdraw:"− Retirar",
 t_ingreso:"ingreso", t_gasto:"gasto",
-set_title:"⚙️ Ajustes y datos", set_backup:"💾 Copia de seguridad", set_backup_desc:"Tus datos viven solo en este navegador. Exporta una copia para no perderlos o para moverlos a otro dispositivo.",
+set_title:"⚙️ Ajustes y datos", set_profile:"👤 Perfil", set_profile_photo:"Foto de perfil", set_profile_desc:"Sube una foto para mostrarla en el encabezado. Se guarda únicamente en este dispositivo.", profile_upload:"Subir foto", profile_remove:"Quitar", set_theme:"🎨 Tema", set_theme_desc:"Elige entre tema oscuro o claro.", loan_basic:"Datos del préstamo", loan_amounts:"Importe", loan_installments:"Cuotas", loan_payment:"Pago mensual", loan_day:"Calendario", loan_start:"Inicio", set_backup:"💾 Copia de seguridad", set_backup_desc:"Tus datos viven solo en este navegador. Exporta una copia para no perderlos o para moverlos a otro dispositivo.",
 export_data:"⬇️ Exportar datos (JSON)", import_tap:"⬆️ Toca para importar una copia", import_note:"(reemplaza los datos actuales)",
 danger:"🗑️ Zona de peligro", danger_desc:"Esta acción no se puede deshacer.", delete_all:"🗑️ Borrar todos los datos",
 about:"ℹ️ Acerca de", about_1:"App 100% local: ningún dato sale de tu dispositivo.", about_2:"Los cobros programados se descuentan automáticamente al abrir la app cuando llega su fecha y hora.", about_3:"Versión 2.6 · Divisas optimizadas · Septiembre 2026",
@@ -770,7 +848,7 @@ d_no:"No.", d_due:"Due date", d_amount:"Amount", d_status_en:"Status", fx_title:
 en: {
 brand:"My Finances", nav_panel:"📊 Dashboard", nav_movs:"💸 Transactions", nav_cobros:"💳 Bills & loans", nav_metas:"🎯 Goals", nav_ajustes:"⚙️ Settings",
 nav_panel_s:"Home", nav_movs_s:"Regis", nav_pagos_s:"Bills", nav_metas_s:"Goals", nav_fx_s:"FX", nav_fx:"💱 Exchange rates",
-kpi_balance:"💼 Total balance", kpi_income:"📈 Income this month", kpi_expense:"📉 Expenses this month", kpi_due:"⏰ Due in next 15 days",
+kpi_balance:"💼 Total balance", kpi_income:"📈 Income this month", kpi_expense:"📉 Expenses this month", kpi_due:"⏰ Upcoming payments", kpi_after_due:"💰 Balance after upcoming", kpi_avg_month:"📊 Average monthly balance", kpi_after_due_sub:"After all upcoming payments", months_with_data:"months with data", no_month_data:"No monthly data",
 ch_6m:"Last 6 months", ch_by_cat:"Spending by category (this month)", leg_income:"Income", leg_expense:"Expenses",
 p_recent:"🕐 Recent transactions", p_bills:"⏰ Scheduled bills", p_goals:"🎯 Goals", p_loans:"🏦 Loans", p_topcat:"🏆 Top spending categories (this month)",
 no_tx_yet:"No transactions yet", no_bills:"No scheduled bills", no_goals:"No goals yet", no_loans:"No loans yet", no_exp_month:"No expenses this month",
@@ -794,7 +872,7 @@ det_tx:"💸 Transaction details", det_bill:"💳 Bill details", det_goal:"🎯 
 d_type:"Type", d_repeats:"Repeats", d_next:"Next date", d_status:"Status", d_goal:"Goal", d_saved:"Saved", d_target2:"Target", d_progress:"Progress", d_missing:"Remaining", d_target_date:"Target date",
 no_description:"No description", active:"● Active", paused:"⏸ Paused", edit:"✏️ Edit", delete:"🗑️ Delete", pause:"⏸ Pause", resume:"▶ Resume", add:"＋ Add", withdraw:"− Withdraw",
 t_ingreso:"income", t_gasto:"expense",
-set_title:"⚙️ Settings & data", set_backup:"💾 Backup", set_backup_desc:"Your data lives only in this browser. Export a copy to avoid losing it or to move it to another device.",
+set_title:"⚙️ Settings & data", set_profile:"👤 Profile", set_profile_photo:"Profile photo", set_profile_desc:"Upload a photo to show in the header. It is stored only on this device.", profile_upload:"Upload photo", profile_remove:"Remove", set_theme:"🎨 Theme", set_theme_desc:"Choose dark or light theme.", loan_basic:"Loan details", loan_amounts:"Amount", loan_installments:"Installments", loan_payment:"Monthly payment", loan_day:"Calendar", loan_start:"Start", set_backup:"💾 Backup", set_backup_desc:"Your data lives only in this browser. Export a copy to avoid losing it or to move it to another device.",
 export_data:"⬇️ Export data (JSON)", import_tap:"⬆️ Tap to import a backup", import_note:"(replaces current data)",
 danger:"🗑️ Danger zone", danger_desc:"This action cannot be undone.", delete_all:"🗑️ Delete all data",
 about:"ℹ️ About", about_1:"100% local app: no data leaves your device.", about_2:"Scheduled bills are deducted automatically when you open the app at their date and time.", about_3:"Version 2.7 · Optimized currencies · September 2026",
@@ -918,8 +996,35 @@ document.addEventListener('pointerdown', e=>{
 });
 
 // ================= TEMA =================
-function aplicarTema(){ document.documentElement.dataset.theme = db.theme||'dark'; $('btnTema').textContent = (db.theme==='dark')?'🌙':'☀️'; }
-$('btnTema').addEventListener('click', ()=>{ db.theme = (db.theme==='dark')?'light':'dark'; guardar(); aplicarTema(); renderCharts(); });
+function aplicarTema(){
+  document.documentElement.dataset.theme = db.theme||'dark';
+  const b=$('btnTemaAjustes');
+  if(b) b.textContent = db.theme==='dark' ? '☀️ Cambiar a tema claro' : '🌙 Cambiar a tema oscuro';
+}
+function cambiarTema(){ db.theme = (db.theme==='dark')?'light':'dark'; guardar(); aplicarTema(); renderCharts(); }
+function renderPerfil(){
+  const src=db.profilePhoto||'';
+  const avatar=$('headerProfileAvatar'), preview=$('profilePreview');
+  if(avatar) avatar.innerHTML=src ? `<img src="${src}" alt="Perfil">` : '👤';
+  if(preview) preview.innerHTML=src ? `<img src="${src}" alt="Perfil">` : '👤';
+}
+function cambiarFotoPerfil(ev){
+  const file=ev.target.files && ev.target.files[0]; if(!file) return;
+  if(!file.type.startsWith('image/')) return;
+  const reader=new FileReader();
+  reader.onload=()=>{
+    const img=new Image();
+    img.onload=()=>{
+      const max=500, scale=Math.min(1,max/Math.max(img.width,img.height));
+      const c=document.createElement('canvas'); c.width=Math.max(1,Math.round(img.width*scale)); c.height=Math.max(1,Math.round(img.height*scale));
+      c.getContext('2d').drawImage(img,0,0,c.width,c.height);
+      db.profilePhoto=c.toDataURL('image/jpeg',.82); guardar(); renderPerfil(); toast('✅ Foto de perfil actualizada');
+    };
+    img.src=reader.result;
+  };
+  reader.readAsDataURL(file); ev.target.value='';
+}
+function quitarFotoPerfil(){ db.profilePhoto=''; guardar(); renderPerfil(); toast('👤 Foto de perfil eliminada'); }
 $('selLang').addEventListener('change', e => {
   db.lang = e.target.value; LANG = db.lang; guardar();
   aplicarIdioma(); renderFab(vistaActiva()); renderTodo();
@@ -1487,8 +1592,19 @@ function renderTodo(){
   const cobrosProx = db.cobros.filter(c=>c.activo && new Date(c.proxima)<=limite);
   const prestamosProx = db.prestamos.filter(p=>(p.pagadas||0)<p.cuotasTotal)
     .filter(p=>{ const info = proximaCuotaInfo(p); return info && new Date(info.fecha+'T23:59:59')<=limite; });
-  $('pCobros').textContent = fmt(cobrosProx.reduce((s,c)=>s+c.monto,0) + prestamosProx.reduce((s,p)=>s+p.montoCuota,0));
+  const totalProximo = cobrosProx.reduce((s,c)=>s+c.monto,0) + prestamosProx.reduce((s,p)=>s+p.montoCuota,0);
+  $('pCobros').textContent = fmt(totalProximo);
   $('pCobrosSub').textContent = (cobrosProx.length + prestamosProx.length) + ' ' + t('bills_pending');
+  const saldoDespues = balance - totalProximo;
+  $('pSaldoDespuesCobros').textContent = fmt(saldoDespues);
+  $('pSaldoDespuesCobros').className = 'big ' + (saldoDespues>=0?'green':'red');
+  $('pSaldoDespuesCobrosSub').textContent = t('kpi_after_due_sub');
+  const mesesConDatos = [...new Set(db.movimientos.map(m=>m.fecha.slice(0,7)))];
+  const saldoMensual = mesesConDatos.map(m=>db.movimientos.filter(x=>x.fecha.startsWith(m)).reduce((s,x)=>s+(x.tipo==='ingreso'?x.monto:-x.monto),0));
+  const saldoMedio = saldoMensual.length ? saldoMensual.reduce((s,v)=>s+v,0)/saldoMensual.length : 0;
+  $('pSaldoMedio').textContent = fmt(saldoMedio);
+  $('pSaldoMedio').className = 'big ' + (saldoMedio>=0?'purple':'red');
+  $('pSaldoMedioSub').textContent = mesesConDatos.length ? mesesConDatos.length + ' ' + t('months_with_data') : t('no_month_data');
 
 
   const cobrosActivos = db.cobros.filter(c=>c.activo).sort((a,b)=>a.proxima.localeCompare(b.proxima));
@@ -1520,6 +1636,8 @@ function renderTodo(){
   renderPrestamos();
   renderPresupuestos();
   updateCountdowns();
+  renderPerfil();
+  aplicarTema();
   setTimeout(renderCharts, 50);
 }
 
@@ -1590,10 +1708,10 @@ function renderPrestamos(){
   $('listaPrestamos').innerHTML = db.prestamos.length ? db.prestamos.map(p=>{
     const restante = (p.cuotasTotal-p.pagadas)*p.montoCuota;
     const pct = Math.round(p.pagadas/p.cuotasTotal*100);
-    return `<div class="mov-row loan-card" data-loan-id="${p.id}" role="button" tabindex="0" style="margin-bottom:20px;padding:16px;border:1px solid var(--border);border-radius:14px;background:var(--card2);">
-      <div class="row-between"><b>${esc(p.nombre)}</b><span class="yellow" style="font-weight:700;">${p.pagadas>=p.cuotasTotal?t('paid_off'):t('you_have_left')+fmt(restante)}</span></div>
+    return `<div class="mov-row loan-card" data-loan-id="${p.id}" role="button" tabindex="0">
+      <div class="row-between"><b class="loan-title">${esc(p.nombre)}</b><span class="yellow loan-balance">${p.pagadas>=p.cuotasTotal?t('paid_off'):t('you_have_left')+fmt(restante)}</span></div>
       <div class="progress"><div style="width:${pct}%;background:${pct>=100?'var(--green)':'var(--purple)'};"></div></div>
-      <small style="color:var(--muted);display:block;margin-top:8px;">${p.pagadas}/${p.cuotasTotal} ${t('k_insts')} · ${fmt(p.montoCuota)}/${t('k_inst')} · ${t('k_day')}${p.diaPago}${t('tap_options')}</small>
+      <small class="loan-meta">${p.pagadas}/${p.cuotasTotal} ${t('k_insts')} &nbsp;•&nbsp; ${fmt(p.montoCuota)} / ${t('k_inst')} &nbsp;•&nbsp; ${t('k_day')}${p.diaPago}<br><span style="color:var(--accent);">${t('tap_options')}</span></small>
     </div>`;
   }).join('') : t('no_loans_empty');
 }
