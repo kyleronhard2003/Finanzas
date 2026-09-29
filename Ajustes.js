@@ -338,10 +338,15 @@ function nuevoCobro(){ cancelarEdicionCobro(); $('cFecha').value=hoyISO(); abrir
 function nuevoPrestamo(){ cancelarEdicionPrestamo(); abrirModal('modalPrestamo'); }
 function nuevoMeta(){ cancelarEdicionMeta(); abrirModal('modalMeta'); }
 function nuevoPres(){
+  // Siempre abrir el formulario en modo NUEVO, nunca arrastrar el estado de edición anterior.
+  $('prId').value='';
   $('prLimite').value='';
+  $('tituloFormPres').textContent=t('pres_new');
+  $('btnSubmitPres').textContent=t('pres_create');
+  $('editNotePres').style.display='none';
   renderPresupuestos();
   const sel=$('prCategoria');
-  if(sel && !sel.value && sel.options.length) sel.selectedIndex=0;
+  if(sel && sel.options.length) sel.selectedIndex=0;
   abrirModal('modalPres');
 }
 const FAB_ITEMS = {
@@ -855,7 +860,16 @@ $('formPres').addEventListener('submit', e => {
   const ex=id ? db.presupuestos.find(p=>p.id===id) : db.presupuestos.find(p=>catKey(p.categoria)===cat);
   if(ex){ ex.categoria=cat; ex.limite=limite; toast(t('to_pres_saved')); }
   else { db.presupuestos.push({id:uid(),categoria:cat,limite}); toast(t('to_pres_saved')); }
-  guardar(); cancelarEdicionPres(); renderTodo();
+  guardar();
+  // Cerrar primero y después repintar: el registro aparece inmediatamente en la lista.
+  cerrarModal('modalPres');
+  $('prId').value='';
+  $('prLimite').value='';
+  $('tituloFormPres').textContent=t('pres_new');
+  $('btnSubmitPres').textContent=t('pres_create');
+  $('editNotePres').style.display='none';
+  renderTodo();
+  renderFab(vistaActiva());
 });
 function catKey(cat){
   const raw=String(cat||'').trim();
@@ -895,7 +909,7 @@ function renderPresupuestos(){
     const pct=p.limite>0?Math.min(100,Math.round(gastado/p.limite*100)):0; const over=gastado>p.limite;
     const restante=Math.max(0,p.limite-gastado);
     const estado=over ? `<span class="red budget-status">${t('pres_over')}</span>` : pct>=85 ? `<span class="yellow budget-status">${t('pres_near')}</span>` : `<span class="green budget-status">${t('pres_ok')}</span>`;
-    return `<div class="budget-item ${over?'alert-blink':''}" data-budget-id="${p.id}" role="button" tabindex="0">
+    return `<div class="budget-item ${over?'alert-blink':''}" data-budget-id="${p.id}" role="button" tabindex="0" onclick="verDetallePresupuesto('${p.id}')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();verDetallePresupuesto('${p.id}')}">
       <div class="budget-head"><div><b>${esc(catLabel(key))}</b><small>${t('pres_month')}</small></div>${estado}</div>
       <div class="budget-values"><b>${fmt(gastado)}</b><span>${t('k_of')} ${fmt(p.limite)}</span><strong>${pct}%</strong></div>
       <div class="progress budget-progress"><div style="width:${pct}%;background:${over?'var(--red)':pct>=85?'var(--yellow)':'var(--accent)'}"></div></div>
@@ -991,8 +1005,8 @@ function renderMovimientos(){
     footer = `<tr><td colspan="3" style="padding:12px 6px 4px;"><button class="btn btn-ghost btn-block btn-sm" onclick="verMenosMovs()">${t('show_less')}</button></td></tr>`;
   }
   $('tablaMov').innerHTML = movs.length ? visibles.map(m=>`
-    <tr class="mov-row" onclick="verDetalleMov('${m.id}')">
-    <td><span class="tag tag-${m.tipo}" style="font-size:.6rem;padding:2px 6px;">${m.tipo==='ingreso'?'▲':'▼'}</span>${m.auto?' <span class="tag-auto">auto</span>':''} ${esc(m.categoria)}</td>
+    <tr class="mov-row movement-${m.tipo}" onclick="verDetalleMov('${m.id}')">
+    <td><span class="movement-icon ${m.tipo}">${m.tipo==='ingreso'?'↗':'↘'}</span><span class="tag tag-${m.tipo}" style="font-size:.6rem;padding:2px 6px;">${m.tipo==='ingreso'?'▲':'▼'}</span>${m.auto?' <span class="tag-auto">⚡ auto</span>':''} ${esc(m.categoria)}</td>
     <td class="cell-dim">${fmtFechaCorta(m.fecha)}</td>
     <td style="text-align:right" class="${m.tipo==='ingreso'?'green':'red'}">${m.tipo==='ingreso'?'+':'−'}${fmt(m.monto)}</td></tr>`).join('') + footer : '<tr><td colspan="3"><div class="empty">'+t('no_results')+'</div></td></tr>';
 }

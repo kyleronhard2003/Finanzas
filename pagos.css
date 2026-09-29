@@ -694,3 +694,92 @@ input:focus,select:focus,textarea:focus{
 nav.bottom a.nav-btn{flex:1;background:none;border:none;color:var(--muted);cursor:pointer;font-size:.62rem;display:flex;flex-direction:column;align-items:center;gap:4px;padding:7px 8px 8px;border-radius:12px;text-decoration:none;min-width:56px;}
 nav.bottom a.nav-btn.active{color:var(--accent);font-weight:700;}
 nav.bottom a.nav-btn .ico{font-size:1.35rem;line-height:1;display:grid;place-items:center;width:28px;height:28px;}
+
+
+/* ==========================================================
+   POLISH UI v3 — tarjetas, presupuesto, perfil y movimientos
+   ========================================================== */
+header{
+  padding-top:calc(12px + env(safe-area-inset-top));
+  padding-bottom:12px;
+  background:linear-gradient(180deg,rgba(15,20,32,.98),rgba(15,20,32,.88));
+  backdrop-filter:blur(16px);
+  -webkit-backdrop-filter:blur(16px);
+  border-bottom:1px solid rgba(255,255,255,.06);
+}
+header h1,.brand-title{font-size:1.22rem!important;letter-spacing:-.045em!important;line-height:1.05;text-shadow:0 4px 24px rgba(79,140,255,.22);}
+header h1::first-letter{filter:drop-shadow(0 3px 8px rgba(79,140,255,.3));}
+.profile-btn{width:44px;height:44px;border-radius:50%;overflow:hidden;isolation:isolate;position:relative;flex:0 0 44px;}
+.profile-btn span{width:100%;height:100%;display:grid;place-items:center;overflow:hidden;}
+.profile-btn img,.profile-preview img{width:100%!important;height:100%!important;max-width:none!important;max-height:none!important;display:block;object-fit:cover;object-position:center;border-radius:50%;}
+.profile-btn::after{content:'';position:absolute;inset:1px;border-radius:50%;box-shadow:inset 0 0 0 1px rgba(255,255,255,.14);pointer-events:none;}
+
+/* Presupuestos: el cuadro completo es una única zona táctil estable. */
+#listaPres{display:flex;flex-direction:column;gap:12px;margin-top:14px;}
+.budget-item{
+  position:relative!important;
+  display:block!important;
+  width:100%!important;
+  box-sizing:border-box!important;
+  min-height:116px;
+  padding:17px 43px 15px 17px!important;
+  margin:0!important;
+  cursor:pointer!important;
+  touch-action:manipulation!important;
+  -webkit-tap-highlight-color:transparent;
+  user-select:none;
+  -webkit-user-select:none;
+  overflow:hidden;
+  transform:translateZ(0);
+  transition:transform .2s cubic-bezier(.22,1,.36,1),border-color .2s,box-shadow .2s,background .2s;
+}
+.budget-item *{pointer-events:none!important;}
+.budget-item::after{content:'›';position:absolute;right:15px;top:50%;transform:translateY(-50%);font-size:1.5rem;color:var(--muted);opacity:.65;pointer-events:none!important;transition:transform .2s,color .2s;}
+.budget-item:hover{transform:translateY(-2px)!important;box-shadow:0 12px 28px rgba(0,0,0,.18)!important;}
+.budget-item:hover::after{transform:translate(3px,-50%);color:var(--accent);}
+.budget-item:active{transform:scale(.985)!important;}
+
+/* Movimientos con identidad visual de ingreso/gasto y microanimación. */
+.mov-row{cursor:pointer;position:relative;transition:background .2s,transform .18s,box-shadow .18s;}
+.mov-row td{transition:background .2s;}
+.mov-row:hover td{background:rgba(79,140,255,.055)!important;}
+.mov-row:active td{background:rgba(79,140,255,.1)!important;}
+.movement-icon{display:inline-grid;place-items:center;width:25px;height:25px;margin-right:7px;border-radius:8px;font-weight:900;font-size:.9rem;vertical-align:middle;transition:transform .22s,box-shadow .22s;}
+.movement-icon.ingreso{background:rgba(45,191,119,.13);color:var(--green);box-shadow:inset 0 0 0 1px rgba(45,191,119,.14);}
+.movement-icon.gasto{background:rgba(239,91,91,.13);color:var(--red);box-shadow:inset 0 0 0 1px rgba(239,91,91,.14);}
+.mov-row:hover .movement-icon{transform:translateY(-1px) scale(1.06);}
+.movement-ingreso td:last-child,.movement-gasto td:last-child{font-weight:800;}
+
+/* Aparición escalonada, sin hacer que el contenido salte. */
+#tablaMov .mov-row,#listaPres .budget-item,#listaMetas .goal-card,#listaPrestamos .loan-card{animation:recordIn .38s cubic-bezier(.22,1,.36,1) both;}
+#tablaMov .mov-row:nth-child(2),#listaPres .budget-item:nth-child(2),#listaMetas .goal-card:nth-child(2),#listaPrestamos .loan-card:nth-child(2){animation-delay:.035s;}
+#tablaMov .mov-row:nth-child(3),#listaPres .budget-item:nth-child(3),#listaMetas .goal-card:nth-child(3),#listaPrestamos .loan-card:nth-child(3){animation-delay:.07s;}
+#tablaMov .mov-row:nth-child(4),#listaPres .budget-item:nth-child(4),#listaMetas .goal-card:nth-child(4),#listaPrestamos .loan-card:nth-child(4){animation-delay:.105s;}
+
+/* Modal más limpio y botones más claros. */
+.modal-card{box-shadow:0 24px 70px rgba(0,0,0,.42),0 0 0 1px rgba(255,255,255,.035);}
+.modal-card .btn{transition:transform .18s cubic-bezier(.22,1,.36,1),box-shadow .18s,filter .18s;}
+.modal-card .btn:active{transform:scale(.97);}
+.toast{backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);}
+
+/* Marca del panel: más presencia sin ocupar espacio. */
+body[data-page-view="panel"] header h1{font-size:1.3rem!important;}
+body[data-page-view="panel"] main{animation:pageEnter .42s cubic-bezier(.22,1,.36,1) both;}
+@keyframes pageEnter{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+@keyframes recordIn{from{opacity:0;transform:translateY(8px) scale(.985)}to{opacity:1;transform:none}}
+@media(max-width:560px){
+  header h1,.brand-title{font-size:1.08rem!important;}
+  body[data-page-view="panel"] header h1{font-size:1.14rem!important;}
+  .budget-item{min-height:112px;padding:15px 40px 13px 15px!important;}
+  .movement-icon{width:24px;height:24px;margin-right:6px;}
+}
+@media(prefers-reduced-motion:reduce){
+  #tablaMov .mov-row,#listaPres .budget-item,#listaMetas .goal-card,#listaPrestamos .loan-card,body[data-page-view="panel"] main{animation:none!important;}
+}
+
+/* Marca refinada */
+.brand-lockup{display:flex!important;align-items:center;gap:9px!important;}
+.brand-logo{display:grid;place-items:center;width:32px;height:32px;border-radius:10px;background:linear-gradient(145deg,rgba(79,140,255,.18),rgba(145,91,255,.16));box-shadow:inset 0 0 0 1px rgba(255,255,255,.07),0 6px 18px rgba(79,140,255,.12);font-size:1rem;transform:translateZ(0);transition:transform .25s cubic-bezier(.22,1,.36,1),box-shadow .25s;}
+.brand-lockup:hover .brand-logo{transform:rotate(-4deg) scale(1.06);box-shadow:inset 0 0 0 1px rgba(255,255,255,.1),0 8px 24px rgba(79,140,255,.18);}
+.brand-word{background:linear-gradient(90deg,var(--text),rgba(255,255,255,.78));-webkit-background-clip:text;background-clip:text;color:transparent;}
+@media(max-width:560px){.brand-logo{width:29px;height:29px;border-radius:9px;font-size:.9rem}.brand-lockup{gap:7px!important;}}
