@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#0f1420">
+<title>Mis Finanzas — Registros</title>
+<link rel="stylesheet" href="regis.css">
+</head>
+<body data-page-view="movimientos">
+<header>
+  <h1>💰 <span data-i18n="brand">Mis Finanzas</span></h1>
+  <div class="header-actions">
+    <a class="profile-btn" href="Ajustes.html" title="Perfil"><span id="headerProfileAvatar">👤</span></a>
+    <a class="icon-btn" href="Ajustes.html" title="Ajustes">⚙️</a>
+  </div>
+</header>
+<nav class="nav-page">
+  <a href="panel.html" data-view="panel">📊 Panel</a>
+  <a href="regis.html" data-view="movimientos" class="active">💸 Registros</a>
+  <a href="pagos.html" data-view="cobros">💳 Pagos</a>
+  <a href="divisas.html" data-view="divisas">💱 Divisas</a>
+  <a href="Ajustes.html" data-view="ajustes">⚙️ Ajustes</a>
+</nav>
+<nav class="bottom"><div class="inner">
+  <a class="nav-btn" data-view="panel" href="panel.html"><span class="ico">📊</span><span>Panel</span></a>
+  <a class="nav-btn active" data-view="movimientos" href="regis.html"><span class="ico">💸</span><span>Regis.</span></a>
+  <a class="nav-btn" data-view="cobros" href="pagos.html"><span class="ico">💳</span><span>Pagos</span></a>
+  <a class="nav-btn" data-view="divisas" href="divisas.html"><span class="ico">💱</span><span>Divisas</span></a>
+</div></nav>
+<div class="fab-wrap" id="fabWrap"><div class="fab-menu" id="fabMenu"></div><button class="fab" id="fabBtn" aria-label="Nuevo registro">＋</button></div>
+<div class="toast" id="toast"></div>
+
+<main>
+  <div id="avisos"></div>
+  <section id="view-movimientos" class="view active page-section">
+    <div class="row-between" style="margin-top:8px;"><h2 class="section-title" style="margin:0;" data-i18n="v_movs_title">💸 Ingresos y gastos</h2><button class="btn" onclick="nuevoMov()" data-i18n="btn_new_tx">＋ Nuevo movimiento</button></div>
+    <div class="grid grid-2">
+
+      <div class="card">
+        <h3 data-i18n="hist_filters">Historial y filtros</h3>
+        <div class="filters">
+          <input type="search" id="fBuscar" data-i18n-ph="ph_search" placeholder="🔍 Buscar…">
+          <select id="fTipo"><option value="" data-i18n="opt_all">Todos</option><option value="ingreso" data-i18n="opt_income">Ingresos</option><option value="gasto" data-i18n="opt_expense">Gastos</option></select>
+          <select id="fMes"></select>
+        </div>
+        <div class="scroll-x">
+        <table>
+          <thead><tr><th data-i18n="th_cat">Categoría</th><th data-i18n="th_date">Fecha</th><th style="text-align:right" data-i18n="th_amount">Monto</th></tr></thead>
+          <tbody id="tablaMov"></tbody>
+        </table>
+        </div>
+        <div class="row-between" style="margin-top:12px;">
+          <small style="color:var(--muted)" id="movCount"></small>
+          <b id="movTotal" class="accent"></b>
+        </div>
+      </div>
+    </div>
+    <div class="grid grid-2" style="margin-top:16px;">
+      <div class="card"><h3 data-i18n="my_goals">Mis metas</h3><div id="listaMetas"></div></div>
+      <div class="card"><h3 data-i18n="pres_mine">Mis presupuestos (este mes)</h3><div id="listaPres"></div></div>
+    </div>
+  </section>
+  <div class="modal-backdrop" id="modalMov">
+      <div class="card form-card modal-card">
+        <button type="button" class="modal-close" onclick="cerrarModal('modalMov')" aria-label="Cerrar">✕</button>
+        <h3 id="tituloFormMov" data-i18n="frm_new_tx">Nuevo movimiento</h3>
+        <div class="edit-note" id="editNoteMov"><span data-i18n="editing_tx">✏️ Editando movimiento</span> — <a href="#" onclick="cancelarEdicionMov();return false;" style="color:var(--yellow)"><span data-i18n="cancel_edit">cancelar edición</span></a></div>
+        <form id="formMov">
+          <input type="hidden" id="mId">
+          <div><label data-i18n="lbl_type">Tipo</label>
+            <select id="mTipo"><option value="ingreso" data-i18n="opt_inc_s">📈 Ingreso</option><option value="gasto" data-i18n="opt_exp_s">📉 Gasto</option></select>
+          </div>
+          <div><label data-i18n="lbl_amount">Monto (€)</label><input type="number" id="mMonto" min="0.01" step="0.01" required placeholder="0.00" inputmode="decimal"></div>
+          <div><label data-i18n="lbl_category">Categoría</label><select id="mCategoria"></select></div>
+          <div><label data-i18n="lbl_description">Descripción</label><input type="text" id="mDesc" data-i18n-ph="ph_detail" placeholder="Detalle (opcional)"></div>
+          <div><label data-i18n="lbl_date">Fecha</label><input type="date" id="mFecha" required></div>
+          <button class="btn btn-block" type="submit" id="btnSubmitMov" data-i18n="save_tx">Guardar movimiento</button>
+        </form>
+      </div>
+    </div>
+<div class="modal-backdrop" id="modalCobro">
+      <div class="card form-card modal-card">
+        <button type="button" class="modal-close" onclick="cerrarModal('modalCobro')" aria-label="Cerrar">✕</button>
+        <h3 id="tituloFormCobro" data-i18n="frm_new_bill">Nuevo cobro programado</h3>
+        <div class="edit-note" id="editNoteCobro"><span data-i18n="editing_bill">✏️ Editando cobro</span> — <a href="#" onclick="cancelarEdicionCobro();return false;" style="color:var(--yellow)"><span data-i18n="cancel">cancelar</span></a></div>
+        <form id="formCobro">
+          <input type="hidden" id="cId">
+          <div><label data-i18n="lbl_concept">Concepto</label><input type="text" id="cConcepto" required maxlength="10" data-i18n-ph="ph_bill" placeholder="ej. Netflix, Alquiler, Luz…"></div>
+          <div><label data-i18n="lbl_amount">Monto (€)</label><input type="number" id="cMonto" min="0.01" step="0.01" required placeholder="0.00" inputmode="decimal"></div>
+          <div class="row-between" style="gap:12px;">
+            <div style="flex:1;"><label data-i18n="lbl_start">Fecha de inicio</label><input type="date" id="cFecha" required></div>
+            <div style="flex:1;"><label data-i18n="lbl_time">Hora</label><input type="time" id="cHora" value="09:00" required></div>
+          </div>
+          <div><label data-i18n="lbl_repeats">Se repite</label>
+            <select id="cFrec">
+              <option value="unico" data-i18n="f_unico">Solo una vez</option>
+              <option value="mensual" data-i18n="f_mensual">Cada mes</option>
+              <option value="semanal" data-i18n="f_semanal">Cada semana</option>
+              <option value="anual" data-i18n="f_anual">Cada año</option>
+            </select>
+          </div>
+          <button class="btn btn-block" type="submit" id="btnSubmitCobro" data-i18n="schedule_bill">Programar cobro</button>
+        </form>
+      </div>
+    </div>
+<div class="modal-backdrop" id="modalPrestamo">
+      <div class="card form-card modal-card">
+        <button type="button" class="modal-close" onclick="cerrarModal('modalPrestamo')" aria-label="Cerrar">✕</button>
+        <h3 id="tituloFormPrestamo" data-i18n="frm_new_loan">Nuevo préstamo</h3>
+        <div class="edit-note" id="editNotePrestamo"><span data-i18n="editing_loan">✏️ Editando préstamo</span> — <a href="#" onclick="cancelarEdicionPrestamo();return false;" style="color:var(--yellow)"><span data-i18n="cancel">cancelar</span></a></div>
+        <form id="formPrestamo">
+          <input type="hidden" id="pId">
+          <div class="loan-form-section">
+            <div class="loan-form-section-title">🏦 <span data-i18n="loan_basic">Datos del préstamo</span></div>
+            <div class="loan-form-field"><label data-i18n="lbl_name">Nombre / entidad</label><input type="text" id="pNombre" required data-i18n-ph="ph_loan" placeholder="ej. Préstamo coche — BBVA"></div>
+          </div>
+          <div class="loan-form-grid">
+            <div class="loan-form-section">
+              <div class="loan-form-section-title">💶 <span data-i18n="loan_amounts">Importe</span></div>
+              <div class="loan-form-field"><label data-i18n="lbl_total">Monto total (€)</label><input type="number" id="pTotal" min="1" step="0.01" required inputmode="decimal"></div>
+            </div>
+            <div class="loan-form-section">
+              <div class="loan-form-section-title">🔢 <span data-i18n="loan_installments">Cuotas</span></div>
+              <div class="loan-form-field"><label data-i18n="lbl_ninst">Nº de cuotas</label><input type="number" id="pCuotas" min="1" step="1" required inputmode="numeric"></div>
+            </div>
+            <div class="loan-form-section">
+              <div class="loan-form-section-title">📆 <span data-i18n="loan_payment">Pago mensual</span></div>
+              <div class="loan-form-field"><label data-i18n="lbl_per_inst">Monto por cuota (€)</label><input type="number" id="pMontoCuota" min="0.01" step="0.01" required inputmode="decimal"></div>
+            </div>
+            <div class="loan-form-section">
+              <div class="loan-form-section-title">🗓️ <span data-i18n="loan_day">Calendario</span></div>
+              <div class="loan-form-field"><label data-i18n="lbl_payday">Día de pago mensual</label><input type="number" id="pDia" min="1" max="31" step="1" required data-i18n-ph="ph_day5" placeholder="ej. 5" inputmode="numeric"></div>
+            </div>
+            <div class="loan-form-section loan-form-wide">
+              <div class="loan-form-section-title">🚩 <span data-i18n="loan_start">Inicio</span></div>
+              <div class="loan-form-field"><label data-i18n="lbl_first_date">Fecha de la primera cuota</label><input type="date" id="pFechaInicio" required></div>
+            </div>
+          </div>
+          <button class="btn btn-block" type="submit" id="btnSubmitPrestamo" data-i18n="register_loan">Registrar préstamo</button>
+        </form>
+      </div>
+    </div>
+<div class="modal-backdrop" id="modalMeta">
+      <div class="card form-card modal-card">
+        <button type="button" class="modal-close" onclick="cerrarModal('modalMeta')" aria-label="Cerrar">✕</button>
+        <h3 id="tituloFormMeta" data-i18n="frm_new_goal">Nueva meta</h3>
+        <div class="edit-note" id="editNoteMeta"><span data-i18n="editing_goal">✏️ Editando meta</span> — <a href="#" onclick="cancelarEdicionMeta();return false;" style="color:var(--yellow)"><span data-i18n="cancel">cancelar</span></a></div>
+        <form id="formMeta">
+          <input type="hidden" id="gId">
+          <div><label data-i18n="lbl_goal_name">Nombre de la meta</label><input type="text" id="gNombre" required maxlength="15" data-i18n-ph="ph_goal" placeholder="ej. Viaje a Japón"></div>
+          <div><label data-i18n="lbl_target">Monto objetivo (€)</label><input type="number" id="gObjetivo" min="1" step="0.01" required placeholder="0.00" inputmode="decimal"></div>
+          <div><label data-i18n="lbl_target_date">Fecha objetivo (opcional)</label><input type="date" id="gFecha"></div>
+          <button class="btn btn-block" type="submit" id="btnSubmitMeta" data-i18n="create_goal">Crear meta</button>
+        </form>
+      </div>
+    </div>
+<div class="modal-backdrop" id="modalPres">
+      <div class="card form-card modal-card">
+        <button type="button" class="modal-close" onclick="cerrarModal('modalPres')" aria-label="Cerrar">✕</button>
+        <h3 id="tituloFormPres" data-i18n="pres_new">Nuevo presupuesto</h3>
+        <div class="edit-note" id="editNotePres"><span>✏️ Editando presupuesto</span> — <a href="#" onclick="cancelarEdicionPres();return false;" style="color:var(--yellow)">cancelar</a></div>
+        <form id="formPres">
+          <input type="hidden" id="prId">
+          <div><label data-i18n="lbl_category">Categoría</label><select id="prCategoria"></select></div>
+          <div><label data-i18n="lbl_limit">Límite mensual (€)</label><input type="number" id="prLimite" min="1" step="1" required placeholder="0.00" inputmode="decimal"></div>
+          <button class="btn btn-block" type="submit" id="btnSubmitPres" data-i18n="pres_create">Crear presupuesto</button>
+        </form>
+      </div>
+    </div>
+<div class="modal-backdrop" id="modalMetaMonto">
+  <div class="card form-card modal-card">
+    <button type="button" class="modal-close" onclick="cerrarModal('modalMetaMonto')" aria-label="Cerrar">✕</button>
+    <h3 id="tituloMetaMonto">💰 Añadir dinero</h3>
+    <p id="textoMetaMonto" style="color:var(--muted);margin:0 0 14px;"></p>
+    <form id="formMetaMonto">
+      <input type="hidden" id="metaMontoId"><input type="hidden" id="metaMontoModo">
+      <div><label data-i18n="lbl_amount">Monto</label><input type="number" id="metaMontoValor" min="0.01" step="0.01" required placeholder="0.00" inputmode="decimal"></div>
+      <button class="btn btn-block" type="submit" id="btnMetaMonto" data-i18n="save">Guardar</button>
+    </form>
+  </div>
+</div>
+<!-- ============ VENTANA DE CONFIRMACIÓN ============ -->
+<div class="modal-backdrop" id="modalConfirm">
+  <div class="card form-card modal-card" style="text-align:center;">
+    <button type="button" class="modal-close" onclick="resolverConfirm(false)" aria-label="Cerrar">✕</button>
+    <h3 style="justify-content:center;">⚠️</h3>
+    <p id="confirmMsg" style="margin:6px 0 20px;font-size:.95rem;line-height:1.5;"></p>
+    <div style="display:flex;gap:10px;">
+      <button class="btn btn-ghost" id="confirmCancel" style="flex:1;">✕</button>
+      <button class="btn btn-green" id="confirmOk" style="flex:1;">✔</button>
+    </div>
+  </div>
+</div>
+<!-- ============ VENTANA DE DETALLE GENÉRICA ============ -->
+<div class="modal-backdrop" id="modalDetalle">
+  <div class="card form-card modal-card">
+    <button type="button" class="modal-close" onclick="cerrarModal('modalDetalle')" aria-label="Cerrar">✕</button>
+    <h3 id="detalleTituloGenerico">Detalle</h3>
+    <div id="detalleCuerpo"></div>
+    <div id="detalleAcciones" style="display:flex;gap:8px;flex-wrap:wrap;margin-top:16px;"></div>
+  </div>
+</div>
+
+</main>
+<script src="regis.js"></script>
+</body>
+</html>
