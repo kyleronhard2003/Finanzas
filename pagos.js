@@ -488,35 +488,20 @@ function countdownHTML(diff){
 }
 
 function updateCountdowns(){
-  const ahora = Date.now();
-  document.querySelectorAll('[data-cd],[data-cdp]').forEach(el=>{
-    let iso = null, h = '23:59:59';
-    if(el.dataset.cd){
-      const c = db.cobros.find(x=>x.id===el.dataset.cd);
-      if(!c){ el.textContent='—'; el.dataset.parts=''; return; }
-      iso = c.proxima; h = c.hora||'09:00';
-    } else {
-      const p = db.prestamos.find(x=>x.id===el.dataset.cdp);
-      if(!p){ el.textContent='—'; el.dataset.parts=''; return; }
-      const info = proximaCuotaInfo(p);
-      if(!info){ el.textContent='—'; el.dataset.parts=''; return; }
-      iso = info.fecha;
-    }
-    const diff = new Date(iso+'T'+h) - ahora;
-    if(diff<=0){
-      if(el.dataset.parts!=='due'){ el.innerHTML = countdownHTML(diff); el.dataset.parts='due'; }
-      return;
-    }
-    const parts = countdownParts(diff);
-    const cur = [parts.d, parts.h, parts.m, parts.sec];
-    const prev = el.dataset.parts ? JSON.parse(el.dataset.parts) : null;
+  const ahora = new Date();
+  document.querySelectorAll('[data-cd]').forEach(el=>{
+    const c = db.cobros.find(x=>x.id===el.dataset.cd);
+    if(!c){ el.textContent = '—'; return; }
+    const diff = new Date(c.proxima+'T'+(c.hora||'09:00')) - ahora;
     el.innerHTML = countdownHTML(diff);
-    if(Array.isArray(prev) && prev.length===4){
-      el.querySelectorAll('.countdown-number').forEach((n,i)=>{
-        if(String(cur[i]).padStart(2,'0') !== String(prev[i]).padStart(2,'0')) n.classList.add('flip');
-      });
-    }
-    el.dataset.parts = JSON.stringify(cur);
+  });
+  document.querySelectorAll('[data-cdp]').forEach(el=>{
+    const p = db.prestamos.find(x=>x.id===el.dataset.cdp);
+    if(!p){ el.textContent = '—'; return; }
+    const info = proximaCuotaInfo(p);
+    if(!info){ el.textContent = '—'; return; }
+    const diff = new Date(info.fecha+'T23:59:59') - ahora;
+    el.innerHTML = countdownHTML(diff);
   });
 }
 
@@ -712,7 +697,7 @@ function verDetallePrestamo(id){
   const comision = capitalRestante * comPct;
   const totalAmortizar = capitalRestante + comision;
   const pct = Math.round(p.pagadas/p.cuotasTotal*100);
-  abrirDetalle('🏦 ' + esc(p.nombre),
+  abrirDetalle('🏦 ' + p.nombre,
     `<div class="stat-line"><span>${t('total_borrowed')}</span><b>${fmt(p.montoTotal)}</b></div>
      <div class="stat-line"><span>${t('paid_so_far')}</span><b class="green">${fmt(pagadoTotal)}</b></div>
      <div class="stat-line"><span>${t('d_principal')}</span><b>${fmt(capitalRestante)}</b></div>
@@ -1005,7 +990,7 @@ function renderTodo(){
 function renderMovimientos(){
   const q = ($('fBuscar').value||'').toLowerCase();
   const tipo = $('fTipo').value; const mes = $('fMes').value;
-  let movs = [...db.movimientos].sort((a,b)=> b.fecha.localeCompare(a.fecha) || String(b.id).localeCompare(String(a.id)));
+  let movs = [...db.movimientos].sort((a,b)=>b.fecha.localeCompare(a.fecha));
   if(tipo) movs = movs.filter(m=>m.tipo===tipo);
   if(mes) movs = movs.filter(m=>m.fecha.startsWith(mes));
   if(q) movs = movs.filter(m=>(m.categoria+' '+ (m.descripcion||'')).toLowerCase().includes(q));
@@ -1251,36 +1236,6 @@ function toggleDivisaFavorita(cur){
   else db.divisaFavoritas.unshift(cur);
   guardar();
   actualizarDivisas();
-}
-
-
-// ================= PRESUPUESTOS: EDITAR / BORRAR =================
-// (faltaban: se referenciaban en verDetallePresupuesto y en el modal)
-function editarPresupuesto(id){
-  const p=db.presupuestos.find(x=>x.id===id); if(!p) return;
-  renderPresupuestos(); // asegura que el select tenga todas las opciones
-  $('prId').value=p.id;
-  $('prCategoria').value=catKey(p.categoria);
-  $('prLimite').value=p.limite;
-  $('tituloFormPres').textContent=t('pres_edit');
-  $('btnSubmitPres').textContent=t('pres_update');
-  $('editNotePres').style.display='block';
-  abrirModal('modalPres');
-}
-function borrarPresupuesto(id){
-  confirmarWeb(t('conf_del_budget'),{danger:true}).then(ok=>{
-    if(!ok) return;
-    db.presupuestos=db.presupuestos.filter(p=>p.id!==id);
-    guardar(); renderTodo(); toast(t('to_pres_del'));
-  });
-}
-function cancelarEdicionPres(){
-  $('prId').value='';
-  $('prLimite').value='';
-  $('tituloFormPres').textContent=t('pres_new');
-  $('btnSubmitPres').textContent=t('pres_create');
-  $('editNotePres').style.display='none';
-  cerrarModal('modalPres');
 }
 
 // ================= INICIO =================
