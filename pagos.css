@@ -783,3 +783,71 @@ body[data-page-view="panel"] main{animation:pageEnter .42s cubic-bezier(.22,1,.3
 .brand-lockup:hover .brand-logo{transform:rotate(-4deg) scale(1.06);box-shadow:inset 0 0 0 1px rgba(255,255,255,.1),0 8px 24px rgba(79,140,255,.18);}
 .brand-word{background:linear-gradient(90deg,var(--text),rgba(255,255,255,.78));-webkit-background-clip:text;background-clip:text;color:transparent;}
 @media(max-width:560px){.brand-logo{width:29px;height:29px;border-radius:9px;font-size:.9rem}.brand-lockup{gap:7px!important;}}
+
+/* ===== POLISH + PERFORMANCE v4 =====
+   Mejora visual sin alterar la geometría existente. */
+html{
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+  text-rendering:optimizeLegibility;
+}
+button,input,select,textarea{font:inherit;}
+.ui-emoji{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  width:1.22em;
+  height:1.22em;
+  margin-inline-end:.24em;
+  vertical-align:-.12em;
+  font-size:.92em;
+  line-height:1;
+  flex:0 0 auto;
+}
+h1,h2,h3,.section-title{letter-spacing:-.012em;text-wrap:balance;}
+.big,.budget-values b,.budget-values strong,.rate-value{font-variant-numeric:tabular-nums;}
+.btn,.fab,.icon-btn,.fab-item,.modal-close,.profile-btn,.fx-fav{
+  -webkit-tap-highlight-color:transparent;
+}
+.btn:focus-visible,.fab:focus-visible,.icon-btn:focus-visible,.fab-item:focus-visible,
+.modal-close:focus-visible,.profile-btn:focus-visible,.fx-fav:focus-visible,
+input:focus-visible,select:focus-visible,textarea:focus-visible{
+  outline:2px solid var(--accent);
+  outline-offset:2px;
+}
+.card,.budget-item,.loan-card,.rate-card{
+  backface-visibility:hidden;
+}
+.budget-item{
+  transition:transform .16s ease,box-shadow .16s ease,border-color .16s ease;
+}
+.budget-item:hover{
+  transform:translateY(-1px);
+  border-color:color-mix(in srgb,var(--accent) 45%,var(--border));
+}
+.fab{
+  isolation:isolate;
+  box-shadow:0 8px 22px rgba(79,140,255,.30);
+  transition:transform .16s ease,box-shadow .16s ease,filter .16s ease;
+}
+.fab:hover{
+  filter:brightness(1.06);
+  box-shadow:0 10px 26px rgba(79,140,255,.36);
+}
+.fab.open{
+  box-shadow:0 8px 24px rgba(79,140,255,.34);
+}
+.fab-item{
+  transition:transform .14s ease,opacity .14s ease,border-color .14s ease,background-color .14s ease;
+}
+.fab-item:hover{background:var(--card2);}
+.fab-item .ui-emoji{width:1.1em;height:1.1em;margin-inline-end:.05em;}
+.toast{will-change:opacity,transform;}
+.modal-backdrop.open{will-change:opacity;}
+@media(hover:none){
+  .budget-item:hover{transform:none;}
+  .fab:hover{filter:none;}
+}
+@media(prefers-reduced-motion:reduce){
+  .budget-item,.fab,.fab-item{transition:none!important;}
+}
